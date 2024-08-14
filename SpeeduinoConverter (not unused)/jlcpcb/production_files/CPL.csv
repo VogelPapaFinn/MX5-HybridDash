@@ -1,0 +1,23 @@
+Designator,Val,Package,Mid X,Mid Y,Rotation,Layer
+C1,10n,C_0603_1608Metric,20.0025,8.89,180.0,top
+C2,100n,C_0603_1608Metric,20.0025,10.795,180.0,top
+C3,1u,C_0603_1608Metric,20.0025,12.7,180.0,top
+C4,10u,C_0805_2012Metric,12.065,8.509,0.0,top
+C10,1n,C_0603_1608Metric,5.2705,14.2875,0.0,top
+C20,1n,C_0603_1608Metric,5.2705,8.001,180.0,top
+FID1,Fiducial,Fiducial_0.5mm_Mask1mm,3.81,3.81,0.0,top
+FID2,Fiducial,Fiducial_0.5mm_Mask1mm,20.955,20.955,0.0,top
+H1,MountingHole,MountingHole_2.2mm_M2,19.685,5.08,0.0,top
+H2,MountingHole,MountingHole_2.2mm_M2,5.08,19.685,0.0,top
+J1,8-pin header,DIP-8_W7.62mm,13.0175,12.7,0.0,top
+J2,Edge,PinHeader_1x04_P2.54mm_Vertical,12.7,4.445,270.0,bottom
+R1,10k,R_1206_3216Metric,5.3975,12.319,0.0,top
+R2,10k,R_1206_3216Metric,5.3975,6.0325,0.0,top
+R3,10k,R_1206_3216Metric,5.3975,9.9695,0.0,top
+R10,1k,R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,20.0025,16.51,180.0,top
+R12,10k,R_1206_3216Metric,5.3975,16.256,0.0,top
+R13,4.7k,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,13.335,20.32,0.0,top
+R20,1k,R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,20.0025,14.605,180.0,top
+R23,4.7k,R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,16.51,19.05,0.0,top
+U1,MAX9926UAEE+,MAX9926UAEE&plus_,13.0175,13.335,-90.0,top
+U2,AMS1117CD-5.0,TO-92_Inline_Wide,12.7,6.65,0.0,bottom

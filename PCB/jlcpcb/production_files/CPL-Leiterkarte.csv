@@ -1,0 +1,43 @@
+Designator,Val,Package,Mid X,Mid Y,Rotation,Layer
+C1,100uF 50V,CP_Elec_8x10.5,141.8,-64.8,0.0,top
+C2,470uF 16V,CP_Elec_8x10.5,137.6,-75.4,0.0,top
+D2,1N5819,D_DO-27_P12.70mm_Horizontal,146.2,-83.2,0.0,top
+F2,3.5A,Fuse_Bourns_MF-SM_7.98x5.44mm,130.0,-63.775,0.0,top
+FUEL_1,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,171.3,-62.8,0.0,top
+GND1,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,128.0,-77.7,0.0,top
+J1,ARDUINO_DIG1,PinHeader_1x10_P2.54mm_Vertical,117.82,-127.105,0.0,bottom
+J2,ARDUINO_DIG2,PinHeader_1x08_P2.54mm_Vertical,117.82,-103.065,0.0,bottom
+J3,ARDUINO_PWR,PinHeader_1x08_P2.54mm_Vertical,166.32,-120.315,0.0,bottom
+J4,ARDUINO_ANLG,PinHeader_1x06_P2.54mm_Vertical,166.32,-100.525,0.0,bottom
+J5,Conn_02x20_Odd_Even,PinSocket_2x20_P2.54mm_Vertical,110.3,-118.305,0.0,top
+J11,Conn_01x04_Socket,PinSocket_1x04_P2.54mm_Vertical,107.42,-67.985,0.0,top
+J12,Conn_01x04_Socket,PinSocket_1x04_P2.54mm_Vertical,115.17,-67.985,0.0,top
+J15,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,102.3,-108.0,0.0,top
+J16,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,102.3,-112.6,0.0,top
+J17,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,102.3,-125.7,0.0,top
+J18,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,102.3,-130.3,0.0,top
+J19,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,102.3,-134.9,0.0,top
+J20,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,102.3,-140.0,0.0,top
+J21,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,97.3,-94.7,0.0,top
+J23,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,97.2,-106.9,0.0,top
+J24,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,97.2,-119.5,0.0,top
+J25,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,97.2,-134.1,0.0,top
+J26,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,97.2,-138.7,0.0,top
+J27,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,97.2,-143.3,0.0,top
+L1,100myH,L_12x12mm_H8mm,178.4,-78.85,-90.0,top
+LBLINK_1,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,181.17,-93.5,0.0,top
+OIL_1,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,176.8,-62.8,0.0,top
+R1,20k,R_0805_2012Metric,165.77,-66.9875,-90.0,top
+R2,10k,R_0805_2012Metric,165.77,-71.6875,-90.0,top
+R3,100,R_0805_2012Metric,171.27,-67.12,90.0,top
+R4,100,R_0805_2012Metric,176.78,-67.11,90.0,top
+R5,100,R_0805_2012Metric,182.28,-67.09,90.0,top
+R6,20k,R_0805_2012Metric,176.61,-94.3825,-90.0,top
+R7,20k,R_0805_2012Metric,181.16,-103.2725,-90.0,top
+R8,10k,R_0805_2012Metric,176.62,-99.0225,-90.0,top
+R9,10k,R_0805_2012Metric,180.2475,-107.46,180.0,top
+RBLINK_1,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,181.2,-98.1,0.0,top
+RPM_1,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,165.8,-62.8,0.0,top
+TEMP_1,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,182.3,-62.8,0.0,top
+U1,LM2576HVS-5,TO-263-5_TabPin3,154.57,-69.15,90.0,top
+VIN1,Conn_01x01_Pin,SolderWire-0.75sqmm_1x01_D1.25mm_OD3.5mm,128.0,-71.8,0.0,top

@@ -1,0 +1,22 @@
+- Communication via USB: Arduino connected and powered by RaspberryPi
+- Baudrate: 115200
+- Databits: 8
+- Parity: None
+- Stopbit: 1
+- The Arduino only sends the measured data. It does NOT interpret or convert them
+
+Arduino communication layout:
+- Every 'command' is seperated via ';'
+- Begin of transmission should specify the type: "DATA" or "DEBUG"
+	- "DATA" -> Input for the RaspberryPi which contains (new) data
+	- "DEBUG" -> Used for debugging. RaspberryPi will output it via 'qDebug()'
+- Content of transmission: "NAME=VALUE"
+	- The name is always in capital letters
+- End of transmission: "END"
+
+Allowed variable names and their meaning:
+- "RPM": The cycle time of the square wave output, which represents the RPM
+- "SPEED": The cycle time of the square wave output, which represents the speed (1000 pulses mean one driven km)
+- "FUEL": The measured resistance value which represents the fuel level
+- "TEMP": The measured resistance value which represents the coolant temperature
+- "OILP":  The measured resistance value which represents the oil pressure (switch)
