@@ -28,6 +28,12 @@ This section contains some demo pictures so you get an idea of what I actually d
 3. The same display from the back
 ![WhatsApp Image 2024-08-14 at 17 25 48(1)](https://github.com/user-attachments/assets/ea8a5bd3-ca7e-4ec9-83f3-a75db4f2d5da)
 
+4. The PCB
+![WhatsApp Image 2024-08-14 at 18 19 28](https://github.com/user-attachments/assets/1e02e998-0ce4-4019-8ed2-e4d7b681dec9)
+
+5. The RPI4 and the Arduino mounted on the PCB
+![WhatsApp Image 2024-08-14 at 18 19 28(1)](https://github.com/user-attachments/assets/9cef9a0c-9fee-4f15-b8d9-ba80476fc030)
+
 ## Information about the folders and their content
 
 Below I will list them and give some brief information about them and their content:
@@ -43,8 +49,7 @@ Below I will list them and give some brief information about them and their cont
     - **ClusterConnectorsLayout-From2000Manual.png** -- A screenshot of the layout of the connectors which sit at the back of the cluster. Its copied from the file '2000_miata_mx5.pdf'
     - **displayRequirements.txt** -- A brief description of what the project features should be and possible improvements & ideas
     - **ImageOfClusterConnectors.jpg** -- An image of the clusters which sit at the back of the clusters
-    - **Numbered![WhatsApp Image 2024-08-14 at 17 25 46](https://github.com/user-attachments/assets/b69e40b6-015c-46ac-afa6-976fca4fbcc0)
-BackOfInstrumentCluster.jpeg** -- The image just with some numbers so you can identify which connector has which number/index
+    - **NumberedBackOfInstrumentCluster.jpeg** -- The image just with some numbers so you can identify which connector has which number/index
     - **InstrumentCluster_2005-MX-5.pdf** -- Contains information about the cluster, the fuel level sensor and more
     - **PossibleTempSensorValues.txt** -- Possible temperature sensor values and the corresponding temperature in degree celcius
     - **RPMTestData.xlsx** -- Roughly measured VSS output values, the corresponding RPM and a way to calculate the RPM from the measured frequency.
