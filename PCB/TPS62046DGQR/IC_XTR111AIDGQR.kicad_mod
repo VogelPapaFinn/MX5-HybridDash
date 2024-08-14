@@ -1,0 +1,207 @@
+
+(footprint IC_XTR111AIDGQR (layer F.Cu) (tedit 66B13FD5)
+  (descr "")
+  (attr smd)
+  (fp_text reference REF** (at 0.032 -2.4064 0) (layer F.SilkS)
+    (effects (font (size 0.64 0.64) (thickness 0.15)))
+  )
+  (fp_text value IC_XTR111AIDGQR (at 4.096 2.4064 0) (layer F.Fab)
+    (effects (font (size 0.64 0.64) (thickness 0.15)))
+  )
+  (pad 1 smd rect (at -2.1 -1.0) (size 1.6 0.3) (layers F.Cu))
+  (pad 2 smd rect (at -2.1 -0.5) (size 1.6 0.3) (layers F.Cu))
+  (pad 3 smd rect (at -2.1 0.0) (size 1.6 0.3) (layers F.Cu))
+  (pad 4 smd rect (at -2.1 0.5) (size 1.6 0.3) (layers F.Cu))
+  (pad 5 smd rect (at -2.1 1.0) (size 1.6 0.3) (layers F.Cu))
+  (pad 6 smd rect (at 2.1 1.0) (size 1.6 0.3) (layers F.Cu))
+  (pad 7 smd rect (at 2.1 0.5) (size 1.6 0.3) (layers F.Cu))
+  (pad 8 smd rect (at 2.1 0.0) (size 1.6 0.3) (layers F.Cu))
+  (pad 9 smd rect (at 2.1 -0.5) (size 1.6 0.3) (layers F.Cu))
+  (pad 10 smd rect (at 2.1 -1.0) (size 1.6 0.3) (layers F.Cu))
+  (pad 11 smd rect (at 0.0 0.0) (size 1.57 1.88) (layers F.Cu F.Mask F.Paste) (solder_mask_margin 0.102))
+  (pad 12 thru_hole circle (at -0.45 -0.6) (size 0.4 0.4) (drill 0.2) (layers *.Cu))
+  (pad 13 thru_hole circle (at 0.45 -0.6) (size 0.4 0.4) (drill 0.2) (layers *.Cu))
+  (pad 14 thru_hole circle (at 0.0 0.0) (size 0.4 0.4) (drill 0.2) (layers *.Cu))
+  (pad 15 thru_hole circle (at -0.45 0.6) (size 0.4 0.4) (drill 0.2) (layers *.Cu))
+  (pad 16 thru_hole circle (at 0.45 0.6) (size 0.4 0.4) (drill 0.2) (layers *.Cu))
+  (fp_line (start -1.5 -1.5) (end -1.5 1.5) (layer F.Fab) (width 0.127))
+  (fp_line (start -1.5 1.5) (end 1.5 1.5) (layer F.Fab) (width 0.127))
+  (fp_line (start 1.5 1.5) (end 1.5 -1.5) (layer F.Fab) (width 0.127))
+  (fp_line (start 1.5 -1.5) (end -1.5 -1.5) (layer F.Fab) (width 0.127))
+  (fp_line (start 1.5 -1.5) (end -1.5 -1.5) (layer F.SilkS) (width 0.127))
+  (fp_line (start -1.5 1.5) (end 1.5 1.5) (layer F.SilkS) (width 0.127))
+  (fp_line (start -3.15 -1.4) (end -3.15 1.4) (layer F.CrtYd) (width 0.05))
+  (fp_line (start -3.15 1.4) (end -1.75 1.4) (layer F.CrtYd) (width 0.05))
+  (fp_line (start -1.75 1.4) (end -1.75 1.75) (layer F.CrtYd) (width 0.05))
+  (fp_line (start -1.75 1.75) (end 1.75 1.75) (layer F.CrtYd) (width 0.05))
+  (fp_line (start 1.75 1.75) (end 1.75 1.4) (layer F.CrtYd) (width 0.05))
+  (fp_line (start 1.75 1.4) (end 3.15 1.4) (layer F.CrtYd) (width 0.05))
+  (fp_line (start 3.15 1.4) (end 3.15 -1.4) (layer F.CrtYd) (width 0.05))
+  (fp_line (start 3.15 -1.4) (end 1.75 -1.4) (layer F.CrtYd) (width 0.05))
+  (fp_line (start 1.75 -1.4) (end 1.75 -1.75) (layer F.CrtYd) (width 0.05))
+  (fp_line (start 1.75 -1.75) (end -1.75 -1.75) (layer F.CrtYd) (width 0.05))
+  (fp_line (start -1.75 -1.75) (end -1.75 -1.4) (layer F.CrtYd) (width 0.05))
+  (fp_line (start -1.75 -1.4) (end -3.15 -1.4) (layer F.CrtYd) (width 0.05))
+  (fp_circle (center -3.5 -1.0) (end -3.4 -1.0) (layer F.SilkS) (width 0.2))
+  (fp_circle (center -3.5 -1.0) (end -3.4 -1.0) (layer F.Fab) (width 0.2))
+  (fp_poly
+    (pts
+      (xy -2.875 -1.125)
+      (xy -1.325 -1.125)
+      (xy -1.325 -0.875)
+      (xy -2.875 -0.875)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -2.875 -0.625)
+      (xy -1.325 -0.625)
+      (xy -1.325 -0.375)
+      (xy -2.875 -0.375)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -2.875 -0.125)
+      (xy -1.325 -0.125)
+      (xy -1.325 0.125)
+      (xy -2.875 0.125)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -2.875 0.375)
+      (xy -1.325 0.375)
+      (xy -1.325 0.625)
+      (xy -2.875 0.625)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -2.875 0.875)
+      (xy -1.325 0.875)
+      (xy -1.325 1.125)
+      (xy -2.875 1.125)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.325 0.875)
+      (xy 2.875 0.875)
+      (xy 2.875 1.125)
+      (xy 1.325 1.125)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.325 0.375)
+      (xy 2.875 0.375)
+      (xy 2.875 0.625)
+      (xy 1.325 0.625)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.325 -0.125)
+      (xy 2.875 -0.125)
+      (xy 2.875 0.125)
+      (xy 1.325 0.125)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.325 -0.625)
+      (xy 2.875 -0.625)
+      (xy 2.875 -0.375)
+      (xy 1.325 -0.375)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.325 -1.125)
+      (xy 2.875 -1.125)
+      (xy 2.875 -0.875)
+      (xy 1.325 -0.875)
+    ) (layer F.Paste) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -2.95 -1.2)
+      (xy -1.25 -1.2)
+      (xy -1.25 -0.8)
+      (xy -2.95 -0.8)
+    ) (layer F.Mask) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -2.95 -0.7)
+      (xy -1.25 -0.7)
+      (xy -1.25 -0.3)
+      (xy -2.95 -0.3)
+    ) (layer F.Mask) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -2.95 -0.2)
+      (xy -1.25 -0.2)
+      (xy -1.25 0.2)
+      (xy -2.95 0.2)
+    ) (layer F.Mask) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -2.95 0.3)
+      (xy -1.25 0.3)
+      (xy -1.25 0.7)
+      (xy -2.95 0.7)
+    ) (layer F.Mask) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy -2.95 0.8)
+      (xy -1.25 0.8)
+      (xy -1.25 1.2)
+      (xy -2.95 1.2)
+    ) (layer F.Mask) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.25 0.8)
+      (xy 2.95 0.8)
+      (xy 2.95 1.2)
+      (xy 1.25 1.2)
+    ) (layer F.Mask) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.25 0.3)
+      (xy 2.95 0.3)
+      (xy 2.95 0.7)
+      (xy 1.25 0.7)
+    ) (layer F.Mask) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.25 -0.2)
+      (xy 2.95 -0.2)
+      (xy 2.95 0.2)
+      (xy 1.25 0.2)
+    ) (layer F.Mask) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.25 -0.7)
+      (xy 2.95 -0.7)
+      (xy 2.95 -0.3)
+      (xy 1.25 -0.3)
+    ) (layer F.Mask) (width 0.01)
+  )
+  (fp_poly
+    (pts
+      (xy 1.25 -1.2)
+      (xy 2.95 -1.2)
+      (xy 2.95 -0.8)
+      (xy 1.25 -0.8)
+    ) (layer F.Mask) (width 0.01)
+  )
+)
