@@ -12,7 +12,7 @@ This repo contains everything I gathered, used (and saved...). It contains a KiC
 - [MX5 Hybrid Dash](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#mx5-hybrid-dash)
 - [Section List](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#mx5-hybrid-dash)
 - [Demo](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#section-list)
-- [Information about the folders and their content](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#section-list)
+- [Information about the folders and their content](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#information-about-the-folders-and-their-content)
 - [Additional Information](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#3d-models--additional-information)
 - [Contact](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#contact)
 ## Demo Pictures
