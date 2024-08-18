@@ -501,13 +501,13 @@
     "annotate_start_num": 0,
     "bom_fmt_presets": [],
     "bom_fmt_settings": {
-      "field_delimiter": ",",
+      "field_delimiter": ";",
       "keep_line_breaks": false,
       "keep_tabs": false,
-      "name": "CSV",
+      "name": "Semicolons",
       "ref_delimiter": ",",
       "ref_range_delimiter": "",
-      "string_delimiter": "\""
+      "string_delimiter": "'"
     },
     "bom_presets": [],
     "bom_settings": {
@@ -702,7 +702,7 @@
   "sheets": [
     [
       "7159fc5a-6328-470f-acd9-3e0a0aa6e60c",
-      "Stammblatt"
+      "Root"
     ],
     [
       "387d92f2-3727-45df-9c4d-1355459e23fb",
