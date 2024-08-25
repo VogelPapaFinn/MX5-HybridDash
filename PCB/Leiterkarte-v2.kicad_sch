@@ -1556,6 +1556,260 @@
 				)
 			)
 		)
+		(symbol "Sensor_Temperature:MCP9700Ax-ETT"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at -6.35 6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "MCP9700Ax-ETT"
+				(at 1.27 6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+				(at 0 -10.16 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "http://ww1.microchip.com/downloads/en/devicedoc/20001942g.pdf"
+				(at -3.81 6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Low power, analog thermistor temperature sensor, ±2C accuracy, -40C to +125C, in SOT-23-3"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "temperature sensor thermistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "SOT?23*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "MCP9700Ax-ETT_0_1"
+				(rectangle
+					(start -7.62 5.08)
+					(end 7.62 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(circle
+					(center -4.445 -2.54)
+					(radius 1.27)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -3.81 -1.905)
+					(end -5.08 0)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(arc
+					(start -3.81 3.175)
+					(mid -4.445 3.8073)
+					(end -5.08 3.175)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 0.635) (xy -4.445 0.635)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 1.27) (xy -4.445 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 1.905) (xy -4.445 1.905)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 2.54) (xy -4.445 2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 3.175) (xy -5.08 0)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 3.175) (xy -4.445 3.175)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -3.81 3.175) (xy -3.81 0)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "MCP9700Ax-ETT_1_1"
+				(pin power_in line
+					(at 0 7.62 270)
+					(length 2.54)
+					(name "V_{DD}"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 10.16 0 180)
+					(length 2.54)
+					(name "V_{OUT}"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -7.62 90)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "power:PWR_FLAG"
 			(power)
 			(pin_numbers hide)
@@ -1750,10 +2004,22 @@
 		(uuid "a48b97ce-a2ab-4ab6-9f60-777689bf5d7c")
 	)
 	(junction
+		(at 32.004 102.616)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a717bb53-2f7f-4799-ae17-3849df19a441")
+	)
+	(junction
 		(at 188.976 73.66)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "abfc1b3f-2b99-4787-9590-ede2273a5410")
+	)
+	(junction
+		(at 49.276 102.616)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c11968d5-4fcd-4ff3-a9d5-23bf05bb0e9a")
 	)
 	(junction
 		(at 141.986 46.99)
@@ -1871,6 +2137,16 @@
 	)
 	(wire
 		(pts
+			(xy 48.26 102.616) (xy 49.276 102.616)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c3842fd-2fe7-468f-b905-27437bcf21f9")
+	)
+	(wire
+		(pts
 			(xy 144.526 50.8) (xy 141.986 50.8)
 		)
 		(stroke
@@ -1918,6 +2194,16 @@
 			(type default)
 		)
 		(uuid "1c7118c0-4e77-4759-85c6-945108edfc21")
+	)
+	(wire
+		(pts
+			(xy 49.276 102.616) (xy 49.276 103.886)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1cc4193e-8a56-4f6a-ae95-f89201017b81")
 	)
 	(wire
 		(pts
@@ -1971,6 +2257,16 @@
 	)
 	(wire
 		(pts
+			(xy 32.004 102.616) (xy 32.004 103.886)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "23daa0a9-a886-4fda-aae2-9e1020e6295c")
+	)
+	(wire
+		(pts
 			(xy 149.606 85.09) (xy 149.606 86.36)
 		)
 		(stroke
@@ -1988,6 +2284,16 @@
 			(type default)
 		)
 		(uuid "2ec51a5f-827a-4251-8bff-161c3aa220eb")
+	)
+	(wire
+		(pts
+			(xy 47.498 112.776) (xy 47.498 115.062)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "306cab92-c197-453e-aeaa-468bd27226c0")
 	)
 	(wire
 		(pts
@@ -2201,6 +2507,16 @@
 	)
 	(wire
 		(pts
+			(xy 49.276 102.616) (xy 50.292 102.616)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "64304680-ce35-49c0-b4a3-c444686da155")
+	)
+	(wire
+		(pts
 			(xy 180.848 35.052) (xy 180.848 38.862)
 		)
 		(stroke
@@ -2258,6 +2574,16 @@
 			(type default)
 		)
 		(uuid "796726f2-c39d-46e7-8a26-6324fae5fd8a")
+	)
+	(wire
+		(pts
+			(xy 40.64 112.776) (xy 40.64 115.062)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7f2c3926-00b0-411e-92b4-4a5140c401ff")
 	)
 	(wire
 		(pts
@@ -2398,6 +2724,16 @@
 			(type default)
 		)
 		(uuid "9b8addf9-168d-47c1-be3f-c1350f5075ec")
+	)
+	(wire
+		(pts
+			(xy 30.988 102.616) (xy 32.004 102.616)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9c4c75d4-e7b5-4ce9-85f5-e45f384603a1")
 	)
 	(wire
 		(pts
@@ -2721,6 +3057,16 @@
 	)
 	(wire
 		(pts
+			(xy 32.004 102.616) (xy 33.02 102.616)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f8bdea9b-ba2d-462a-aee1-f95e0f5b5d15")
+	)
+	(wire
+		(pts
 			(xy 103.886 29.21) (xy 105.156 29.21)
 		)
 		(stroke
@@ -2882,6 +3228,18 @@
 			(type none)
 		)
 		(uuid cea54e23-ae90-4901-a22d-96fb802ad259)
+	)
+	(rectangle
+		(start 17.526 89.662)
+		(end 65.024 125.476)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(uuid e2f59cad-5e83-4ee2-9f16-af9db7150e25)
 	)
 	(rectangle
 		(start 118.999 43.053)
@@ -3132,6 +3490,17 @@
 		)
 		(uuid "5e589606-9509-418f-90e0-e09c1c58114e")
 	)
+	(text "Temperature Sensors"
+		(exclude_from_sim no)
+		(at 17.526 88.9 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "62ba3969-20c9-40f0-8603-68ab56f04ff3")
+	)
 	(text "VIN: 5V 1.5A ; VOUT: 3.3V 0.8A"
 		(exclude_from_sim no)
 		(at 18.288 85.598 0)
@@ -3309,7 +3678,7 @@
 	)
 	(global_label "Button3"
 		(shape output)
-		(at 232.918 76.327 180)
+		(at 232.664 65.532 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3319,7 +3688,7 @@
 		)
 		(uuid "064afe2a-1429-4225-a5b9-c7556980bb6d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 222.5549 76.327 0)
+			(at 222.3009 65.532 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3331,7 +3700,7 @@
 	)
 	(global_label "RIndicator"
 		(shape output)
-		(at 232.918 65.278 180)
+		(at 232.664 54.483 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3341,7 +3710,7 @@
 		)
 		(uuid "0857af23-7a70-4e11-9258-76f7015f015b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 220.2567 65.278 0)
+			(at 220.0027 54.483 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3375,7 +3744,7 @@
 	)
 	(global_label "LIndicator"
 		(shape output)
-		(at 232.918 62.103 180)
+		(at 232.664 51.308 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3385,7 +3754,7 @@
 		)
 		(uuid "0e596a20-34bc-46af-98d6-6b2b2cc96420")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 220.4986 62.103 0)
+			(at 220.2446 51.308 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3441,7 +3810,7 @@
 	)
 	(global_label "5V"
 		(shape output)
-		(at 232.918 33.528 180)
+		(at 232.664 22.733 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3451,7 +3820,7 @@
 		)
 		(uuid "34270786-5779-466b-9ca6-aeea3d1e146c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 227.6347 33.528 0)
+			(at 227.3807 22.733 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3507,7 +3876,7 @@
 	)
 	(global_label "GND"
 		(shape output)
-		(at 232.918 39.878 180)
+		(at 232.664 29.083 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3517,7 +3886,7 @@
 		)
 		(uuid "3a19879d-ff11-49f8-9fc2-80cb87defb61")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 226.0623 39.878 0)
+			(at 225.8083 29.083 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3551,7 +3920,7 @@
 	)
 	(global_label "Button1"
 		(shape output)
-		(at 232.918 70.231 180)
+		(at 232.664 59.436 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3561,7 +3930,7 @@
 		)
 		(uuid "40eaa26e-1dab-40b6-a134-bea82ea1140f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 222.5549 70.231 0)
+			(at 222.3009 59.436 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3573,7 +3942,7 @@
 	)
 	(global_label "WTemp"
 		(shape output)
-		(at 232.918 58.928 180)
+		(at 232.664 48.133 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3583,7 +3952,7 @@
 		)
 		(uuid "49cc9eb5-6d44-4d76-9c51-96472b4aa1a4")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 223.5829 58.928 0)
+			(at 223.3289 48.133 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3659,6 +4028,50 @@
 			)
 		)
 	)
+	(global_label "TEMP1"
+		(shape input)
+		(at 232.664 69.088 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "5a6bcbbf-a462-43c6-98a1-1f8a55c8a459")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 223.6313 69.088 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "TEMP2"
+		(shape input)
+		(at 47.498 115.062 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "5a7c4be6-9f94-4bae-9e3d-a0761378e729")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 47.498 124.0947 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "GND"
 		(shape output)
 		(at 188.468 46.99 0)
@@ -3703,6 +4116,28 @@
 			)
 		)
 	)
+	(global_label "5V"
+		(shape output)
+		(at 49.276 103.886 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "6b5b4184-2702-40eb-a23e-346d18dff52c")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 49.276 109.1693 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "WTemp"
 		(shape output)
 		(at 144.526 50.8 0)
@@ -3727,7 +4162,7 @@
 	)
 	(global_label "3.3V"
 		(shape output)
-		(at 232.918 36.703 180)
+		(at 232.664 25.908 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3737,7 +4172,7 @@
 		)
 		(uuid "71ad1f0a-5e26-430d-a908-fa5a9fc24438")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 225.8204 36.703 0)
+			(at 225.5664 25.908 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3857,6 +4292,28 @@
 			)
 		)
 	)
+	(global_label "TEMP1"
+		(shape input)
+		(at 40.64 115.062 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "85425bb0-61ca-4dc8-8272-f6c7c1655473")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 40.64 124.0947 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "3.3V"
 		(shape output)
 		(at 236.22 85.852 0)
@@ -3881,7 +4338,7 @@
 	)
 	(global_label "RPM"
 		(shape output)
-		(at 232.918 49.403 180)
+		(at 232.664 38.608 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3891,7 +4348,7 @@
 		)
 		(uuid "9657ca4b-c313-4776-acb4-e15a41bbc75b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 225.9414 49.403 0)
+			(at 225.6874 38.608 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3903,7 +4360,7 @@
 	)
 	(global_label "Fuel"
 		(shape output)
-		(at 232.918 52.578 180)
+		(at 232.664 41.783 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3913,7 +4370,7 @@
 		)
 		(uuid "9a127ca2-eeea-462c-80db-28461fa95d9d")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 225.9414 52.578 0)
+			(at 225.6874 41.783 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3969,7 +4426,7 @@
 	)
 	(global_label "Oil"
 		(shape output)
-		(at 232.918 55.753 180)
+		(at 232.664 44.958 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3979,7 +4436,7 @@
 		)
 		(uuid "bb1d4550-6acf-45ee-9916-f7e66d993750")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 227.3323 55.753 0)
+			(at 227.0783 44.958 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4035,7 +4492,7 @@
 	)
 	(global_label "Button2"
 		(shape output)
-		(at 232.918 73.279 180)
+		(at 232.664 62.484 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4045,7 +4502,7 @@
 		)
 		(uuid "ca6824fd-0e94-4c61-b8a8-00d086f92894")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 222.5549 73.279 0)
+			(at 222.3009 62.484 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4123,7 +4580,7 @@
 	)
 	(global_label "Speed"
 		(shape output)
-		(at 232.918 46.228 180)
+		(at 232.664 35.433 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4133,7 +4590,7 @@
 		)
 		(uuid "eff84722-bf5d-48a8-be6f-f6dcd39805ab")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 224.2481 46.228 0)
+			(at 223.9941 35.433 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4231,6 +4688,28 @@
 			)
 		)
 	)
+	(global_label "TEMP2"
+		(shape input)
+		(at 232.664 72.136 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "f7ba04d8-2101-4253-99b3-ddf304f54169")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 223.6313 72.136 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "3.3V"
 		(shape output)
 		(at 236.22 88.646 0)
@@ -4253,6 +4732,28 @@
 			)
 		)
 	)
+	(global_label "GND"
+		(shape output)
+		(at 32.004 103.886 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "fe0157d3-8450-4acb-b1a0-5b11adeaacc3")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 32.004 110.7417 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+	)
 	(hierarchical_label "GND"
 		(shape bidirectional)
 		(at 147.828 85.09 180)
@@ -4264,6 +4765,73 @@
 			(justify right)
 		)
 		(uuid "4e7bc8dc-5095-4b8d-adbe-ab03ecdec84a")
+	)
+	(symbol
+		(lib_id "Connector:Conn_01x01_Pin")
+		(at 52.578 112.776 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "00defe73-bae9-48c3-96b3-eac47619c679")
+		(property "Reference" "TEMP_Vout1"
+			(at 63.754 112.776 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01_Pin"
+			(at 50.6731 113.792 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 52.578 112.776 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 52.578 112.776 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated"
+			(at 52.578 112.776 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "403df31c-d6bd-4c10-b2bb-bf7dcef8d333")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "TEMP_Vout1")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x01_Pin")
@@ -4723,6 +5291,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:Conn_01x01_Pin")
+		(at 50.292 97.536 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "3af5c2f2-48ef-4284-9be0-99c56243a36f")
+		(property "Reference" "TEMP_Vcc1"
+			(at 50.292 97.536 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01_Pin"
+			(at 51.308 99.4409 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 50.292 97.536 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 50.292 97.536 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated"
+			(at 50.292 97.536 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "95105ba2-6a5d-4ea4-b270-33fb5a717479")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "TEMP_Vcc1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 175.768 22.86 90)
 		(unit 1)
@@ -5048,6 +5683,73 @@
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
 					(reference "#FLG02")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:Conn_01x01_Pin")
+		(at 30.988 97.536 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "70ae8fa1-3390-4582-ad2b-d9f715d538bd")
+		(property "Reference" "TEMP_GND1"
+			(at 19.812 97.536 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Conn_01x01_Pin"
+			(at 32.004 99.4409 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 30.988 97.536 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 30.988 97.536 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x01, script generated"
+			(at 30.988 97.536 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "661096a8-2c4e-45fe-b694-c1b69c454279")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "TEMP_GND1")
 					(unit 1)
 				)
 			)
@@ -5386,6 +6088,76 @@
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
 					(reference "#FLG04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Sensor_Temperature:MCP9700Ax-ETT")
+		(at 40.64 102.616 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "81725b0f-3787-4457-b364-7a17f2935e48")
+		(property "Reference" "TEMP_SENSOR1"
+			(at 40.64 92.202 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "MCP9700Ax-ETT"
+			(at 40.64 93.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 30.48 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://ww1.microchip.com/downloads/en/devicedoc/20001942g.pdf"
+			(at 46.99 98.806 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Low power, analog thermistor temperature sensor, ±2C accuracy, -40C to +125C, in SOT-23-3"
+			(at 40.64 102.616 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "b01bb767-aade-48de-b3b8-f42f985f9b15")
+		)
+		(pin "1"
+			(uuid "9aed7416-f62e-44f7-8af2-ebc0ba5bc90f")
+		)
+		(pin "3"
+			(uuid "b153bd3b-3966-43c6-8cc5-6668577c1611")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "TEMP_SENSOR1")
 					(unit 1)
 				)
 			)
@@ -7646,8 +8418,8 @@
 		)
 	)
 	(sheet
-		(at 232.918 30.988)
-		(size 45.72 47.244)
+		(at 232.664 20.193)
+		(size 45.72 54.229)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -7658,7 +8430,7 @@
 		)
 		(uuid "387d92f2-3727-45df-9c4d-1355459e23fb")
 		(property "Sheetname" "MCU"
-			(at 232.918 30.2764 0)
+			(at 232.664 19.4814 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7667,7 +8439,7 @@
 			)
 		)
 		(property "Sheetfile" "MCU.kicad_sch"
-			(at 232.918 78.8166 0)
+			(at 232.664 75.0066 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7676,7 +8448,7 @@
 			)
 		)
 		(pin "GND" input
-			(at 232.918 39.878 180)
+			(at 232.664 29.083 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7686,7 +8458,7 @@
 			(uuid "98c8d186-6236-40b9-a7dc-0b813c90e7a4")
 		)
 		(pin "Oil" input
-			(at 232.918 55.753 180)
+			(at 232.664 44.958 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7696,7 +8468,7 @@
 			(uuid "bd2d0a09-6693-40eb-a789-3808b224b7ae")
 		)
 		(pin "RIndicator" input
-			(at 232.918 65.278 180)
+			(at 232.664 54.483 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7706,7 +8478,7 @@
 			(uuid "253b944b-e8e4-4c6c-ab2f-16972ee6ba66")
 		)
 		(pin "Speed" input
-			(at 232.918 46.228 180)
+			(at 232.664 35.433 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7716,7 +8488,7 @@
 			(uuid "54ec2a20-0c04-4780-9ac4-952db7b437b2")
 		)
 		(pin "3.3V" input
-			(at 232.918 36.703 180)
+			(at 232.664 25.908 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7726,7 +8498,7 @@
 			(uuid "231b9c9e-beb8-4253-bc51-a1198bf2e393")
 		)
 		(pin "5V" input
-			(at 232.918 33.528 180)
+			(at 232.664 22.733 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7736,7 +8508,7 @@
 			(uuid "7e40e044-346b-404d-b7e1-b316bd02b8e1")
 		)
 		(pin "WTemp" input
-			(at 232.918 58.928 180)
+			(at 232.664 48.133 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7746,7 +8518,7 @@
 			(uuid "75379724-215f-4580-a7a6-9d45eaf431fc")
 		)
 		(pin "RPM" input
-			(at 232.918 49.403 180)
+			(at 232.664 38.608 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7756,7 +8528,7 @@
 			(uuid "3db91f96-0c0c-4d73-83a8-d2e197cedc8b")
 		)
 		(pin "Fuel" input
-			(at 232.918 52.578 180)
+			(at 232.664 41.783 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7766,7 +8538,7 @@
 			(uuid "90a49b44-48f5-4b63-8b82-6495e5676763")
 		)
 		(pin "LIndicator" input
-			(at 232.918 62.103 180)
+			(at 232.664 51.308 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7776,7 +8548,7 @@
 			(uuid "48053e01-3890-4657-ac0f-1d1bda64d140")
 		)
 		(pin "Button2" input
-			(at 232.918 73.279 180)
+			(at 232.664 62.484 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7786,7 +8558,7 @@
 			(uuid "7c720e64-022e-4e72-92ab-76b6382f700f")
 		)
 		(pin "Button1" input
-			(at 232.918 70.231 180)
+			(at 232.664 59.436 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7796,7 +8568,7 @@
 			(uuid "4e1ed11d-1654-42eb-89dd-726f134376c7")
 		)
 		(pin "Button3" input
-			(at 232.918 76.327 180)
+			(at 232.664 65.532 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7804,6 +8576,26 @@
 				(justify left)
 			)
 			(uuid "686ceff5-1c5b-40d0-af7e-07e77b2c42cf")
+		)
+		(pin "TEMP1" input
+			(at 232.664 69.088 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "4df9a93f-d6a9-43d2-88e0-d972dc680e15")
+		)
+		(pin "TEMP2" input
+			(at 232.664 72.136 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "797afebc-f2ca-4187-ace8-ecfacf4cda69")
 		)
 		(instances
 			(project "Leiterkarte-v2"
