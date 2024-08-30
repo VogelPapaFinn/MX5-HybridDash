@@ -6517,7 +6517,7 @@
 			(uuid "7ca24613-97ba-487e-886c-c5b1994cb9cc")
 		)
 		(instances
-			(project ""
+			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/387d92f2-3727-45df-9c4d-1355459e23fb"
 					(reference "R3")
 					(unit 1)
