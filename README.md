@@ -59,7 +59,7 @@ Below I will list them and give some brief information about them and their cont
 
 ## 3D Models & Additional Information
 
-I designed the display mounts myself with the free-to-use websoftware "OnShape". You can find the 3D model [here](https://cad.onshape.com/documents/50b49191cc752dd48476ad6c/w/cd37246bc06e50997fb58f3e/e/8721c543b44dadc1db72a7b4?renderMode=0&uiState=66bccf20e3fceb7d01428e52). I modeled some sort of cover for the displays so they blend in with the black housing of the cluster better. I dont have a version yet I am satisfied with therefore I cant present one here yet!
+I designed the display mounts myself with the free-to-use websoftware "OnShape". You can find the 3D model [here](https://cad.onshape.com/documents/e7f03f8bc2dd589c93d10406/w/4d8f17b09202eb8b20daf352/e/a5ddfcce33940dbfa6af1e26?renderMode=0&uiState=66dc995cdcc2976b5f7d5d22). In this OnShape project you can find the bracket and a "cover" which is glued to the top of it. Note: Im not satisfied with it being glued but at the moment I do not have an alternative solution.
 
 Below I will "dump" some links to blogs, threads etc. which contain useful information I used:
 - [A thread](https://forum.miata.net/vb/showthread.php?t=780170) I created to gather information around this project.
