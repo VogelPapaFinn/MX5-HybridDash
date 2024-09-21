@@ -13349,15 +13349,15 @@
 			(roundrect_rratio 0.208333)
 			(uuid "3e173055-693b-4654-9961-1447f43b2ef1")
 		)
-		(model "${KICAD8_3DMODEL_DIR}/Connector_JST.3dshapes/JST_SH_BM02B-SRSS-TB_1x02-1MP_P1.00mm_Vertical.wrl"
+		(model "${KIPRJMOD}/JST-SH/BM02B-SRSS-TB -LF--SN---3DModel-STEP-56544.STEP"
 			(offset
-				(xyz 0 0 0)
+				(xyz 0 1 0)
 			)
 			(scale
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 0)
+				(xyz -90 0 0)
 			)
 		)
 	)
