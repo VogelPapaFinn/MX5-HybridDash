@@ -1,0 +1,44 @@
+cal-chip
+epcos
+TDK Electronics
+KEMET
+KYOCERA AVX
+Murata
+NTE
+PANASONIC
+Rohm
+Samsung
+Stackpole
+Taiyo Yuden
+TE
+Venkel
+Viking Tech
+Vishay
+Wurth
+Yagei
+Allegro
+Analog Devices
+Broadcom
+Diodes Incorporated
+Diotec
+Fairchild
+Honeywell
+Infineon
+Linear Technology
+Microchip
+Microsemi
+Monolithic Power Systems
+National Semiconductor
+Motorola
+Nexperia
+NXP
+onsemi
+Parallax
+Renesas
+Rochester Electronics
+Sanken
+Sanyo
+Sharp
+STMicroelectronics
+Texas Instruments/TI
+Toshiba
