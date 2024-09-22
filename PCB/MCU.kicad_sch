@@ -7417,7 +7417,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "78b2d5ba-eeb0-44e0-a73c-772f3f3c37a2")
-		(property "Reference" "#PWR046"
+		(property "Reference" "#PWR045"
 			(at 233.426 28.194 0)
 			(effects
 				(font
@@ -7468,7 +7468,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/387d92f2-3727-45df-9c4d-1355459e23fb"
-					(reference "#PWR046")
+					(reference "#PWR045")
 					(unit 1)
 				)
 			)
@@ -7926,7 +7926,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8b69b61a-7183-40e3-a2a8-d5a4503fe5d7")
-		(property "Reference" "#PWR044"
+		(property "Reference" "#PWR046"
 			(at 221.488 70.866 0)
 			(effects
 				(font
@@ -7977,7 +7977,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/387d92f2-3727-45df-9c4d-1355459e23fb"
-					(reference "#PWR044")
+					(reference "#PWR046")
 					(unit 1)
 				)
 			)
@@ -8706,7 +8706,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "bd48465b-1b8a-4905-918e-d54999e3e42a")
-		(property "Reference" "#PWR045"
+		(property "Reference" "#PWR044"
 			(at 223.266 25.654 0)
 			(effects
 				(font
@@ -8756,7 +8756,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/387d92f2-3727-45df-9c4d-1355459e23fb"
-					(reference "#PWR045")
+					(reference "#PWR044")
 					(unit 1)
 				)
 			)

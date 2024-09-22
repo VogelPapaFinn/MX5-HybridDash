@@ -3910,6 +3910,16 @@
 	)
 	(wire
 		(pts
+			(xy 125.984 70.612) (xy 125.984 69.088)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "194b4c7f-6dbc-4e3b-bb53-0e10f1b166e3")
+	)
+	(wire
+		(pts
 			(xy 85.344 44.958) (xy 97.536 44.958)
 		)
 		(stroke
@@ -4070,6 +4080,16 @@
 	)
 	(wire
 		(pts
+			(xy 127.508 72.39) (xy 127.508 70.612)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "38639609-d845-43bf-9fdd-744f77608743")
+	)
+	(wire
+		(pts
 			(xy 39.116 38.354) (xy 39.116 44.958)
 		)
 		(stroke
@@ -4127,6 +4147,16 @@
 			(type default)
 		)
 		(uuid "40a88993-c77b-47c6-9140-47f37789df9a")
+	)
+	(wire
+		(pts
+			(xy 121.666 70.612) (xy 121.666 72.39)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "425209fa-c44d-4932-b01e-05b211ee0edb")
 	)
 	(wire
 		(pts
@@ -4370,6 +4400,16 @@
 	)
 	(wire
 		(pts
+			(xy 123.444 69.088) (xy 123.444 70.612)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "75c77a77-989d-4b6e-9625-346c6b3fa812")
+	)
+	(wire
+		(pts
 			(xy 139.192 46.99) (xy 143.002 46.99)
 		)
 		(stroke
@@ -4507,6 +4547,16 @@
 			(type default)
 		)
 		(uuid "919db4df-5c25-42d8-9529-f323226cd9e0")
+	)
+	(wire
+		(pts
+			(xy 123.444 70.612) (xy 121.666 70.612)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "99d201dc-d625-47a6-9392-6f85fa1d5bbc")
 	)
 	(wire
 		(pts
@@ -4687,6 +4737,16 @@
 			(type default)
 		)
 		(uuid "c45172e5-15dc-414f-bccb-c239c68d5f01")
+	)
+	(wire
+		(pts
+			(xy 127.508 70.612) (xy 125.984 70.612)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c4d1dfc3-8e13-4618-97ba-3b5c979632d7")
 	)
 	(wire
 		(pts
@@ -6049,7 +6109,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "01af5535-e209-4a6d-81c1-bab20039eca7")
-		(property "Reference" "TEMP_S2"
+		(property "Reference" "TEMP_S1"
 			(at 23.114 109.982 90)
 			(effects
 				(font
@@ -6105,7 +6165,7 @@
 		(instances
 			(project ""
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "TEMP_S2")
+					(reference "TEMP_S1")
 					(unit 1)
 				)
 			)
@@ -6889,7 +6949,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "24707f32-bf7b-4c0b-adbf-21c611e01002")
-		(property "Reference" "TEMP_S1"
+		(property "Reference" "TEMP_S2"
 			(at 42.926 86.36 90)
 			(effects
 				(font
@@ -6944,7 +7004,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "TEMP_S1")
+					(reference "TEMP_S2")
 					(unit 1)
 				)
 			)
@@ -7088,73 +7148,6 @@
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
 					(reference "Fan1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x01_Pin")
-		(at 127.508 67.31 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "2586edfd-d072-455f-a505-1b89934aa140")
-		(property "Reference" "Speed+1"
-			(at 127.508 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "Conn_01x01_Pin"
-			(at 130.048 67.945 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
-			(at 127.508 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 127.508 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x01, script generated"
-			(at 127.508 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "8de9ebba-59b1-4855-b563-7bb828aa0a3b")
-		)
-		(instances
-			(project "Leiterkarte-v2"
-				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "Speed+1")
 					(unit 1)
 				)
 			)
@@ -8385,6 +8378,74 @@
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
 					(reference "Rspd1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:Conn_01x02_Pin")
+		(at 125.984 64.008 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6ccd808e-2c36-4c61-8c05-a98b25e955cb")
+		(property "Reference" "Speed1"
+			(at 124.714 62.992 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x02_Pin"
+			(at 129.032 64.643 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Connector_JST:JST_SH_BM02B-SRSS-TB_1x02-1MP_P1.00mm_Vertical"
+			(at 125.984 64.008 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 125.984 64.008 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x02, script generated"
+			(at 125.984 64.008 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "03e667a6-b504-4e94-891c-76af84f137bd")
+		)
+		(pin "1"
+			(uuid "0165dd8d-b63d-443c-b5fc-ec22bba7a785")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "Speed1")
 					(unit 1)
 				)
 			)
@@ -10066,73 +10127,6 @@
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
 					(reference "#PWR09")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x01_Pin")
-		(at 121.666 67.31 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d901f1cf-91b2-468d-9d6c-bd634db47dcb")
-		(property "Reference" "Speed-1"
-			(at 121.666 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "Conn_01x01_Pin"
-			(at 124.206 67.945 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
-			(at 121.666 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 121.666 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x01, script generated"
-			(at 121.666 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "c5800979-ef62-41e0-b463-7ee72ffd23e0")
-		)
-		(instances
-			(project "Leiterkarte-v2"
-				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "Speed-1")
 					(unit 1)
 				)
 			)
