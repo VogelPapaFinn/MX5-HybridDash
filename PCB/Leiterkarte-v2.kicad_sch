@@ -6189,7 +6189,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "330uF"
+		(property "Value" "220uF"
 			(at 104.394 38.608 0)
 			(effects
 				(font
@@ -6198,7 +6198,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+		(property "Footprint" "Capacitor_SMD:CP_Elec_6.3x5.9"
 			(at 105.3592 40.132 0)
 			(effects
 				(font
@@ -6347,7 +6347,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_0805_2012Metric"
+		(property "Footprint" "Diode_SMD:D_SMA"
 			(at 85.344 29.972 0)
 			(effects
 				(font
@@ -10527,7 +10527,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 119.888 76.2 90)
 			(effects
 				(font
@@ -10596,7 +10596,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 125.73 76.2 90)
 			(effects
 				(font

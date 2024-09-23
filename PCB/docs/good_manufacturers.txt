@@ -1,44 +1,44 @@
-cal-chip
-epcos
-TDK Electronics
-KEMET
-KYOCERA AVX
-Murata
-NTE
-PANASONIC
-Rohm
-Samsung
-Stackpole
-Taiyo Yuden
-TE
-Venkel
-Viking Tech
-Vishay
-Wurth
-Yagei
 Allegro
 Analog Devices
 Broadcom
+cal-chip
 Diodes Incorporated
 Diotec
+epcos
 Fairchild
 Honeywell
 Infineon
+KEMET
+KYOCERA AVX
 Linear Technology
 Microchip
 Microsemi
 Monolithic Power Systems
-National Semiconductor
 Motorola
+Murata
+National Semiconductor
 Nexperia
+NTE
 NXP
 onsemi
+PANASONIC
 Parallax
 Renesas
 Rochester Electronics
+Rohm
+Samsung
 Sanken
 Sanyo
 Sharp
+Stackpole
 STMicroelectronics
+Taiyo Yuden
+TDK Electronics
+TE
 Texas Instruments/TI
 Toshiba
+Venkel
+Viking Tech
+Vishay
+Wurth
+Yageo
