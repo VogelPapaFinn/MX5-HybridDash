@@ -6,4 +6,6 @@
   (lib (name "NCV33269DTRK3.3G")(type "KiCad")(uri "${KIPRJMOD}/NCV33269DTRK3.3G")(options "")(descr "  IC REG LINEAR 3.3V 800MA DPAK"))
   (lib (name "Images")(type "KiCad")(uri "C:/Users/finng/Documents/MX5-HybridDash/PCB/Images")(options "")(descr "Images"))
   (lib (name "SPM6530T")(type "KiCad")(uri "${KIPRJMOD}/SPM6530T")(options "")(descr "SPM6530T"))
+  (lib (name "button")(type "KiCad")(uri "${KIPRJMOD}/button")(options "")(descr ""))
+  (lib (name "USB-C 2.0")(type "KiCad")(uri "${KIPRJMOD}/USB-C")(options "")(descr ""))
 )
