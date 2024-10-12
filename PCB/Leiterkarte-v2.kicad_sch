@@ -2128,7 +2128,7 @@
 				)
 			)
 		)
-		(symbol "NCV33269DTRK3.3G:NCV33269DTRK3.3G"
+		(symbol "Regulator_Linear:LD39150DT33"
 			(pin_names
 				(offset 0.254)
 			)
@@ -2136,43 +2136,24 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "U"
-				(at 22.86 10.16 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-				)
-			)
-			(property "Value" "NCV33269DTRK3.3G"
-				(at 22.86 7.62 0)
-				(effects
-					(font
-						(size 1.524 1.524)
-					)
-				)
-			)
-			(property "Footprint" "DPAK-3_ONS"
-				(at 0 0 0)
+				(at -3.81 3.175 0)
 				(effects
 					(font
 						(size 1.27 1.27)
-						(italic yes)
 					)
-					(hide yes)
 				)
 			)
-			(property "Datasheet" "NCV33269DTRK3.3G"
-				(at 0 0 0)
+			(property "Value" "LD39150DT33"
+				(at 0 3.175 0)
 				(effects
 					(font
 						(size 1.27 1.27)
-						(italic yes)
 					)
-					(hide yes)
+					(justify left)
 				)
 			)
-			(property "Description" ""
-				(at 0 0 0)
+			(property "Footprint" "Package_TO_SOT_SMD:TO-252-3_TabPin2"
+				(at 0 5.08 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -2180,15 +2161,16 @@
 					(hide yes)
 				)
 			)
-			(property "ki_locked" ""
-				(at 0 0 0)
+			(property "Datasheet" "https://www.st.com/resource/en/datasheet/ld39150.pdf"
+				(at 2.54 -6.35 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
-			(property "ki_keywords" "NCV33269DTRK3.3G"
+			(property "Description" "1.5A Ultra Low Dropout regulator, positive, 3.3V fixed output, TO-252"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2197,7 +2179,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "DPAK-3_ONS DPAK-3_ONS-M DPAK-3_ONS-L"
+			(property "ki_keywords" "linear regulator ldo fixed positive"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2206,59 +2188,33 @@
 					(hide yes)
 				)
 			)
-			(symbol "NCV33269DTRK3.3G_0_1"
-				(polyline
-					(pts
-						(xy 7.62 -7.62) (xy 38.1 -7.62)
+			(property "ki_fp_filters" "TO?252*TabPin2*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
 					)
+					(hide yes)
+				)
+			)
+			(symbol "LD39150DT33_0_1"
+				(rectangle
+					(start -5.08 -5.08)
+					(end 5.08 1.905)
 					(stroke
-						(width 0.127)
+						(width 0.254)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type background)
 					)
 				)
-				(polyline
-					(pts
-						(xy 7.62 5.08) (xy 7.62 -7.62)
-					)
-					(stroke
-						(width 0.127)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 38.1 -7.62) (xy 38.1 5.08)
-					)
-					(stroke
-						(width 0.127)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 38.1 5.08) (xy 7.62 5.08)
-					)
-					(stroke
-						(width 0.127)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin bidirectional line
-					(at 0 0 0)
-					(length 7.62)
-					(name "GND/ADJ"
+			)
+			(symbol "LD39150DT33_1_1"
+				(pin power_in line
+					(at -7.62 0 0)
+					(length 2.54)
+					(name "VI"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2273,12 +2229,10 @@
 						)
 					)
 				)
-			)
-			(symbol "NCV33269DTRK3.3G_1_1"
-				(pin power_out line
-					(at 45.72 -2.54 180)
-					(length 7.62)
-					(name "VOUT"
+				(pin power_in line
+					(at 0 -7.62 90)
+					(length 2.54)
+					(name "GND"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2293,10 +2247,10 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at 45.72 0 180)
-					(length 7.62)
-					(name "VIN"
+				(pin power_out line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "VO"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3669,22 +3623,10 @@
 		(uuid "020b5f2d-8520-40a0-a8ac-a35dd5c6e6b6")
 	)
 	(junction
-		(at 93.98 67.31)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "02656ce9-9ac9-4194-81f1-aaf6c4dba14e")
-	)
-	(junction
 		(at 34.29 96.774)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "040044df-9e14-41f4-99f6-2b76a6f7a071")
-	)
-	(junction
-		(at 41.91 64.77)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "2e3040a3-48f2-44ed-b141-e28eed9dd145")
 	)
 	(junction
 		(at 143.002 35.052)
@@ -3783,6 +3725,12 @@
 		(uuid "9f4fd2c8-9ded-48aa-8e17-ece831ecb7ea")
 	)
 	(junction
+		(at 79.502 68.326)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a289735e-3d54-4847-82ca-0531872c9bb7")
+	)
+	(junction
 		(at 188.976 73.66)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3813,16 +3761,16 @@
 		(uuid "e3998aac-52eb-4f1f-a992-232df4788a04")
 	)
 	(junction
-		(at 41.91 67.31)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "e4fb7a92-b22c-472a-92fc-31f323287d7b")
-	)
-	(junction
 		(at 104.394 26.162)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f07afe03-9b8b-4901-ad43-81b4bd064f92")
+	)
+	(junction
+		(at 57.404 68.326)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f3be3b50-c595-4eb0-9b1d-0cd60ae7e002")
 	)
 	(junction
 		(at 85.344 26.162)
@@ -3930,13 +3878,13 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 67.31) (xy 92.71 67.31)
+			(xy 57.404 72.644) (xy 57.404 68.326)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "1bdfac30-6760-4572-aeb9-4c4953d7b784")
+		(uuid "1a27ff51-a458-4818-a5b1-71856e5a8c78")
 	)
 	(wire
 		(pts
@@ -4020,16 +3968,6 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 74.93) (xy 93.98 67.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2f5eac64-eaa0-46a6-8fc3-c34e37666b97")
-	)
-	(wire
-		(pts
 			(xy 97.536 27.432) (xy 97.536 26.162)
 		)
 		(stroke
@@ -4110,16 +4048,6 @@
 	)
 	(wire
 		(pts
-			(xy 41.91 64.77) (xy 46.99 64.77)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3eddf69d-3cf3-4e02-bac6-5a2965c02eee")
-	)
-	(wire
-		(pts
 			(xy 149.606 78.74) (xy 136.398 78.74)
 		)
 		(stroke
@@ -4160,16 +4088,6 @@
 	)
 	(wire
 		(pts
-			(xy 41.91 74.93) (xy 93.98 74.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "42f3efb5-9fdd-41dc-bd72-0969a81a5e13")
-	)
-	(wire
-		(pts
 			(xy 51.562 96.774) (xy 60.706 96.774)
 		)
 		(stroke
@@ -4177,16 +4095,6 @@
 			(type default)
 		)
 		(uuid "432bbe79-8fb8-4584-a7a3-14afcfa24b61")
-	)
-	(wire
-		(pts
-			(xy 41.91 57.15) (xy 93.98 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "46dffd54-f99f-4314-84d4-f50760708b78")
 	)
 	(wire
 		(pts
@@ -4207,6 +4115,16 @@
 			(type default)
 		)
 		(uuid "4901acfa-9b2f-4a19-aede-f30f0ee09145")
+	)
+	(wire
+		(pts
+			(xy 79.502 68.326) (xy 75.438 68.326)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4a32b8c8-6532-4437-824d-b1a93de06ba5")
 	)
 	(wire
 		(pts
@@ -4450,16 +4368,6 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 57.15) (xy 93.98 67.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8219912f-d0cf-4cdf-ab78-4b773de63a35")
-	)
-	(wire
-		(pts
 			(xy 81.534 31.242) (xy 81.534 26.162)
 		)
 		(stroke
@@ -4560,13 +4468,13 @@
 	)
 	(wire
 		(pts
-			(xy 36.83 67.31) (xy 41.91 67.31)
+			(xy 79.502 72.644) (xy 79.502 68.326)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "a2460c13-0073-49ff-8a7a-87453a3bd095")
+		(uuid "9f493028-0efa-4a24-b1a1-0b055de8baac")
 	)
 	(wire
 		(pts
@@ -4680,16 +4588,6 @@
 	)
 	(wire
 		(pts
-			(xy 36.83 64.77) (xy 41.91 64.77)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b86c690f-d0a8-4712-b902-b9b8ce412839")
-	)
-	(wire
-		(pts
 			(xy 179.578 35.052) (xy 180.848 35.052)
 		)
 		(stroke
@@ -4770,16 +4668,6 @@
 	)
 	(wire
 		(pts
-			(xy 41.91 67.31) (xy 46.99 67.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c992bd84-bf1e-443e-ba8c-0a53ff250f76")
-	)
-	(wire
-		(pts
 			(xy 238.252 101.6) (xy 242.316 101.6)
 		)
 		(stroke
@@ -4787,6 +4675,16 @@
 			(type default)
 		)
 		(uuid "c99591fc-9771-41b1-8fa2-581f2cd1ba40")
+	)
+	(wire
+		(pts
+			(xy 57.404 68.326) (xy 60.198 68.326)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ca83160b-fa0e-4e23-9282-aaa02453bda1")
 	)
 	(wire
 		(pts
@@ -4897,16 +4795,6 @@
 			(type default)
 		)
 		(uuid "ded62aac-dfb5-48d5-af4c-3cac26425268")
-	)
-	(wire
-		(pts
-			(xy 93.98 67.31) (xy 95.25 67.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e009f44a-47ba-4c3d-b553-85ff5ca4c07d")
 	)
 	(wire
 		(pts
@@ -5078,7 +4966,7 @@
 	)
 	(rectangle
 		(start 19.812 83.82)
-		(end 67.31 119.634)
+		(end 63.5 116.332)
 		(stroke
 			(width 0)
 			(type default)
@@ -5364,7 +5252,7 @@
 		)
 		(uuid "3f5af2af-5d58-4ac9-9ec3-c79988696aff")
 	)
-	(text "VIN: 5V 1.5A ; VOUT: 3.3V 0.8A"
+	(text "VIN: 5V 1.5A ; VOUT: 3.3V 1.5A"
 		(exclude_from_sim no)
 		(at 20.574 78.994 0)
 		(effects
@@ -6109,7 +5997,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "01af5535-e209-4a6d-81c1-bab20039eca7")
-		(property "Reference" "TEMP_S1"
+		(property "Reference" "TEMP_S2"
 			(at 23.114 109.982 90)
 			(effects
 				(font
@@ -6165,7 +6053,7 @@
 		(instances
 			(project ""
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "TEMP_S1")
+					(reference "TEMP_S2")
 					(unit 1)
 				)
 			)
@@ -6485,7 +6373,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "0c9c7286-08e4-4738-843f-c7d968c3965b")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR012"
 			(at 131.572 22.86 0)
 			(effects
 				(font
@@ -6536,7 +6424,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR013")
+					(reference "#PWR012")
 					(unit 1)
 				)
 			)
@@ -6610,73 +6498,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
-		(at 36.83 62.23 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "12ec3cf2-e445-46cb-aae5-8680b8878f19")
-		(property "Reference" "#PWR04"
-			(at 40.64 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3.3V"
-			(at 32.512 62.2299 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 36.83 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 36.83 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 36.83 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "d24fff15-41c3-4fbe-a3c8-08f83b5233ff")
-		)
-		(instances
-			(project "Leiterkarte-v2"
-				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR04")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 189.738 46.99 90)
 		(unit 1)
@@ -6685,7 +6506,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "16a923fc-ca4d-4851-9dee-ede84dfe710b")
-		(property "Reference" "#PWR022"
+		(property "Reference" "#PWR021"
 			(at 196.088 46.99 0)
 			(effects
 				(font
@@ -6736,7 +6557,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR022")
+					(reference "#PWR021")
 					(unit 1)
 				)
 			)
@@ -6768,7 +6589,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad"
 			(at 26.416 26.162 0)
 			(effects
 				(font
@@ -6949,7 +6770,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "24707f32-bf7b-4c0b-adbf-21c611e01002")
-		(property "Reference" "TEMP_S2"
+		(property "Reference" "TEMP_S1"
 			(at 42.926 86.36 90)
 			(effects
 				(font
@@ -7004,7 +6825,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "TEMP_S2")
+					(reference "TEMP_S1")
 					(unit 1)
 				)
 			)
@@ -7229,7 +7050,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "2a62a908-5e4a-41b4-ba60-6ee1faf6547e")
-		(property "Reference" "#PWR019"
+		(property "Reference" "#PWR018"
 			(at 188.976 77.47 0)
 			(effects
 				(font
@@ -7280,7 +7101,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR019")
+					(reference "#PWR018")
 					(unit 1)
 				)
 			)
@@ -7354,36 +7175,16 @@
 		)
 	)
 	(symbol
-		(lib_name "C_1")
-		(lib_id "Device:C")
-		(at 41.91 60.96 0)
+		(lib_id "power:GND")
+		(at 67.818 60.706 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "356a4870-b873-4b04-9469-bdf56ea9457a")
-		(property "Reference" "Cout1"
-			(at 41.91 58.928 0)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10uF"
-			(at 41.91 62.992 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
-			(at 42.8752 64.77 0)
+		(uuid "3031ebd9-c75e-4706-9570-5269ae69e970")
+		(property "Reference" "#PWR09"
+			(at 67.818 54.356 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7391,69 +7192,17 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
-			(at 41.91 60.96 0)
+		(property "Value" "GND"
+			(at 67.818 58.166 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 41.91 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "616cf6c4-cfee-4203-aea8-77064521d80a")
-		)
-		(pin "1"
-			(uuid "92ab4c06-003e-4389-82d6-0710b985f470")
-		)
-		(instances
-			(project "Leiterkarte-v2"
-				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "Cout1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:PWR_FLAG")
-		(at 36.83 62.23 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "35a2446b-5a44-4a30-bb9c-99f77c9d35c7")
-		(property "Reference" "#FLG03"
-			(at 38.735 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "PWR_FLAG"
-			(at 32.004 60.198 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
+				(justify right)
 			)
 		)
 		(property "Footprint" ""
-			(at 36.83 62.23 0)
+			(at 67.818 60.706 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7461,8 +7210,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
-			(at 36.83 62.23 0)
+		(property "Datasheet" ""
+			(at 67.818 60.706 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7470,8 +7219,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 36.83 62.23 0)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 67.818 60.706 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7480,12 +7229,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "ec05187f-a6be-4cd2-aebd-23b246da36b0")
+			(uuid "89562518-a73a-4d2a-949c-9d3f52ed5cca")
 		)
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#FLG03")
+					(reference "#PWR09")
 					(unit 1)
 				)
 			)
@@ -7584,7 +7333,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad"
 			(at 26.416 44.958 0)
 			(effects
 				(font
@@ -7715,6 +7464,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 57.404 60.706 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "413317da-39fe-4fed-990e-433624adc48d")
+		(property "Reference" "#PWR054"
+			(at 57.404 54.356 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 57.404 58.166 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 57.404 60.706 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 57.404 60.706 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 57.404 60.706 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0dc7a351-b0a4-4c12-b03a-7a58aff2d01f")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "#PWR054")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 175.768 22.86 90)
 		(unit 1)
@@ -7790,7 +7605,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4797af06-cf67-4a7b-a680-ee7e19dff347")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR013"
 			(at 131.572 35.052 0)
 			(effects
 				(font
@@ -7841,7 +7656,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR014")
+					(reference "#PWR013")
 					(unit 1)
 				)
 			)
@@ -7991,7 +7806,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "545b07c7-86f1-4e71-81fd-32bad5c370a6")
-		(property "Reference" "#PWR025"
+		(property "Reference" "#PWR024"
 			(at 221.488 69.596 0)
 			(effects
 				(font
@@ -8042,7 +7857,73 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR025")
+					(reference "#PWR024")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 79.502 72.644 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "579c5d29-6518-4127-aaeb-7bfbdfe5cd30")
+		(property "Reference" "#PWR05"
+			(at 79.502 68.834 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 79.502 75.438 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 79.502 72.644 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 79.502 72.644 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 79.502 72.644 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "05a6c0e2-0e6a-45ad-a431-d57d3b0144b9")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
@@ -8057,7 +7938,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "59e23ccf-b293-4051-ab97-23002e12ea48")
-		(property "Reference" "#PWR023"
+		(property "Reference" "#PWR022"
 			(at 211.328 101.6 0)
 			(effects
 				(font
@@ -8108,7 +7989,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR023")
+					(reference "#PWR022")
 					(unit 1)
 				)
 			)
@@ -8190,7 +8071,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "67a38f02-80a7-4ffe-b28d-5f90d2642be5")
-		(property "Reference" "#PWR028"
+		(property "Reference" "#PWR027"
 			(at 255.524 91.44 0)
 			(effects
 				(font
@@ -8241,142 +8122,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR028")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 41.91 71.12 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "687ac8ad-ba03-4f73-b561-215a244a2405")
-		(property "Reference" "Cin2"
-			(at 41.91 69.342 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22uF"
-			(at 41.91 73.152 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
-			(at 42.8752 74.93 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 41.91 71.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 41.91 71.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "42eebc9c-d4d8-44c6-bafe-0891e678186f")
-		)
-		(pin "1"
-			(uuid "18e7a74f-ce4c-46bc-911c-1970b0c081ba")
-		)
-		(instances
-			(project "Leiterkarte-v2"
-				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "Cin2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
-		(at 36.83 67.31 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "694db886-df7e-4f7b-a958-b20ceaba6064")
-		(property "Reference" "#PWR06"
-			(at 40.64 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 34.036 67.31 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 36.83 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 36.83 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 36.83 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "742bb900-fb91-4015-b78a-1d2fc8a1561b")
-		)
-		(instances
-			(project "Leiterkarte-v2"
-				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR06")
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -8593,7 +8339,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "79a59656-3e23-46e4-82b6-ce13c3b62183")
-		(property "Reference" "#FLG04"
+		(property "Reference" "#FLG03"
 			(at 105.791 23.368 0)
 			(effects
 				(font
@@ -8645,7 +8391,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#FLG04")
+					(reference "#FLG03")
 					(unit 1)
 				)
 			)
@@ -8660,7 +8406,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "7a285ec3-b62d-4b1c-b0d1-01265dc6c31e")
-		(property "Reference" "#PWR026"
+		(property "Reference" "#PWR025"
 			(at 221.488 72.136 0)
 			(effects
 				(font
@@ -8711,7 +8457,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR026")
+					(reference "#PWR025")
 					(unit 1)
 				)
 			)
@@ -8801,7 +8547,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "83c250cc-66f3-4d60-80cf-6658dfc8b999")
-		(property "Reference" "#PWR08"
+		(property "Reference" "#PWR07"
 			(at 39.116 51.308 0)
 			(effects
 				(font
@@ -8852,7 +8598,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR08")
+					(reference "#PWR07")
 					(unit 1)
 				)
 			)
@@ -8867,7 +8613,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "86915499-b293-4f84-a55b-186025ae33f1")
-		(property "Reference" "#PWR011"
+		(property "Reference" "#PWR010"
 			(at 103.886 23.368 0)
 			(effects
 				(font
@@ -8918,7 +8664,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR011")
+					(reference "#PWR010")
 					(unit 1)
 				)
 			)
@@ -8926,15 +8672,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 95.25 67.31 90)
+		(at 79.502 60.706 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "8f140b90-9c0c-4b3f-bf99-e9a0f42e77e2")
-		(property "Reference" "#PWR010"
-			(at 101.6 67.31 0)
+		(uuid "8927d159-0bef-4563-afcd-bda14f9a9a3f")
+		(property "Reference" "#PWR055"
+			(at 79.502 54.356 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8943,7 +8689,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 97.79 67.31 90)
+			(at 79.502 58.166 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8952,7 +8698,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 95.25 67.31 0)
+			(at 79.502 60.706 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8961,7 +8707,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 95.25 67.31 0)
+			(at 79.502 60.706 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8970,7 +8716,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 95.25 67.31 0)
+			(at 79.502 60.706 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8979,12 +8725,81 @@
 			)
 		)
 		(pin "1"
-			(uuid "2ea28520-9684-49a6-bd78-b67117224e1a")
+			(uuid "71cc5130-0379-4da1-a4b6-1c61d373af41")
 		)
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR010")
+					(reference "#PWR055")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 57.404 64.516 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8953f853-e2ce-4996-b152-dd3e73050aab")
+		(property "Reference" "Cout1"
+			(at 57.404 66.802 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "22uF"
+			(at 57.404 62.484 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 56.4388 60.706 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 57.404 64.516 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 57.404 64.516 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "6b69cf9e-0e9c-466a-8633-29ecb4d254dc")
+		)
+		(pin "1"
+			(uuid "d5fca51a-0f67-49c2-9d38-c7a163f12093")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "Cout1")
 					(unit 1)
 				)
 			)
@@ -9125,79 +8940,6 @@
 		)
 	)
 	(symbol
-		(lib_id "NCV33269DTRK3.3G:NCV33269DTRK3.3G")
-		(at 92.71 67.31 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "9c95011f-44f4-4621-a609-ea31cfd26169")
-		(property "Reference" "3.3V1"
-			(at 54.61 58.674 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "NCV33269DTRK3.3G"
-			(at 73.914 73.66 0)
-			(effects
-				(font
-					(size 1.524 1.524)
-				)
-			)
-		)
-		(property "Footprint" "NCV33269DTRK3.3G:DPAK-3_ONS-M"
-			(at 92.71 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "NCV33269DTRK3.3G"
-			(at 92.71 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 92.71 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "3"
-			(uuid "72b50d0d-4443-49f9-b3fe-2b0f745f18d8")
-		)
-		(pin "2"
-			(uuid "e886e97e-6c4c-47a3-be1d-8bad69821377")
-		)
-		(pin "1"
-			(uuid "4236c3fb-b3cf-435c-80d0-252f6fcc53c7")
-		)
-		(instances
-			(project "Leiterkarte-v2"
-				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "3.3V1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 39.116 34.544 0)
 		(unit 1)
@@ -9275,7 +9017,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a2a7c5d9-9588-457d-beed-6e95fa5f9baa")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR011"
 			(at 103.886 26.162 0)
 			(effects
 				(font
@@ -9326,7 +9068,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR012")
+					(reference "#PWR011")
 					(unit 1)
 				)
 			)
@@ -9341,7 +9083,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a4285cd9-c271-4b3c-a56d-f8b716ad9824")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR014"
 			(at 131.572 46.99 0)
 			(effects
 				(font
@@ -9392,7 +9134,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR015")
+					(reference "#PWR014")
 					(unit 1)
 				)
 			)
@@ -9400,16 +9142,15 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 36.83 64.77 90)
+		(at 57.404 72.644 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a5d2f739-898c-417f-a802-c25ff989be5a")
-		(property "Reference" "#PWR05"
-			(at 40.64 64.77 0)
+		(uuid "b15b84c4-de10-4607-b395-df8e4326393f")
+		(property "Reference" "#PWR04"
+			(at 57.404 68.834 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9418,7 +9159,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 32.512 64.7699 90)
+			(at 60.452 76.454 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9427,7 +9168,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 36.83 64.77 0)
+			(at 57.404 72.644 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9436,7 +9177,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 36.83 64.77 0)
+			(at 57.404 72.644 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9445,7 +9186,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 36.83 64.77 0)
+			(at 57.404 72.644 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9454,12 +9195,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "d166e831-1972-4d71-ae2d-527675da2904")
+			(uuid "bb8de76a-ffe5-47e5-9e14-132c695ee68e")
 		)
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR05")
+					(reference "#PWR04")
 					(unit 1)
 				)
 			)
@@ -9474,7 +9215,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b1f95bf7-b7ec-4876-9f5f-66b6773fb0dc")
-		(property "Reference" "#PWR018"
+		(property "Reference" "#PWR017"
 			(at 183.388 68.58 0)
 			(effects
 				(font
@@ -9525,7 +9266,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR018")
+					(reference "#PWR017")
 					(unit 1)
 				)
 			)
@@ -9540,7 +9281,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b25a475d-24e1-44b6-849d-f1cf5b958907")
-		(property "Reference" "#PWR020"
+		(property "Reference" "#PWR019"
 			(at 196.088 22.86 0)
 			(effects
 				(font
@@ -9591,7 +9332,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR020")
+					(reference "#PWR019")
 					(unit 1)
 				)
 			)
@@ -9673,7 +9414,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "be915be8-7754-409c-adb0-13e824c5b7be")
-		(property "Reference" "#PWR024"
+		(property "Reference" "#PWR023"
 			(at 221.488 67.056 0)
 			(effects
 				(font
@@ -9724,7 +9465,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR024")
+					(reference "#PWR023")
 					(unit 1)
 				)
 			)
@@ -9739,7 +9480,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "c1692292-132f-4e60-8d32-895a61538caa")
-		(property "Reference" "#PWR016"
+		(property "Reference" "#PWR015"
 			(at 141.478 73.66 0)
 			(effects
 				(font
@@ -9790,7 +9531,78 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR016")
+					(reference "#PWR015")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_name "C_1")
+		(lib_id "Device:C")
+		(at 79.502 64.516 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c182e82e-177e-4635-8704-760d29ae390d")
+		(property "Reference" "Cin2"
+			(at 79.502 66.548 0)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10uF"
+			(at 79.502 62.484 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 78.5368 60.706 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 79.502 64.516 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 79.502 64.516 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "cb1fa7a2-41c5-493f-b20f-96f9df717298")
+		)
+		(pin "1"
+			(uuid "27532858-fed6-48cb-a366-ce2d635bcc43")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "Cin2")
 					(unit 1)
 				)
 			)
@@ -9874,7 +9686,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ca314e0c-80dc-415a-aff2-149a9bb706dc")
-		(property "Reference" "#PWR07"
+		(property "Reference" "#PWR06"
 			(at 39.116 29.972 0)
 			(effects
 				(font
@@ -9925,7 +9737,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR07")
+					(reference "#PWR06")
 					(unit 1)
 				)
 			)
@@ -10075,7 +9887,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d8b460d4-999a-4ae2-b272-6c38e85343cc")
-		(property "Reference" "#PWR09"
+		(property "Reference" "#PWR08"
 			(at 51.562 94.234 0)
 			(effects
 				(font
@@ -10126,7 +9938,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR09")
+					(reference "#PWR08")
 					(unit 1)
 				)
 			)
@@ -10310,7 +10122,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "de19d528-7f74-4243-a4a1-3f6c49227128")
-		(property "Reference" "#PWR017"
+		(property "Reference" "#PWR016"
 			(at 141.478 85.09 0)
 			(effects
 				(font
@@ -10361,7 +10173,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR017")
+					(reference "#PWR016")
 					(unit 1)
 				)
 			)
@@ -10376,7 +10188,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e1e3cf77-2710-439d-9c49-c7313f586f58")
-		(property "Reference" "#PWR021"
+		(property "Reference" "#PWR020"
 			(at 196.088 35.052 0)
 			(effects
 				(font
@@ -10427,7 +10239,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR021")
+					(reference "#PWR020")
 					(unit 1)
 				)
 			)
@@ -10730,7 +10542,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Fuse:Fuse_0603_1608Metric"
+		(property "Footprint" "Fuse:0458Series_LTF-M"
 			(at 35.306 27.94 90)
 			(effects
 				(font
@@ -10781,7 +10593,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f806c7a7-4a38-4410-8ae2-4ca44aa12e47")
-		(property "Reference" "#PWR027"
+		(property "Reference" "#PWR026"
 			(at 248.666 101.6 0)
 			(effects
 				(font
@@ -10832,7 +10644,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
-					(reference "#PWR027")
+					(reference "#PWR026")
 					(unit 1)
 				)
 			)
@@ -10899,6 +10711,78 @@
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
 					(reference "#PWR01")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Regulator_Linear:LD39150DT33")
+		(at 67.818 68.326 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "fafba1f6-943f-457c-a46b-2e60b31e0146")
+		(property "Reference" "3.3V1"
+			(at 70.612 71.374 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "LD39150DT33"
+			(at 96.774 68.326 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:TO-252-3_TabPin2"
+			(at 67.818 73.406 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.st.com/resource/en/datasheet/ld39150.pdf"
+			(at 65.278 61.976 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "1.5A Ultra Low Dropout regulator, positive, 3.3V fixed output, TO-252"
+			(at 67.818 68.326 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c99d8a84-e66e-4e6c-aa9e-e53f4e6ecd95")
+		)
+		(pin "2"
+			(uuid "22846814-7c59-4ca7-b0f0-f4add6d2f4a4")
+		)
+		(pin "3"
+			(uuid "beef69b3-604f-4151-b7b0-8d5e0fcf8157")
+		)
+		(instances
+			(project ""
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c"
+					(reference "3.3V1")
 					(unit 1)
 				)
 			)
