@@ -6,5 +6,4 @@
   (lib (name "SPM6530T")(type "KiCad")(uri "${KIPRJMOD}/SPM6530T")(options "")(descr "SPM6530T"))
   (lib (name "button")(type "KiCad")(uri "${KIPRJMOD}/button")(options "")(descr ""))
   (lib (name "USB-C 2.0")(type "KiCad")(uri "${KIPRJMOD}/USB-C")(options "")(descr ""))
-  (lib (name "Fuse")(type "KiCad")(uri "${KIPRJMOD}/Fuse")(options "")(descr ""))
 )

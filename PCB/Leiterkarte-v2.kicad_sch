@@ -10534,7 +10534,7 @@
 				)
 			)
 		)
-		(property "Value" "1.5A"
+		(property "Value" "2A"
 			(at 35.306 27.94 90)
 			(effects
 				(font
@@ -10542,7 +10542,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Fuse:0458Series_LTF-M"
+		(property "Footprint" "Fuse:Fuse_1206_3216Metric"
 			(at 35.306 27.94 90)
 			(effects
 				(font
