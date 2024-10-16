@@ -2833,10 +2833,6 @@
 		(uuid "885b3ed3-9d55-4d52-a40b-7a2696aa3fe5")
 	)
 	(no_connect
-		(at 99.06 67.31)
-		(uuid "9c925b73-3429-4103-b5c8-87ec574ca3fc")
-	)
-	(no_connect
 		(at 164.846 46.482)
 		(uuid "b633cd19-edbe-4d6d-843e-df76f8a79e18")
 	)
@@ -4185,6 +4181,18 @@
 		)
 		(uuid "05da77e7-d078-4372-906d-07a18a5f7ea0")
 	)
+	(hierarchical_label "Button3"
+		(shape input)
+		(at 99.06 67.31 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "34bb58a8-8a8d-4b8e-a97d-38883754bace")
+	)
 	(hierarchical_label "RIndicator"
 		(shape input)
 		(at 99.06 90.17 180)
@@ -4268,18 +4276,6 @@
 			(justify right)
 		)
 		(uuid "9bb3d259-8a1f-4788-86cd-6073cd4c4179")
-	)
-	(hierarchical_label "Button3"
-		(shape input)
-		(at 129.54 97.79 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "aae13e9e-0fa2-47ac-8a37-d966f35f6b7a")
 	)
 	(hierarchical_label "Oil"
 		(shape input)
@@ -4909,6 +4905,71 @@
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/387d92f2-3727-45df-9c4d-1355459e23fb"
 					(reference "#PWR031")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 129.54 97.79 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "35d5b9d2-736e-4a1f-9c4a-7b952a325352")
+		(property "Reference" "#PWR036"
+			(at 135.89 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 134.366 97.79 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 129.54 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 129.54 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 129.54 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3f817a52-8759-40e8-86fb-904177cf9f60")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/387d92f2-3727-45df-9c4d-1355459e23fb"
+					(reference "#PWR036")
 					(unit 1)
 				)
 			)
@@ -7100,7 +7161,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 133.096 100.33 0)
+			(at 134.366 100.33 90)
 			(effects
 				(font
 					(size 1.27 1.27)
