@@ -1,4 +1,8 @@
 [submodule "esp-idf"]
 	path = Firmware/esp-idf
-	url = https://github.com/espressif/esp-idf.git
+	url = https://github.com/VogelPapaFinn/MX5-HybridDash-espidf.git
 	branch = release/v5.4
+[submodule "Firmware/components/lvgl"]
+	path = Firmware/components/lvgl
+	url = https://github.com/lvgl/lvgl.git
+	branch = release/v9.2

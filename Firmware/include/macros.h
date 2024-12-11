@@ -1,0 +1,4 @@
+#ifndef FIRMWARE_MACROS_H
+#define FIRMWARE_MACROS_H
+
+#endif//FIRMWARE_MACROS_H

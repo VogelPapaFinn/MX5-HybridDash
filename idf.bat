@@ -1,1 +1,1 @@
-python %~dp0\esp-idf\tools\idf.py %*
+python %~dp0\Firmware\lib\esp-idf\tools\idf.py %*

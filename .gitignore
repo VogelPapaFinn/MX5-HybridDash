@@ -1,5 +1,5 @@
-esp-idf/
-
 # Firmware Folder
-Firmware/*build*/
+Firmware/build/*
 Firmware/sdkconfig.old
+Firmware/managed_components/
+Firmware/lib/
