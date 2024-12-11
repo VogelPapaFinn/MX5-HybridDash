@@ -5,5 +5,5 @@ set(FILES "main.c"
 )
 
 idf_component_register(SRCS ${FILES}
-        PRIV_REQUIRES src driver spi_flash esp_psram esp_adc fatfs lvgl esp_lcd
+        PRIV_REQUIRES src driver spi_flash esp_psram esp_adc fatfs lvgl esp_lcd esp_lcd_gc9a01
         INCLUDE_DIRS "../include")

@@ -2,6 +2,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include <inttypes.h>
+#include <string.h>
 #include <sys/unistd.h>
 
 #include "esp_flash.h"
@@ -40,14 +41,6 @@
 
 esp_lcd_panel_handle_t panel_handle = NULL;
 void flush(lv_display_t *display, const lv_area_t *area, uint8_t *px_map) {
-    uint16_t *buf16 = (uint16_t *) px_map; /*Let's say it's a 16 bit (RGB565) display*/
-
-    //int size = 240 * 240 * 10;//(area->x2 - area->x1 + 1) * (area->y2 + 1 - area->y1) - 2;
-    //uint16_t test[size];
-    //printf("Before");
-    //lv_memset(test, 0xFF, size);
-    //printf("After");
-
     lv_draw_sw_rgb565_swap(px_map, (area->x2 + 1 - area->x1) * (area->y2 + 1 - area->y1));
     // +1 needed, otherwise the image is distorted
     esp_lcd_panel_draw_bitmap(panel_handle, area->x1, area->y1, area->x2 + 1, area->y2 + 1, px_map);
@@ -99,7 +92,7 @@ void app_main(void) {
     ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
     ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_handle, true));
     ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, true, false));
-    ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
+    ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, false));
 
     /* INIT LVGL */
 
@@ -108,7 +101,12 @@ void app_main(void) {
     size_t draw_buffer_sz = (TEST_LCD_H_RES * TEST_LCD_V_RES * 2);
 
     uint16_t *buf1 = heap_caps_malloc(draw_buffer_sz, MALLOC_CAP_SPIRAM);
+    memset(buf1, 0, draw_buffer_sz);
     uint16_t *buf2 = heap_caps_malloc(draw_buffer_sz, MALLOC_CAP_SPIRAM);
+    memset(buf2, 0, draw_buffer_sz);
+
+    // This prevents that the display shows random colored pixels for a split of a second, during startup
+    esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, 240, 240, buf1);
 
     // initialize LVGL draw buffers
     lv_display_set_buffers(display, buf1, buf2, draw_buffer_sz, LV_DISPLAY_RENDER_MODE_DIRECT);
@@ -134,7 +132,9 @@ void app_main(void) {
     //lv_display_flush_ready(display);
 
     // Clear the screen
+    //lv_obj_clean(lv_screen_active());
     lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(0x000000), LV_PART_MAIN);
+    ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
 
     lv_style_t style;
     lv_style_init(&style);

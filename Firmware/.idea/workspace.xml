@@ -102,6 +102,7 @@
       <config projectName="firmware" targetName="encrypted-app-flash" />
       <config projectName="firmware" targetName="__idf_esp_mm" />
       <config projectName="firmware" targetName="encrypted-bootloader-flash" />
+      <config projectName="firmware" targetName="__idf_espressif__esp_lcd_gc9a01" />
       <config projectName="firmware" targetName="everest" />
       <config projectName="firmware" targetName="__idf_src" />
       <config projectName="firmware" targetName="__idf_esp_eth" />
@@ -173,35 +174,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64c84b50-c148-40a8-af48-38eea64c9008" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/components/lvgl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-15_222450.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-16_004746.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-16_165000.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-17_010425.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-21_191523.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-21_235912.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-24_154444.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-24_190041.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-24_221730.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-24_223838.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-28_205854.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitmodules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-10-16_134501.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-10-16_135416.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-10-16_171455.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-10-20_193535.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-01_183422.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-02_141055.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-02_171722.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-02_183226.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-02_184902.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-02_233927.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-05_160625.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-06_191425.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-15_193940.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../idf.bat" beforeDir="false" afterPath="$PROJECT_DIR$/../idf.bat" afterDir="false" />
-    </list>
+    <list default="true" id="64c84b50-c148-40a8-af48-38eea64c9008" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -559,6 +532,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="__idf_espressif__esp_lcd_gc9a01" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="__idf_espressif__esp_lcd_gc9a01" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="__idf_fatfs" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="__idf_fatfs" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -734,7 +712,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="add-dependency" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="add-dependency --component=../src esp_lcd_gc9a01==1.0.0" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$ContentRoot$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="app" CONFIG_NAME="Debug" RUN_PATH="../idf.bat">
+    <configuration name="add-dependency" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="add-dependency --component=../src esp_lcd_gc9a01" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$ContentRoot$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="app" CONFIG_NAME="Debug" RUN_PATH="../idf.bat">
       <envs>
         <env name="IDF_PATH" value="..\idf.bat" />
       </envs>
@@ -1070,6 +1048,7 @@
       <item itemvalue="CMake Application.__idf_esp_vfs_console" />
       <item itemvalue="CMake Application.__idf_esp_wifi" />
       <item itemvalue="CMake Application.__idf_espcoredump" />
+      <item itemvalue="CMake Application.__idf_espressif__esp_lcd_gc9a01" />
       <item itemvalue="CMake Application.__idf_fatfs" />
       <item itemvalue="CMake Application.__idf_freertos" />
       <item itemvalue="CMake Application.__idf_hal" />
@@ -1189,7 +1168,7 @@
       <workItem from="1733931917922" duration="7956000" />
       <workItem from="1733940082351" duration="69000" />
       <workItem from="1733940539661" duration="7000" />
-      <workItem from="1733944809040" duration="984000" />
+      <workItem from="1733944809040" duration="2131000" />
     </task>
     <servers />
   </component>
