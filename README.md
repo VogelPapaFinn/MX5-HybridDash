@@ -49,7 +49,7 @@ I designed the display mounts myself with the free-to-use websoftware "OnShape".
 Below I will "dump" some links to blogs, threads etc. which contain useful information I used:
 - [A thread](https://forum.miata.net/vb/showthread.php?t=780170) I created to gather information around this project.
 - [The used displays](https://www.waveshare.com/1.28inch-LCD-Module.htm) which I bought from amazon. They are manufactured by 'WaveShare' and have a screen size of 1.28"
-- [Information about the oil gauge](https://www.waveshare.com/1.28inch-LCD-Module.htm)
+- [Information about the oil gauge](https://www.miata.net/garage/opg2/)
 - [Information about the water temperature relative to the resistance measured](https://www.miataturbo.net/megasquirt-18/water-temo-gauge-thermistor-values-74383/)
 - [JLCPCB - A PCB manufacturar](https://jlcpcb.com/)
 - [Circuit designer](http://falstad.com/circuit/circuitjs.html) to test small,simple circuits and their behavior
