@@ -11,4 +11,4 @@
 
 /* --- Global variables and function (headers) --- */
 
-//#endif FIRMWARE_INCLUDE_C_HEADER_TEMPLATE_H_
+//#endif // FIRMWARE_INCLUDE_C_HEADER_TEMPLATE_H_
