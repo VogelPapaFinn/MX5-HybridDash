@@ -7406,7 +7406,7 @@
 				)
 			)
 		)
-		(property "Value" "100"
+		(property "Value" "240"
 			(at 135.382 35.052 90)
 			(effects
 				(font
@@ -9303,7 +9303,7 @@
 				)
 			)
 		)
-		(property "Value" "100"
+		(property "Value" "240"
 			(at 135.382 22.86 90)
 			(effects
 				(font
@@ -11346,14 +11346,14 @@
 		(dnp no)
 		(uuid "fb3e1f3b-427d-4529-bdbe-fb0cf0252033")
 		(property "Reference" "Rwtr1"
-			(at 135.382 49.022 90)
+			(at 135.382 44.958 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "100"
+		(property "Value" "3k"
 			(at 135.382 46.99 90)
 			(effects
 				(font

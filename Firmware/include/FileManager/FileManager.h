@@ -35,6 +35,7 @@ enum {
 
 /* --- Global variables and function (headers) --- */
 //! \brief Initializes the FileManager
+//! \retval Boolean indicating if it was successful or not
 bool fileManagerInit(void);
 
 //! \brief Creates a new file at the specified location
@@ -64,7 +65,6 @@ bool fileManagerDeleteFile(const char *path, const int location);
 
 //! \brief Checks if the specified directory exists on the SD Card
 //! \param dir The path to the directory without "/sdcard/"
-//! \param location Where the directory is stored
 //! \retval True if it directory exists - False if it doesn't
 //! \note The SPIFFS filesystem unfortunately does not support directories
 bool fileManagerDoesDirectoryExist(const char *dir);
@@ -77,7 +77,6 @@ bool fileManagerCreateDir(const char *path);
 
 //! \brief Deletes a directory at the specified path on the SD Card
 //! \param path The path to the directory without "/sdcard/"
-//! \param location Where the directory is stored
 //! \retval True if it was successful - False if it wasn't
 //! \note The SPIFFS filesystem unfortunately does not support directories
 bool fileManagerDeleteDir(const char *path);

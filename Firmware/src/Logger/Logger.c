@@ -4,9 +4,9 @@
 /* --- Private Defines & Macros --- */
 
 // The log file on the SD Card
-FILE *logFileSDCard = NULL;
+FILE *logFileSDCard_ = NULL;
 // The log file on the spiffs partition
-FILE *logFileSpiffs = NULL;
+FILE *logFileSpiffs_ = NULL;
 
 /* --- Private Variables, Typedefs etc. --- */
 
@@ -17,11 +17,11 @@ void loggerInit(void) {
         // Ask FileManager to create a file for us
         if (fileManagerCreateFile(LOGGER_FILE_NAME, LOCATION_INTERNAL)) {
             // a+ -> Open for appending & Create file if it not exist
-            logFileSpiffs = fileManagerOpenFile(LOGGER_FILE_NAME, "a+", LOCATION_INTERNAL);
+            logFileSpiffs_ = fileManagerOpenFile(LOGGER_FILE_NAME, "a+", LOCATION_INTERNAL);
         }
 
         // Was it successful?
-        if (logFileSpiffs) {
+        if (logFileSpiffs_) {
             // Logging
             loggerInfo("Successfully created log file on the internal partition");
         } else {
@@ -35,11 +35,11 @@ void loggerInit(void) {
         // Ask FileManager to create a file for us
         if (fileManagerCreateFile(LOGGER_FILE_NAME, LOCATION_SDCARD)) {
             // a+ -> Open for appending & Create file if it not exist
-            logFileSDCard = fileManagerOpenFile(LOGGER_FILE_NAME, "a+", LOCATION_SDCARD);
+            logFileSDCard_ = fileManagerOpenFile(LOGGER_FILE_NAME, "a+", LOCATION_SDCARD);
         }
 
         // Was it successful?
-        if (logFileSDCard) {
+        if (logFileSDCard_) {
             // Logging
             loggerInfo("Successfully created log file on the SD Card");
         } else {
@@ -55,12 +55,12 @@ void loggerLog(const char *level, const char *message, const va_list args) {
     sprintf(fullMessage, "%s%s%s%s", level, " ", message, "\n");
 
     // Should we log to an internal file?
-    if (LOGGER_SAVE_INTERNAL && logFileSpiffs) {
-        vfprintf(logFileSpiffs, fullMessage, args);
+    if (LOGGER_SAVE_INTERNAL && logFileSpiffs_) {
+        vfprintf(logFileSpiffs_, fullMessage, args);
     }
     // Should we log to a file on the SD Card?
-    if (LOGGER_SAVE_ON_SDCARD && logFileSDCard) {
-        vfprintf(logFileSDCard, fullMessage, args);
+    if (LOGGER_SAVE_ON_SDCARD && logFileSDCard_) {
+        vfprintf(logFileSDCard_, fullMessage, args);
     }
     // Should we log to the USB port?
     if (LOGGER_SEND_TO_USB) {
@@ -73,6 +73,9 @@ void loggerLog(const char *level, const char *message, const va_list args) {
 }
 
 void loggerInfo(const char *message, ...) {
+    // Check log level
+    if (LOGGING_LEVEL < 4) return;
+
     // Get all arguments
     va_list args;
     va_start(args, message);
@@ -85,6 +88,9 @@ void loggerInfo(const char *message, ...) {
 }
 
 void loggerWarn(const char *message, ...) {
+    // Check log level
+    if (LOGGING_LEVEL < 3) return;
+
     // Get all arguments
     va_list args;
     va_start(args, message);
@@ -97,6 +103,9 @@ void loggerWarn(const char *message, ...) {
 }
 
 void loggerError(const char *message, ...) {
+    // Check log level
+    if (LOGGING_LEVEL < 2) return;
+
     // Get all arguments
     va_list args;
     va_start(args, message);
@@ -109,6 +118,9 @@ void loggerError(const char *message, ...) {
 }
 
 void loggerCritical(const char *message, ...) {
+    // Check log level
+    if (LOGGING_LEVEL < 1) return;
+
     // Get all arguments
     va_list args;
     va_start(args, message);

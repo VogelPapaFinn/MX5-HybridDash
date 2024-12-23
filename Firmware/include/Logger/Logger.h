@@ -20,6 +20,13 @@ static const bool LOGGER_SAVE_INTERNAL = true;
 static const bool LOGGER_SAVE_ON_SDCARD = true;
 //! \brief Defines if every message should be sent to the USB-C port
 static const bool LOGGER_SEND_TO_USB = true;
+//! \brief Defines what should be logged:
+//! 0 - nothing
+//! 1 - only critical errors
+//! 2 - critical errors & errors
+//! 3 - warnings & critical errors & errors
+//! 4 - everything
+static const int LOGGING_LEVEL = 4;
 
 /* --- Imported Variables, Typedefs etc. --- */
 

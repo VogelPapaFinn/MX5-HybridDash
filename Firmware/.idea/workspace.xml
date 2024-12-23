@@ -8,7 +8,6 @@
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="4" type="long" />
-    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
   </component>
   <component name="CMakePresetLoader">{
   &quot;useNewFormat&quot;: true
@@ -174,7 +173,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64c84b50-c148-40a8-af48-38eea64c9008" name="Changes" comment="" />
+    <list default="true" id="64c84b50-c148-40a8-af48-38eea64c9008" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-22_184030.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-06_210452.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-17_223029.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-06_214137.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-23_000253.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-06_224644.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-23_010637.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-06_232106.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-17_223719.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-07_213221.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-22_211706.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-08_211151.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_145135.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-17_212018.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_prl" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_prl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -210,6 +220,8 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/components/lvgl/src/misc/lv_area.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/FileManager/FileManager.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/Logger/Logger.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -739,11 +751,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="add-dependency" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="add-dependency --component=../src esp_lcd_gc9a01" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$ContentRoot$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="app" CONFIG_NAME="Debug" RUN_PATH="../idf.bat">
       <envs>
         <env name="IDF_PATH" value="..\idf.bat" />
@@ -1041,144 +1048,144 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="CMake Application.app-flash" />
-      <item itemvalue="CMake Application.bootloader_old" />
-      <item itemvalue="CMake Application.menuconfig_old" />
-      <item itemvalue="CMake Application.__idf_usb" />
-      <item itemvalue="CMake Application.__idf_heap" />
-      <item itemvalue="CMake Application.encrypted-app-flash" />
-      <item itemvalue="CMake Application.size" />
-      <item itemvalue="CMake Application._project_elf_src" />
-      <item itemvalue="CMake Application.__idf_unity" />
-      <item itemvalue="CMake Application.__idf_esp_partition" />
-      <item itemvalue="CMake Application.encrypted-flash" />
-      <item itemvalue="CMake Application.partition_table_bin" />
-      <item itemvalue="CMake Application.__idf_esp_psram" />
-      <item itemvalue="CMake Application.__idf_nvs_flash" />
-      <item itemvalue="CMake Application.__idf_wear_levelling" />
-      <item itemvalue="CMake Application.debug" />
-      <item itemvalue="CMake Application.__idf_esp_https_ota" />
-      <item itemvalue="CMake Application.__idf_cxx" />
-      <item itemvalue="CMake Application.__idf_esp_hid" />
-      <item itemvalue="CMake Application.bootloader" />
-      <item itemvalue="CMake Application.__idf_esp_driver_i2s" />
-      <item itemvalue="CMake Application.__idf_tcp_transport" />
-      <item itemvalue="CMake Application.__idf_esp_adc" />
-      <item itemvalue="CMake Application.__idf_esp_eth" />
-      <item itemvalue="CMake Application.sections.ld.in" />
-      <item itemvalue="CMake Application.partition_table" />
-      <item itemvalue="CMake Application.__idf_spi_flash" />
-      <item itemvalue="CMake Application.partition-table" />
-      <item itemvalue="CMake Application.dfu" />
-      <item itemvalue="CMake Application.__idf_esp_driver_uart" />
-      <item itemvalue="CMake Application.__idf_soc" />
-      <item itemvalue="CMake Application.__idf_esp_driver_usb_serial_jtag" />
-      <item itemvalue="CMake Application.__idf_esp_driver_cam" />
-      <item itemvalue="CMake Application.merge-bin" />
-      <item itemvalue="CMake Application.partition-table-flash" />
-      <item itemvalue="CMake Application.__idf_esp_driver_rmt" />
-      <item itemvalue="CMake Application.mbedcrypto" />
-      <item itemvalue="CMake Application.lib" />
-      <item itemvalue="CMake Application.__idf_esp_ringbuf" />
-      <item itemvalue="CMake Application.custom_bundle" />
-      <item itemvalue="CMake Application.__idf_esp_driver_sdspi" />
-      <item itemvalue="CMake Application.__idf_mbedtls" />
-      <item itemvalue="CMake Application.__idf_esp_driver_tsens" />
-      <item itemvalue="CMake Application.efuse-common-table" />
-      <item itemvalue="CMake Application.__idf_esp_app_format" />
-      <item itemvalue="CMake Application.save-defconfig" />
-      <item itemvalue="CMake Application.__idf_esp_gdbstub" />
-      <item itemvalue="CMake Application.__idf_xtensa" />
-      <item itemvalue="CMake Application.__idf_spiffs" />
-      <item itemvalue="CMake Application.__idf_esp_driver_ledc" />
-      <item itemvalue="CMake Application.erase_flash" />
-      <item itemvalue="CMake Application.__idf_esp_driver_pcnt" />
-      <item itemvalue="CMake Application.encrypted-partition-table-flash" />
-      <item itemvalue="CMake Application.__idf_esp_timer" />
-      <item itemvalue="CMake Application.__idf_sdmmc" />
-      <item itemvalue="CMake Application.__idf_app_update" />
-      <item itemvalue="CMake Application.__idf_esp_driver_mcpwm" />
-      <item itemvalue="CMake Application.memory.ld" />
-      <item itemvalue="CMake Application.dfu-flash" />
-      <item itemvalue="CMake Application.__idf_mqtt" />
-      <item itemvalue="CMake Application.__idf_esp_pm" />
-      <item itemvalue="CMake Application.efuse-custom-table" />
-      <item itemvalue="CMake Application.__idf_protocomm" />
       <item itemvalue="CMake Application.__idf_app_trace" />
-      <item itemvalue="CMake Application.p256m" />
-      <item itemvalue="CMake Application.__idf_json" />
-      <item itemvalue="CMake Application.__idf_esp_event" />
-      <item itemvalue="CMake Application.__idf_perfmon" />
+      <item itemvalue="CMake Application.__idf_app_update" />
       <item itemvalue="CMake Application.__idf_bootloader_support" />
-      <item itemvalue="CMake Application.monitor" />
-      <item itemvalue="CMake Application.__idf_esp_mm" />
-      <item itemvalue="CMake Application.__idf_esp-tls" />
-      <item itemvalue="CMake Application.uf2" />
-      <item itemvalue="CMake Application.__idf_console" />
-      <item itemvalue="CMake Application.__idf_esp_driver_sdm" />
-      <item itemvalue="CMake Application.uf2-app" />
-      <item itemvalue="CMake Application.__ldgen_output_sections.ld" />
       <item itemvalue="CMake Application.__idf_cmock" />
+      <item itemvalue="CMake Application.__idf_console" />
+      <item itemvalue="CMake Application.__idf_cxx" />
+      <item itemvalue="CMake Application.__idf_driver" />
       <item itemvalue="CMake Application.__idf_efuse" />
+      <item itemvalue="CMake Application.__idf_esp-tls" />
+      <item itemvalue="CMake Application.__idf_esp_adc" />
+      <item itemvalue="CMake Application.__idf_esp_app_format" />
       <item itemvalue="CMake Application.__idf_esp_bootloader_format" />
-      <item itemvalue="CMake Application.gen_project_binary" />
-      <item itemvalue="CMake Application.app_check_size" />
-      <item itemvalue="CMake Application.size-files" />
-      <item itemvalue="CMake Application.show-efuse-table" />
-      <item itemvalue="CMake Application.apidoc" />
       <item itemvalue="CMake Application.__idf_esp_coex" />
       <item itemvalue="CMake Application.__idf_esp_common" />
-      <item itemvalue="CMake Application.__idf_fatfs" />
-      <item itemvalue="CMake Application.__idf_esp_driver_spi" />
-      <item itemvalue="CMake Application.mbedx509" />
-      <item itemvalue="CMake Application.__idf_esp_system" />
-      <item itemvalue="CMake Application.__idf_esp_wifi" />
-      <item itemvalue="CMake Application.__idf_wifi_provisioning" />
-      <item itemvalue="CMake Application.__idf_esp_driver_gptimer" />
-      <item itemvalue="CMake Application.__idf_esp_driver_sdmmc" />
-      <item itemvalue="CMake Application.size-components" />
-      <item itemvalue="CMake Application.__idf_esp_driver_i2c" />
-      <item itemvalue="CMake Application.__idf_wpa_supplicant" />
-      <item itemvalue="CMake Application.__idf_touch_element" />
-      <item itemvalue="CMake Application.__idf_http_parser" />
-      <item itemvalue="CMake Application.__idf_esp_local_ctrl" />
-      <item itemvalue="CMake Application.__idf_esp_http_client" />
-      <item itemvalue="CMake Application.__idf_vfs" />
-      <item itemvalue="CMake Application.__idf_protobuf-c" />
-      <item itemvalue="CMake Application.__idf_esp_rom" />
-      <item itemvalue="CMake Application.__idf_lwip" />
-      <item itemvalue="CMake Application.__idf_espcoredump" />
-      <item itemvalue="CMake Application.__idf_esp_vfs_console" />
-      <item itemvalue="CMake Application.__idf_driver" />
-      <item itemvalue="CMake Application.firmware.elf" />
-      <item itemvalue="CMake Application.__idf_esp_netif" />
-      <item itemvalue="CMake Application.efuse_common_table" />
-      <item itemvalue="CMake Application.flash" />
-      <item itemvalue="CMake Application.encrypted-bootloader-flash" />
-      <item itemvalue="CMake Application.__idf_rt" />
-      <item itemvalue="CMake Application.__idf_esp_phy" />
-      <item itemvalue="CMake Application.efuse_custom_table" />
-      <item itemvalue="CMake Application.show_efuse_table" />
-      <item itemvalue="CMake Application.mbedtls" />
-      <item itemvalue="CMake Application.__idf_src" />
-      <item itemvalue="CMake Application.__idf_esp_http_server" />
-      <item itemvalue="CMake Application.__idf_espressif__esp_lcd_gc9a01" />
-      <item itemvalue="CMake Application.everest" />
-      <item itemvalue="CMake Application.dfu-list" />
+      <item itemvalue="CMake Application.__idf_esp_driver_cam" />
       <item itemvalue="CMake Application.__idf_esp_driver_gpio" />
-      <item itemvalue="CMake Application.confserver" />
-      <item itemvalue="CMake Application.__idf_newlib" />
+      <item itemvalue="CMake Application.__idf_esp_driver_gptimer" />
+      <item itemvalue="CMake Application.__idf_esp_driver_i2c" />
+      <item itemvalue="CMake Application.__idf_esp_driver_i2s" />
+      <item itemvalue="CMake Application.__idf_esp_driver_ledc" />
+      <item itemvalue="CMake Application.__idf_esp_driver_mcpwm" />
+      <item itemvalue="CMake Application.__idf_esp_driver_pcnt" />
+      <item itemvalue="CMake Application.__idf_esp_driver_rmt" />
+      <item itemvalue="CMake Application.__idf_esp_driver_sdm" />
+      <item itemvalue="CMake Application.__idf_esp_driver_sdmmc" />
+      <item itemvalue="CMake Application.__idf_esp_driver_sdspi" />
+      <item itemvalue="CMake Application.__idf_esp_driver_spi" />
+      <item itemvalue="CMake Application.__idf_esp_driver_tsens" />
+      <item itemvalue="CMake Application.__idf_esp_driver_uart" />
+      <item itemvalue="CMake Application.__idf_esp_driver_usb_serial_jtag" />
+      <item itemvalue="CMake Application.__idf_esp_eth" />
+      <item itemvalue="CMake Application.__idf_esp_event" />
+      <item itemvalue="CMake Application.__idf_esp_gdbstub" />
+      <item itemvalue="CMake Application.__idf_esp_hid" />
+      <item itemvalue="CMake Application.__idf_esp_http_client" />
+      <item itemvalue="CMake Application.__idf_esp_http_server" />
+      <item itemvalue="CMake Application.__idf_esp_https_ota" />
       <item itemvalue="CMake Application.__idf_esp_https_server" />
+      <item itemvalue="CMake Application.__idf_esp_hw_support" />
+      <item itemvalue="CMake Application.__idf_esp_lcd" />
+      <item itemvalue="CMake Application.__idf_esp_local_ctrl" />
+      <item itemvalue="CMake Application.__idf_esp_mm" />
+      <item itemvalue="CMake Application.__idf_esp_netif" />
+      <item itemvalue="CMake Application.__idf_esp_partition" />
+      <item itemvalue="CMake Application.__idf_esp_phy" />
+      <item itemvalue="CMake Application.__idf_esp_pm" />
+      <item itemvalue="CMake Application.__idf_esp_psram" />
+      <item itemvalue="CMake Application.__idf_esp_ringbuf" />
+      <item itemvalue="CMake Application.__idf_esp_rom" />
       <item itemvalue="CMake Application.__idf_esp_security" />
+      <item itemvalue="CMake Application.__idf_esp_system" />
+      <item itemvalue="CMake Application.__idf_esp_timer" />
+      <item itemvalue="CMake Application.__idf_esp_vfs_console" />
+      <item itemvalue="CMake Application.__idf_esp_wifi" />
+      <item itemvalue="CMake Application.__idf_espcoredump" />
+      <item itemvalue="CMake Application.__idf_espressif__esp_lcd_gc9a01" />
+      <item itemvalue="CMake Application.__idf_fatfs" />
+      <item itemvalue="CMake Application.__idf_freertos" />
+      <item itemvalue="CMake Application.__idf_hal" />
+      <item itemvalue="CMake Application.__idf_heap" />
+      <item itemvalue="CMake Application.__idf_http_parser" />
+      <item itemvalue="CMake Application.__idf_json" />
       <item itemvalue="CMake Application.__idf_log" />
       <item itemvalue="CMake Application.__idf_lvgl" />
-      <item itemvalue="CMake Application.__idf_esp_lcd" />
-      <item itemvalue="CMake Application.__idf_freertos" />
-      <item itemvalue="CMake Application.__idf_esp_hw_support" />
-      <item itemvalue="CMake Application.efuse_test_table" />
-      <item itemvalue="CMake Application.__idf_hal" />
-      <item itemvalue="CMake Application.__idf_pthread" />
+      <item itemvalue="CMake Application.__idf_lwip" />
+      <item itemvalue="CMake Application.__idf_mbedtls" />
+      <item itemvalue="CMake Application.__idf_mqtt" />
+      <item itemvalue="CMake Application.__idf_newlib" />
+      <item itemvalue="CMake Application.__idf_nvs_flash" />
       <item itemvalue="CMake Application.__idf_nvs_sec_provider" />
+      <item itemvalue="CMake Application.__idf_perfmon" />
+      <item itemvalue="CMake Application.__idf_protobuf-c" />
+      <item itemvalue="CMake Application.__idf_protocomm" />
+      <item itemvalue="CMake Application.__idf_pthread" />
+      <item itemvalue="CMake Application.__idf_rt" />
+      <item itemvalue="CMake Application.__idf_sdmmc" />
+      <item itemvalue="CMake Application.__idf_soc" />
+      <item itemvalue="CMake Application.__idf_spi_flash" />
+      <item itemvalue="CMake Application.__idf_spiffs" />
+      <item itemvalue="CMake Application.__idf_src" />
+      <item itemvalue="CMake Application.__idf_tcp_transport" />
+      <item itemvalue="CMake Application.__idf_touch_element" />
+      <item itemvalue="CMake Application.__idf_unity" />
+      <item itemvalue="CMake Application.__idf_usb" />
+      <item itemvalue="CMake Application.__idf_vfs" />
+      <item itemvalue="CMake Application.__idf_wear_levelling" />
+      <item itemvalue="CMake Application.__idf_wifi_provisioning" />
+      <item itemvalue="CMake Application.__idf_wpa_supplicant" />
+      <item itemvalue="CMake Application.__idf_xtensa" />
+      <item itemvalue="CMake Application.__ldgen_output_sections.ld" />
+      <item itemvalue="CMake Application._project_elf_src" />
+      <item itemvalue="CMake Application.apidoc" />
+      <item itemvalue="CMake Application.app-flash" />
+      <item itemvalue="CMake Application.app_check_size" />
+      <item itemvalue="CMake Application.bootloader" />
+      <item itemvalue="CMake Application.bootloader_old" />
+      <item itemvalue="CMake Application.confserver" />
+      <item itemvalue="CMake Application.custom_bundle" />
+      <item itemvalue="CMake Application.debug" />
+      <item itemvalue="CMake Application.dfu-flash" />
+      <item itemvalue="CMake Application.dfu-list" />
+      <item itemvalue="CMake Application.dfu" />
+      <item itemvalue="CMake Application.efuse-common-table" />
+      <item itemvalue="CMake Application.efuse-custom-table" />
+      <item itemvalue="CMake Application.efuse_common_table" />
+      <item itemvalue="CMake Application.efuse_custom_table" />
+      <item itemvalue="CMake Application.efuse_test_table" />
+      <item itemvalue="CMake Application.encrypted-app-flash" />
+      <item itemvalue="CMake Application.encrypted-bootloader-flash" />
+      <item itemvalue="CMake Application.encrypted-flash" />
+      <item itemvalue="CMake Application.encrypted-partition-table-flash" />
+      <item itemvalue="CMake Application.erase_flash" />
+      <item itemvalue="CMake Application.everest" />
+      <item itemvalue="CMake Application.firmware.elf" />
+      <item itemvalue="CMake Application.flash" />
+      <item itemvalue="CMake Application.gen_project_binary" />
+      <item itemvalue="CMake Application.lib" />
+      <item itemvalue="CMake Application.mbedcrypto" />
+      <item itemvalue="CMake Application.mbedtls" />
+      <item itemvalue="CMake Application.mbedx509" />
+      <item itemvalue="CMake Application.memory.ld" />
+      <item itemvalue="CMake Application.menuconfig_old" />
+      <item itemvalue="CMake Application.merge-bin" />
+      <item itemvalue="CMake Application.monitor" />
+      <item itemvalue="CMake Application.p256m" />
+      <item itemvalue="CMake Application.partition-table-flash" />
+      <item itemvalue="CMake Application.partition-table" />
+      <item itemvalue="CMake Application.partition_table" />
+      <item itemvalue="CMake Application.partition_table_bin" />
+      <item itemvalue="CMake Application.save-defconfig" />
+      <item itemvalue="CMake Application.sections.ld.in" />
+      <item itemvalue="CMake Application.show-efuse-table" />
+      <item itemvalue="CMake Application.show_efuse_table" />
+      <item itemvalue="CMake Application.size-components" />
+      <item itemvalue="CMake Application.size-files" />
+      <item itemvalue="CMake Application.size" />
+      <item itemvalue="CMake Application.uf2-app" />
+      <item itemvalue="CMake Application.uf2" />
       <item itemvalue="CMake Application.add-dependency" />
       <item itemvalue="CMake Application.bootloader-flash" />
       <item itemvalue="CMake Application.build-flash-monitor" />
@@ -1227,7 +1234,10 @@
       <workItem from="1734170925110" duration="13881000" />
       <workItem from="1734205358859" duration="1968000" />
       <workItem from="1734291612475" duration="3795000" />
-      <workItem from="1734445775428" duration="611000" />
+      <workItem from="1734445775428" duration="6279000" />
+      <workItem from="1734548541932" duration="25000" />
+      <workItem from="1734889244819" duration="156000" />
+      <workItem from="1734889739250" duration="16352000" />
     </task>
     <servers />
   </component>

@@ -10,12 +10,12 @@ sdmmc_host_t sdmmcHost_ = SDMMC_HOST_DEFAULT();
 sdmmc_slot_config_t slotConfig_ = SDMMC_SLOT_CONFIG_DEFAULT();
 esp_vfs_fat_sdmmc_mount_config_t mountConfig_;
 
-esp_vfs_spiffs_conf_t spiffsConfig;
+esp_vfs_spiffs_conf_t spiffsConfig_;
 
 // Is the SD Card mounted?
-bool sdCardMounted = false;
+bool sdCardMounted_ = false;
 // Is the internal spiffs partition mounted?
-bool spiffsMounted = false;
+bool spiffsMounted_ = false;
 
 //! \brief Builds the whole path depending on the location
 //! \param path The path that should be checked
@@ -29,7 +29,7 @@ char *buildFullPath(const char *path, const int location) {
     // Check the location
     if (location == LOCATION_INTERNAL) {
         // Is the spiffs partition mounted?
-        if (!spiffsMounted) {
+        if (!spiffsMounted_) {
             // Logging
             loggerError("Spiffs partition not mounted");
 
@@ -42,7 +42,7 @@ char *buildFullPath(const char *path, const int location) {
         sprintf(fullPath, "%s%s", "/spiffs/", path);
     } else if (location == LOCATION_SDCARD) {
         // Is the SD Card mounted?
-        if (!sdCardMounted) {
+        if (!sdCardMounted_) {
             // Logging
             loggerError("SD Card not mounted");
 
@@ -85,7 +85,7 @@ bool fileManagerInit(void) {
     // Was the mount successful?
     if (mountCardResult == ESP_OK) {
         // The SDCard was mounted successfully
-        sdCardMounted = true;
+        sdCardMounted_ = true;
 
         // Logging
         loggerInfo("Mounted SD card successfully");
@@ -109,7 +109,7 @@ bool fileManagerInit(void) {
     // Was the mount successful?
     if (mountSpiffsResult == ESP_OK) {
         // The spiffs partition was mounted successfully
-        spiffsMounted = true;
+        spiffsMounted_ = true;
 
         // Logging
         loggerInfo("Mounted spiffs partition successfully");
@@ -121,8 +121,8 @@ bool fileManagerInit(void) {
     }
 
     // Return success
-    return spiffsMounted
-            || sdCardMounted;
+    return spiffsMounted_
+            || sdCardMounted_;
 }
 
 bool fileManagerCreateFile(const char *path, const int location) {
