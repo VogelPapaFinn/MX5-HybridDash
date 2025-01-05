@@ -3,6 +3,7 @@
 
 /* --- Includes --- */
 // C includes
+#include <math.h>
 #include <stdbool.h>
 
 // Project includes
@@ -10,7 +11,14 @@
 
 // espidf includes
 #include <driver/gpio.h>
+#include <driver/pulse_cnt.h>
 #include <esp_adc/adc_oneshot.h>
+#include <esp_timer.h>
+
+// freeRTOS includes
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
+#include <freertos/task.h>
 
 /* --- Defines & Macros --- */
 
@@ -24,6 +32,8 @@
 #define GPIO_OIL_PRESSURE GPIO_NUM_12
 #define GPIO_FUEL_LEVEL GPIO_NUM_11
 #define GPIO_WATER_TEMPERATURE GPIO_NUM_13
+#define GPIO_SPEED GPIO_NUM_14
+#define GPIO_RPM GPIO_NUM_21
 
 // ADC CHANNELS
 #define ADC_CHANNEL_OIL_PRESSURE ADC_CHANNEL_1
@@ -31,8 +41,8 @@
 #define ADC_CHANNEL_WATER_TEMPERATURE ADC_CHANNEL_2
 
 // OIL PRESSURE THRESHOLDS
-#define OIL_LOWER_VOLTAGE_THRESHOLD 65 // mV - R2 ~= 5 Ohms
-#define OIL_UPPER_VOLTAGE_THRESHOLD 255// mV - R2 ~= 20 Ohms
+#define OIL_LOWER_VOLTAGE_THRESHOLD 65 // mV -> R2 ~= 5 Ohms
+#define OIL_UPPER_VOLTAGE_THRESHOLD 255// mV -> R2 ~= 20 Ohms
 
 // FUEL LEVEL CALCULATION STUFF
 #define FUEL_LEVEL_OFFSET 5.0f
@@ -74,5 +84,33 @@ void sensorManagerUpdateWaterTemperature(void);
 //! \brief Returns the water temperature in degree Celsius
 //! \retval The water temperature as float
 float sensorManagerGetWaterTemperature(void);
+
+//! \brief Enables the speed ISR
+//! \retval Boolean indicating if it worked
+bool sensorManagerEnableSpeedISR();
+
+//! \brief Disables the speed ISR
+void sensorManagerDisableSpeedISR();
+
+//! \brief Updates the speed
+void sensorManagerUpdateSpeed(void);
+
+//! \brief Returns the speed
+//! \retval The speed as integer
+int sensorManagerGetSpeed(void);
+
+//! \brief Enables the rpm ISR
+//! \retval Boolean indicating if it worked
+bool sensorManagerEnableRpmISR();
+
+//! \brief Disables the rpm ISR
+void sensorManagerDisableRpmISR();
+
+//! \brief Updates the rpm
+void sensorManagerUpdateRPM(void);
+
+//! \brief Returns the rpm
+//! \retval The rpm as integer
+int sensorManagerGetRPM(void);
 
 #endif// FIRMWARE_INCLUDE_C_HEADER_TEMPLATE_H_SENSORMANAGER

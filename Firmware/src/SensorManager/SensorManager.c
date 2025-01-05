@@ -6,7 +6,6 @@
 /* --- Private Variables, Typedefs etc. --- */
 // ADC stuff
 static adc_oneshot_unit_handle_t adc2Handle_;
-static adc_oneshot_unit_init_cfg_t adc2InitConfig_;
 static bool initAdc2Failed_ = false;
 
 // Oil pressure stuff
@@ -26,11 +25,25 @@ static float waterTemperatureResistance_ = 0.0f;
 static adc_cali_handle_t adc2WaterCaliHandle_;
 static bool initAdc2WaterChannelFailed_ = false;
 
+// Speed stuff
+static int speedInHz_ = -1;
+static int speed_ = -1;
+static int64_t lastTimeOfFallingEdgeSpeed_ = 0;
+static int64_t timeOfFallingEdgeSpeed_ = 0;
+static bool speedIsrActive_ = false;
+static bool initSpeedIsrFailed_ = false;
+
+// RPM stuff
+static int rpmInHz_ = -1;
+static int rpm_ = -1;
+static int64_t lastTimeOfFallingEdgeRPM_ = 0;
+static int64_t timeOfFallingEdgeRPM_ = 0;
+static bool rpmIsrActive_ = false;
+static bool initRpmIsrFailed_ = false;
+
 // Temporary stuff so I don't forget anything to implement
-int speed_ = -1;
-int rpm_ = -1;
-int tempSensor1_ = -1;
-int tempSensor2_ = -1;
+static int tempSensor1_ = -1;
+static int tempSensor2_ = -1;
 
 //! \brief Calculates the resistance of a voltage divider
 //! \param preR1VoltageV The original voltage the divider works with [in Volts] e.g. 3.3V
@@ -42,7 +55,7 @@ float calculateVoltageDividerR2(const float preR1VoltageV, const int voltageMV, 
     const float vOut = (float) voltageMV / 1000.0f;
     const float r = (float) r1;
 
-    // R2 = R1 * (voltageMV / preR1VoltageV - voltageMV)
+    // R2 = R1 * (voltageMV / (preR1VoltageV - voltageMV))
     return r * (vOut / (vIn - vOut));
 }
 
@@ -83,6 +96,60 @@ float calculateWaterTemperatureFromResistance() {
 
     // Then convert it to percent and return it
     return (resistance / FUEL_LEVEL_TO_PERCENTAGE * 100.0f);
+}
+
+//! \brief Calculates the speed in kmh from the measured frequency.
+//! \retval The speed in kmh
+//! TODO: Implement actual conversion
+float calculateSpeedFromFrequency() {
+    return speedInHz_;
+}
+
+//! \brief Calculates the rpm from the measured frequency.
+//! \retval The rpm's
+int calculateRpmFromFrequency() {
+    double multiplier = 0.0;
+
+    // Get the multiplier
+    if (rpmInHz_ <= 0)
+        return -1;
+    if (rpmInHz_ <= 8)
+        multiplier = 50.0;
+    else if (rpmInHz_ <= 11)
+        multiplier = 45.45;
+    else if (rpmInHz_ <= 17)
+        multiplier = 41.18;
+    else if (rpmInHz_ <= 25)
+        multiplier = 40.0;
+    else if (rpmInHz_ <= 56)
+        multiplier = 34.48;
+    else if (rpmInHz_ <= 92)
+        multiplier = 32.61;
+    else if (rpmInHz_ <= 123)
+        multiplier = 32.52;
+    else if (rpmInHz_ <= 157)
+        multiplier = 31.85;
+    else if (rpmInHz_ <= 188)
+        multiplier = 31.91;
+    else if (rpmInHz_ <= 220)
+        multiplier = 31.82;
+    else if (rpmInHz_ <= 262)
+        multiplier = 30.54;
+
+    // Calculate the rpm and return it
+    return (int) ((double) rpmInHz_ * multiplier);
+}
+
+//! \brief ISR for the speed, triggered everytime there is a falling edge
+static void IRAM_ATTR speedInterruptHandler() {
+    lastTimeOfFallingEdgeSpeed_ = timeOfFallingEdgeSpeed_;
+    timeOfFallingEdgeSpeed_ = esp_timer_get_time();
+}
+
+//! \brief ISR for the rpm, triggered everytime there is a falling edge
+static void IRAM_ATTR rpmInterruptHandler() {
+    lastTimeOfFallingEdgeRPM_ = timeOfFallingEdgeRPM_;
+    timeOfFallingEdgeRPM_ = esp_timer_get_time();
 }
 
 /* --- Function implementations --- */
@@ -213,9 +280,66 @@ int sensorManagerInit(void) {
 
     /* --- Configure the water temperature ADC2 channel --- */
 
+    /* --- Configure the speed interrupt --- */
+
+    // Setup gpio
+    gpio_set_direction(GPIO_SPEED, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(GPIO_SPEED, GPIO_PULLDOWN_ONLY);
+    gpio_set_intr_type(GPIO_SPEED, GPIO_INTR_NEGEDGE);
+
+    // Install ISR service
+    if (gpio_install_isr_service(ESP_INTR_FLAG_IRAM) != ESP_OK) {
+        // Failed, so we cant install our speed/rpm ISR's
+        initSpeedIsrFailed_ = true;
+        initRpmIsrFailed_ = true;
+
+        // Logging
+        loggerError("Couldn't install the ISR service. Speed and RPM are unavailable!");
+    }
+
+    // Activate the ISR for measuring the frequency for the speed
+    if (!initSpeedIsrFailed_ && sensorManagerEnableSpeedISR()) {
+        // Everything worked
+        speedIsrActive_ = true;
+        initSpeedIsrFailed_ = false;
+    } else {
+        // It failed
+        speedIsrActive_ = false;
+        initSpeedIsrFailed_ = true;
+
+        // Logging
+        loggerError("Failed to enable the speed ISR!");
+    }
+
+    /* --- Configure the speed interrupt --- */
+
+    /* --- Configure the rpm interrupt --- */
+
+    // Setup gpio
+    gpio_set_direction(GPIO_RPM, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(GPIO_RPM, GPIO_PULLDOWN_ONLY);
+    gpio_set_intr_type(GPIO_RPM, GPIO_INTR_NEGEDGE);
+
+    // Activate the ISR for measuring the frequency for the rpm
+    if (!initRpmIsrFailed_ && sensorManagerEnableRpmISR()) {
+        // Everything worked
+        rpmIsrActive_ = true;
+        initRpmIsrFailed_ = false;
+    } else {
+        // It failed
+        rpmIsrActive_ = false;
+        initRpmIsrFailed_ = true;
+
+        // Logging
+        loggerError("Failed to enable the rpm ISR!");
+    }
+
+    /* --- Configure the rpm interrupt --- */
+
     // Return result
-    if (initAdc2OilChannelFailed_ || initAdc2FuelChannelFailed_ || initAdc2WaterChannelFailed_) return 2;// Initialization succeeded with errors
-    return 1;                                                                                            // Initialization succeeded
+    if (initAdc2OilChannelFailed_ || initAdc2FuelChannelFailed_ || initAdc2WaterChannelFailed_ || initSpeedIsrFailed_ || initRpmIsrFailed_)
+        return 2;// Initialization succeeded with errors
+    return 1;    // Initialization succeeded
 }
 
 void sensorManagerUpdateOilPressure(void) {
@@ -279,7 +403,6 @@ void sensorManagerUpdateFuelLevel(void) {
     // Calculate the fuel level from the calculated resistance
     const int oldFuelLevelValue = fuelLevelInPercent_;
     fuelLevelInPercent_ = calculateFuelLevelFromResistance();
-    printf("adc: %d - voltage: %d - resistance: %f - level: %d\n", rawAdcValue, voltage, fuelLevelResistance_, fuelLevelInPercent_);
 
     // Did it change?
     if (oldFuelLevelValue != fuelLevelInPercent_) {
@@ -317,7 +440,7 @@ void sensorManagerUpdateWaterTemperature(void) {
 
     // Calculate the water temperature from the calculated resistance
     const float oldWaterTemperatureValue = waterTemperature_;
-    //waterTemperature_ = calculateWaterTemperatureFromResistance();
+    waterTemperature_ = calculateWaterTemperatureFromResistance();
 
     // Did it change?
     if (oldWaterTemperatureValue != waterTemperature_) {
@@ -328,4 +451,62 @@ void sensorManagerUpdateWaterTemperature(void) {
 
 float sensorManagerGetWaterTemperature(void) {
     return waterTemperature_;
+}
+
+bool sensorManagerEnableSpeedISR() {
+    return (gpio_isr_handler_add(GPIO_SPEED, speedInterruptHandler, NULL) == ESP_OK);
+}
+
+void sensorManagerDisableSpeedISR() {
+    gpio_isr_handler_remove(GPIO_SPEED);
+}
+
+void sensorManagerUpdateSpeed(void) {
+    // Calculate how much time between the two falling edges was
+    const int64_t time = timeOfFallingEdgeSpeed_ - lastTimeOfFallingEdgeSpeed_;
+
+    // Convert the time to seconds
+    const float fT = (float) time / 1000.0f;
+
+    // Then save the speed frequency (rounded)
+    speedInHz_ = (int) round(1000.0 / fT);
+
+    // Is the speed value valid?
+    if (speedInHz_ >= 500) speedInHz_ = -1;
+
+    // Convert the frequency to actual speed
+    speed_ = (int) calculateSpeedFromFrequency();
+}
+
+int sensorManagerGetSpeed(void) {
+    return speed_;
+}
+
+bool sensorManagerEnableRpmISR() {
+    return gpio_isr_handler_add(GPIO_RPM, rpmInterruptHandler, NULL) == ESP_OK;
+}
+
+void sensorManagerDisableRpmISR() {
+    gpio_isr_handler_remove(GPIO_RPM);
+}
+
+void sensorManagerUpdateRPM(void) {
+    // Calculate how much time between the two falling edges was
+    const int64_t time = timeOfFallingEdgeRPM_ - lastTimeOfFallingEdgeRPM_;
+
+    // Convert the time to seconds
+    const float fT = (float) time / 1000.0f;
+
+    // Then save the rpm frequency (rounded)
+    rpmInHz_ = (int) round(1000.0 / fT);
+
+    // Is the rpm value valid?
+    if (rpmInHz_ >= 300) rpmInHz_ = -1;
+
+    // Convert the frequency to actual rpm
+    rpm_ = calculateRpmFromFrequency();
+}
+
+int sensorManagerGetRPM(void) {
+    return rpm_;
 }

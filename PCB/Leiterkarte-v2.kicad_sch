@@ -5284,10 +5284,10 @@
 			"GAKAQRgCgEEYAoBBGAKAQRgCgEEYAoBBGAKAiPw/ddz8CsJFjOsAAAAASUVORK5CYII="
 		)
 	)
-	(text_box "- Longer pads on the USB-C port and PCB\n- Bigger JST connectors\n- More GND vias\n- Bigger Cin1 (i guess)"
+	(text_box "- Longer pads on the USB-C port and ESP\n- Bigger JST connectors\n- More GND vias\n- Bigger Cin1 (i guess)\n- Put Power Supply on the upper side\n- Pulldown for speed line\n- Maybe make one shield plane to 3.3V\n- Check MAX9926 max input voltage for the sensor"
 		(exclude_from_sim no)
-		(at 197.104 138.938 0)
-		(size 40.894 27.178)
+		(at 177.038 138.938 0)
+		(size 61.214 27.178)
 		(stroke
 			(width 0)
 			(type default)
@@ -5509,7 +5509,7 @@
 		)
 		(uuid "cde41fad-1dbc-451a-ab6f-ba2f9a197d91")
 	)
-	(text "The STM32 allows 3.6V max.\nWe only measure <500Hz, so\nthis divider has no negative affects"
+	(text "The ESP32 allows 3.6V max.\nWe only measure <500Hz, so\nthis divider has no negative affects"
 		(exclude_from_sim no)
 		(at 213.106 62.23 0)
 		(effects

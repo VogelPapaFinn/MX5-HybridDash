@@ -3,8 +3,7 @@
 // Project
 #include "FileManager/FileManager.h"
 #include "Logger/Logger.h"
-
-#include <SensorManager/SensorManager.h>
+#include "SensorManager/SensorManager.h"
 
 void app_main(void) {
     // Initialize FileManager
@@ -35,7 +34,7 @@ void app_main(void) {
         //sensorManagerUpdateFuelLevel();
         //sensorManagerUpdateOilPressure();
         //sensorManagerUpdateWaterTemperature();
-
+        sensorManagerUpdateRPM();
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

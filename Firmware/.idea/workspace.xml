@@ -8,6 +8,7 @@
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="4" type="long" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
   </component>
   <component name="CMakePresetLoader">{
   &quot;useNewFormat&quot;: true
@@ -174,15 +175,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="64c84b50-c148-40a8-af48-38eea64c9008" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-22_184030.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-06_210452.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-17_223029.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-06_214137.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-23_000253.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-06_224644.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-23_010637.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-06_232106.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-17_223719.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-07_213221.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-22_211706.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-08_211151.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_145135.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-12-17_212018.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_prl" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_prl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_154846.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_170914.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_171933.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_174329.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-10_211604.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -256,7 +253,7 @@
     &quot;CMake Application.openocd.executor&quot;: &quot;Run&quot;,
     &quot;Embedded GDB Server.app.executor&quot;: &quot;Debug&quot;,
     &quot;Embedded GDB Server.firmware.elf.executor&quot;: &quot;Debug&quot;,
-    &quot;OpenOCD Download &amp; Run.Debug.executor&quot;: &quot;Debug&quot;,
+    &quot;OpenOCD Download &amp; Run.Debug.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
@@ -296,6 +293,11 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.build-flash-monitor">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="__idf_app_trace" type="CMakeRunConfiguration" factoryName="Application" folderName="Useless Junk" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="__idf_app_trace" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -1238,6 +1240,10 @@
       <workItem from="1734548541932" duration="25000" />
       <workItem from="1734889244819" duration="156000" />
       <workItem from="1734889739250" duration="16352000" />
+      <workItem from="1734981177464" duration="4399000" />
+      <workItem from="1735229132345" duration="5038000" />
+      <workItem from="1736018308295" duration="9621000" />
+      <workItem from="1736090057207" duration="4188000" />
     </task>
     <servers />
   </component>
