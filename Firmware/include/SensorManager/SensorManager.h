@@ -39,6 +39,7 @@
 #define ADC_CHANNEL_OIL_PRESSURE ADC_CHANNEL_1
 #define ADC_CHANNEL_FUEL_LEVEL ADC_CHANNEL_0
 #define ADC_CHANNEL_WATER_TEMPERATURE ADC_CHANNEL_2
+#define ADC_CHANNEL_INT_TEMPERATURE ADC_CHANNEL_6
 
 // OIL PRESSURE THRESHOLDS
 #define OIL_LOWER_VOLTAGE_THRESHOLD 65 // mV -> R2 ~= 5 Ohms
@@ -87,10 +88,10 @@ float sensorManagerGetWaterTemperature(void);
 
 //! \brief Enables the speed ISR
 //! \retval Boolean indicating if it worked
-bool sensorManagerEnableSpeedISR();
+bool sensorManagerEnableSpeedISR(void);
 
 //! \brief Disables the speed ISR
-void sensorManagerDisableSpeedISR();
+void sensorManagerDisableSpeedISR(void);
 
 //! \brief Updates the speed
 void sensorManagerUpdateSpeed(void);
@@ -101,10 +102,10 @@ int sensorManagerGetSpeed(void);
 
 //! \brief Enables the rpm ISR
 //! \retval Boolean indicating if it worked
-bool sensorManagerEnableRpmISR();
+bool sensorManagerEnableRpmISR(void);
 
 //! \brief Disables the rpm ISR
-void sensorManagerDisableRpmISR();
+void sensorManagerDisableRpmISR(void);
 
 //! \brief Updates the rpm
 void sensorManagerUpdateRPM(void);
@@ -112,5 +113,12 @@ void sensorManagerUpdateRPM(void);
 //! \brief Returns the rpm
 //! \retval The rpm as integer
 int sensorManagerGetRPM(void);
+
+//! \brief Updates the internal temperature
+void sensorManagerUpdateInternalTemperature(void);
+
+//! \brief Returns the internal temperature in degree Celsius
+//! \retval The temperature as double
+double sensorManagerGetInternalTemperature(void);
 
 #endif// FIRMWARE_INCLUDE_C_HEADER_TEMPLATE_H_SENSORMANAGER

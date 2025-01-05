@@ -5173,18 +5173,6 @@
 		(uuid cdeef078-1e61-4f1e-9a8a-979895941397)
 	)
 	(rectangle
-		(start 238.76 138.938)
-		(end 284.988 165.862)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid cea54e23-ae90-4901-a22d-96fb802ad259)
-	)
-	(rectangle
 		(start 20.32 52.578)
 		(end 114.808 80.01)
 		(stroke
@@ -5284,10 +5272,10 @@
 			"GAKAQRgCgEEYAoBBGAKAQRgCgEEYAoBBGAKAiPw/ddz8CsJFjOsAAAAASUVORK5CYII="
 		)
 	)
-	(text_box "- Longer pads on the USB-C port and ESP\n- Bigger JST connectors\n- More GND vias\n- Bigger Cin1 (i guess)\n- Put Power Supply on the upper side\n- Pulldown for speed line\n- Maybe make one shield plane to 3.3V\n- Check MAX9926 max input voltage for the sensor"
+	(text_box "- Longer pads on the USB-C port and ESP\n- Bigger JST connectors\n- More GND vias\n- Bigger Cin1 (i guess)\n- Put Power Supply on the upper side\n- Pulldown for speed line\n- Maybe make one shield plane to 3.3V\n- Check MAX9926 max input voltage for the sensor\n- Add pulldown for RPM line\n- Check if RPM voltage is high enough for the voltage divider. Has to be >2.5V on HIGH\n- Filter cap on the RPM line?"
 		(exclude_from_sim no)
-		(at 177.038 138.938 0)
-		(size 61.214 27.178)
+		(at 177.038 135.89 0)
+		(size 107.188 29.464)
 		(stroke
 			(width 0)
 			(type default)
@@ -5335,17 +5323,6 @@
 			(justify left)
 		)
 		(uuid "0b703c10-4aeb-41f6-b383-b036b19f02f9")
-	)
-	(text "Needed Components: [- Added ; + Connected]\n+ 3x SPI\n+ 1x SWD\n+ 1x SD MMC - SD Card\n+ 3x Ohmmeter (Oil, Temp, Fuel)\n+ 2x Frequency Measurement (Speed, RPM)\n+ 2x Voltage Check (Indicator L/R)\n+ Temperature Sensor (inside MCU)\n+ Buttons\n+ Fan connector\n+ 3x LEDs\n\n(WiFi/Bluetooth Module)"
-		(exclude_from_sim no)
-		(at 238.76 152.654 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "0c9be46b-fa6a-4325-bdf3-75187600bf29")
 	)
 	(text "Optional Button Connections"
 		(exclude_from_sim no)

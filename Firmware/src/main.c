@@ -34,7 +34,9 @@ void app_main(void) {
         //sensorManagerUpdateFuelLevel();
         //sensorManagerUpdateOilPressure();
         //sensorManagerUpdateWaterTemperature();
-        sensorManagerUpdateRPM();
+        //sensorManagerUpdateSpeed();
+        //sensorManagerUpdateRPM();
+        //sensorManagerUpdateInternalTemperature();
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

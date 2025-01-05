@@ -175,11 +175,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="64c84b50-c148-40a8-af48-38eea64c9008" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_154846.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_170914.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_171933.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-09_174329.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-10_211604.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -1243,7 +1238,7 @@
       <workItem from="1734981177464" duration="4399000" />
       <workItem from="1735229132345" duration="5038000" />
       <workItem from="1736018308295" duration="9621000" />
-      <workItem from="1736090057207" duration="4188000" />
+      <workItem from="1736090057207" duration="6989000" />
     </task>
     <servers />
   </component>

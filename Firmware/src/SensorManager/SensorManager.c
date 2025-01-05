@@ -7,6 +7,8 @@
 // ADC stuff
 static adc_oneshot_unit_handle_t adc2Handle_;
 static bool initAdc2Failed_ = false;
+static adc_oneshot_unit_handle_t adc1Handle_;
+static bool initAdc1Failed_ = false;
 
 // Oil pressure stuff
 static bool oilPressure_ = false;
@@ -41,8 +43,14 @@ static int64_t timeOfFallingEdgeRPM_ = 0;
 static bool rpmIsrActive_ = false;
 static bool initRpmIsrFailed_ = false;
 
+// Internal temperature sensor stuff
+static int intTempRawAdcValue_ = 0;
+static int intTempVoltageMV_ = 0;
+static double internalTemperature_ = 0.0;
+static adc_cali_handle_t adc2IntTempCaliHandle_;
+static bool initAdc1IntTempChannelFailed_ = false;
+
 // Temporary stuff so I don't forget anything to implement
-static int tempSensor1_ = -1;
 static int tempSensor2_ = -1;
 
 //! \brief Calculates the resistance of a voltage divider
@@ -169,11 +177,11 @@ int sensorManagerInit(void) {
         return 0;
     }
 
+    /* --- Configure the oil pressure ADC2 channel --- */
+
     // Configure oil pressure GPIO
     gpio_set_direction(GPIO_OIL_PRESSURE, GPIO_MODE_INPUT);
     gpio_set_pull_mode(GPIO_OIL_PRESSURE, GPIO_PULLDOWN_ONLY);
-
-    /* --- Configure the oil pressure ADC2 channel --- */
 
     // Create the config
     const adc_oneshot_chan_cfg_t adc2OilConfig = {
@@ -336,8 +344,57 @@ int sensorManagerInit(void) {
 
     /* --- Configure the rpm interrupt --- */
 
+    /* --- Configure the internal temperature sensor --- */
+
+    // Setup gpio
+    gpio_set_direction(GPIO_NUM_7, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(GPIO_NUM_7, GPIO_PULLDOWN_ONLY);
+
+    // Initialize the ADC2
+    const adc_oneshot_unit_init_cfg_t adc1InitConfig = {
+            .unit_id = ADC_UNIT_1,
+            .ulp_mode = ADC_ULP_MODE_DISABLE};
+    if (adc_oneshot_new_unit(&adc1InitConfig, &adc1Handle_) != ESP_OK) {
+        // Init was NOT successful!
+        initAdc1Failed_ = true;
+
+        // Logging
+        loggerWarn("Failed to initialize ADC1!");
+    }
+
+    // Create the channel config
+    const adc_oneshot_chan_cfg_t adc2IntTempConfig = {
+            .bitwidth = ADC_BITWIDTH_12,
+            .atten = ADC_ATTEN_DB_6,
+    };
+    initAdc1IntTempChannelFailed_ = adc_oneshot_config_channel(adc1Handle_, ADC_CHANNEL_INT_TEMPERATURE, &adc2IntTempConfig) != ESP_OK;
+
+    // Logging
+    if (initAdc1IntTempChannelFailed_) {
+        loggerError("Failed to initialize ADC2 channel: %d", ADC_CHANNEL_INT_TEMPERATURE);
+    }
+
+    // Create the calibration curve config
+    const adc_cali_curve_fitting_config_t intTempCaliConfig = {
+            .unit_id = ADC_UNIT_1,
+            .chan = ADC_CHANNEL_INT_TEMPERATURE,
+            .atten = ADC_ATTEN_DB_6,
+            .bitwidth = ADC_BITWIDTH_12,
+    };
+
+    // Create calibration curve fitting
+    if (adc_cali_create_scheme_curve_fitting(&intTempCaliConfig, &adc2IntTempCaliHandle_) != ESP_OK) {
+        // Mark the oil channel as failed
+        initAdc1IntTempChannelFailed_ = true;
+
+        // Logging
+        loggerError("'adc_cali_create_scheme_curve_fitting' for the internal temperature sensor channel FAILED");
+    }
+
+    /* --- Configure the internal temperature sensor --- */
+
     // Return result
-    if (initAdc2OilChannelFailed_ || initAdc2FuelChannelFailed_ || initAdc2WaterChannelFailed_ || initSpeedIsrFailed_ || initRpmIsrFailed_)
+    if (initAdc2Failed_ || initAdc2OilChannelFailed_ || initAdc2FuelChannelFailed_ || initAdc2WaterChannelFailed_ || initSpeedIsrFailed_ || initRpmIsrFailed_ || initAdc1IntTempChannelFailed_)
         return 2;// Initialization succeeded with errors
     return 1;    // Initialization succeeded
 }
@@ -454,10 +511,16 @@ float sensorManagerGetWaterTemperature(void) {
 }
 
 bool sensorManagerEnableSpeedISR() {
+    // Was the init successfully?
+    if (initSpeedIsrFailed_) return false;
+
     return (gpio_isr_handler_add(GPIO_SPEED, speedInterruptHandler, NULL) == ESP_OK);
 }
 
 void sensorManagerDisableSpeedISR() {
+    // Was the init successfully?
+    if (initSpeedIsrFailed_) return;
+
     gpio_isr_handler_remove(GPIO_SPEED);
 }
 
@@ -483,10 +546,16 @@ int sensorManagerGetSpeed(void) {
 }
 
 bool sensorManagerEnableRpmISR() {
+    // Was the init successfully?
+    if (initRpmIsrFailed_) return false;
+
     return gpio_isr_handler_add(GPIO_RPM, rpmInterruptHandler, NULL) == ESP_OK;
 }
 
 void sensorManagerDisableRpmISR() {
+    // Was the init successfully?
+    if (initRpmIsrFailed_) return;
+
     gpio_isr_handler_remove(GPIO_RPM);
 }
 
@@ -509,4 +578,25 @@ void sensorManagerUpdateRPM(void) {
 
 int sensorManagerGetRPM(void) {
     return rpm_;
+}
+
+void sensorManagerUpdateInternalTemperature(void) {
+    // Was the init successfully?
+    if (initAdc2Failed_ || initAdc1IntTempChannelFailed_) return;
+
+    // Try to get a reading from the ADC
+    if (adc_oneshot_read(adc1Handle_, ADC_CHANNEL_INT_TEMPERATURE, &intTempRawAdcValue_) != ESP_OK) {
+        // Logging
+        loggerError("Failed to read the internal temperature from the ADC!");
+    }
+
+    // Convert the adc raw value to a voltage (mV)
+    adc_cali_raw_to_voltage(adc2IntTempCaliHandle_, intTempRawAdcValue_, &intTempVoltageMV_);
+
+    // Then calculate the temperature from the voltage
+    internalTemperature_ = ((double) intTempVoltageMV_ - 540.0) / 10.0;
+}
+
+double sensorManagerGetInternalTemperature(void) {
+    return internalTemperature_;
 }
