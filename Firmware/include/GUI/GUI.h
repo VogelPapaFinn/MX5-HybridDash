@@ -3,11 +3,46 @@
 
 /* --- Includes --- */
 
+// espidf includes
+#include "driver/gpio.h"
+#include "driver/spi_common.h"
+#include "esp_lcd_gc9a01.h"
+#include "esp_lcd_io_spi.h"
+#include "esp_lcd_panel_dev.h"
+#include "esp_lcd_panel_interface.h"
+#include "esp_lcd_panel_io.h"
+#include "esp_lcd_panel_ops.h"
+#include "esp_lcd_types.h"
+#include "esp_timer.h"
+
+// lvgl includes
+#include "lvgl.h"
+
 /* --- Defines & Macros --- */
+#define GUI_LCD_SPI_HOST SPI2_HOST
+#define GUI_LCD_RES 240
+#define GUI_LCD_BITS_PER_PIXEL (16)
+
+#define GUI_GPIO_LCD1_CS GPIO_NUM_39
+#define GUI_GPIO_LCD2_CS GPIO_NUM_40
+#define GUI_GPIO_LCD3_CS GPIO_NUM_41
+#define GUI_GPIO_LCD_PCLK GPIO_NUM_42
+#define GUI_GPIO_LCD_DATA0 GPIO_NUM_38
+#define GUI_GPIO_LCD_RST GPIO_NUM_43
+#define GUI_GPIO_LCD_DC GPIO_NUM_44
 
 /* --- Variables, Typedefs etc. --- */
 
 /* --- Imported Variables, Typedefs etc. --- */
 
 /* --- Global variables and function (headers) --- */
+
+//! \brief Initializes the GUI system
+//! \retval A boolean indicating if the init was successful
+bool guiInit(void);
+
+//! \brief Deinitializes the GUI system. Mainly used so clang does stop
+//! annoying with leaked memory.
+void guiDeInit(void);
+
 #endif// FIRMWARE_INCLUDE_C_HEADER_TEMPLATE_H_GUI

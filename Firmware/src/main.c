@@ -2,6 +2,7 @@
 
 // Project
 #include "FileManager/FileManager.h"
+#include "GUI/GUI.h"
 #include "Logger/Logger.h"
 #include "SensorManager/SensorManager.h"
 
@@ -27,6 +28,18 @@ void app_main(void) {
     } else {
         // Logging
         loggerError("Couldn't initialize SensorManager");
+    }
+
+    // Initialize the GUI system
+    if (guiInit()) {
+        // Logging
+        loggerInfo("GUI system initialized");
+    } else {
+        // Logging
+        loggerCritical("Couldn't initialize GUI system");
+
+        // Return, as there is no use in continuing
+        return;
     }
 
     while (true) {
