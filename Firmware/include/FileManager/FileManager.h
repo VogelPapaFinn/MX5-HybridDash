@@ -65,7 +65,7 @@ bool fileManagerDeleteFile(const char *path, const int location);
 
 //! \brief Checks if the specified directory exists on the SD Card
 //! \param dir The path to the directory without "/sdcard/"
-//! \retval True if it directory exists - False if it doesn't
+//! \retval True if the directory exists - False if it doesn't
 //! \note The SPIFFS filesystem unfortunately does not support directories
 bool fileManagerDoesDirectoryExist(const char *dir);
 

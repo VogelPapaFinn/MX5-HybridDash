@@ -174,9 +174,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64c84b50-c148-40a8-af48-38eea64c9008" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" afterDir="false" />
-    </list>
+    <list default="true" id="64c84b50-c148-40a8-af48-38eea64c9008" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -255,6 +253,11 @@
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
+    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
     &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
     &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
@@ -1238,7 +1241,9 @@
       <workItem from="1734981177464" duration="4399000" />
       <workItem from="1735229132345" duration="5038000" />
       <workItem from="1736018308295" duration="9621000" />
-      <workItem from="1736090057207" duration="6989000" />
+      <workItem from="1736090057207" duration="8773000" />
+      <workItem from="1736286930405" duration="2997000" />
+      <workItem from="1736795863868" duration="452000" />
     </task>
     <servers />
   </component>

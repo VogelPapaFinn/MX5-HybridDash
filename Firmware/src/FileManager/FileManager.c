@@ -126,6 +126,13 @@ bool fileManagerInit(void) {
 }
 
 bool fileManagerCreateFile(const char *path, const int location) {
+    // Check if the location is mounted
+    if (location == LOCATION_INTERNAL && !spiffsMounted_) {
+        return false;
+    } else if (location == LOCATION_SDCARD && !sdCardMounted_) {
+        return false;
+    }
+
     // Contains the full path to the file
     char *fullPath = buildFullPath(path, location);
 
@@ -160,6 +167,13 @@ bool fileManagerCreateFile(const char *path, const int location) {
 }
 
 bool fileManagerDoesFileExists(const char *path, const int location) {
+    // Check if the location is mounted
+    if (location == LOCATION_INTERNAL && !spiffsMounted_) {
+        return false;
+    } else if (location == LOCATION_SDCARD && !sdCardMounted_) {
+        return false;
+    }
+
     // Contains the full path to the file
     char *fullPath = buildFullPath(path, location);
 
@@ -173,6 +187,13 @@ bool fileManagerDoesFileExists(const char *path, const int location) {
 }
 
 FILE *fileManagerOpenFile(const char *path, const char *mode, const int location) {
+    // Check if the location is mounted
+    if (location == LOCATION_INTERNAL && !spiffsMounted_) {
+        return NULL;
+    } else if (location == LOCATION_SDCARD && !sdCardMounted_) {
+        return NULL;
+    }
+
     // Contains the full path to the file
     char *fullPath = buildFullPath(path, location);
 
@@ -197,6 +218,13 @@ FILE *fileManagerOpenFile(const char *path, const char *mode, const int location
 }
 
 bool fileManagerDeleteFile(const char *path, const int location) {
+    // Check if the location is mounted
+    if (location == LOCATION_INTERNAL && !spiffsMounted_) {
+        return false;
+    } else if (location == LOCATION_SDCARD && !sdCardMounted_) {
+        return false;
+    }
+
     // Contains the full path to the file
     char *fullPath = buildFullPath(path, location);
 
@@ -217,6 +245,11 @@ bool fileManagerDeleteFile(const char *path, const int location) {
 }
 
 bool fileManagerDoesDirectoryExist(const char *dir) {
+    // Check if the sdcard is mounted
+    if (!sdCardMounted_) {
+        return false;
+    }
+
     // Contains the full path to the file
     char *fullPath = buildFullPath(dir, LOCATION_SDCARD);
 
@@ -233,6 +266,11 @@ bool fileManagerDoesDirectoryExist(const char *dir) {
 }
 
 bool fileManagerCreateDir(const char *path) {
+    // Check if the sdcard is mounted
+    if (!sdCardMounted_) {
+        return false;
+    }
+
     // Contains the full path to the file
     char *fullPath = buildFullPath(path, LOCATION_SDCARD);
 
@@ -252,6 +290,11 @@ bool fileManagerCreateDir(const char *path) {
 }
 
 bool fileManagerDeleteDir(const char *path) {
+    // Check if the sdcard is mounted
+    if (!sdCardMounted_) {
+        return false;
+    }
+
     // Contains the full path to the file
     char *fullPath = buildFullPath(path, LOCATION_SDCARD);
 
