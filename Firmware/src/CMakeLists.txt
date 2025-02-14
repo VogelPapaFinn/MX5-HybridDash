@@ -21,6 +21,15 @@ set(FILES
 
         # Utilities
         "../include/macros.h"
+
+        # Fonts
+        "../res/fonts/c/E1234_80.c"
+        "../res/fonts/c/E1234_70.c"
+        "../res/fonts/c/VCR_OSD_MONO_24.c"
+
+        # Images
+        "../res/img/c/blinkerRight.c"
+        "../res/img/c/blinkerLeft.c"
 )
 
 idf_component_register(SRCS ${FILES}

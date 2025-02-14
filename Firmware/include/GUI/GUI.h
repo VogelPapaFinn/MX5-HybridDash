@@ -3,6 +3,9 @@
 
 /* --- Includes --- */
 
+// Project includes
+#include "FileManager/FileManager.h"
+
 // espidf includes
 #include "driver/gpio.h"
 #include "driver/spi_common.h"
@@ -41,8 +44,16 @@
 //! \retval A boolean indicating if the init was successful
 bool guiInit(void);
 
-//! \brief Deinitializes the GUI system. Mainly used so clang does stop
+//! \brief De-Initializes the GUI system. Mainly used so clang does stop
 //! annoying with leaked memory.
 void guiDeInit(void);
+
+//! \brief Activates or disables the right blinker visually
+//! \param active If true the blinker is shown
+void guiSetRightBlinkerActive(const bool active);
+
+//! \brief Activates or disables the left blinker visually
+//! \param active If true the blinker is shown
+void guiSetLeftBlinkerActive(const bool active);
 
 #endif// FIRMWARE_INCLUDE_C_HEADER_TEMPLATE_H_GUI

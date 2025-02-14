@@ -178,6 +178,8 @@
       <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-15_222450.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-16_004746.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-16_165000.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-17_010425.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-21_191523.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2025-01-05_002422.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" afterDir="false" />
     </list>
@@ -207,17 +209,17 @@
     <option name="myRunOnSave" value="true" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/components/lvgl" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/components/lvgl/src/misc/lv_area.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/FileManager/FileManager.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/Logger/Logger.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/SensorManager/SensorManager.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/FileManager/FileManager.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/GUI/GUI.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main.c" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -697,7 +699,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="__idf_src" type="CMakeRunConfiguration" factoryName="Application" folderName="Useless Junk" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="__idf_src" CONFIG_NAME="Debug">
+    <configuration name="__idf_src" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="__idf_src" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -1133,7 +1135,6 @@
       <item itemvalue="CMake Application.__idf_soc" />
       <item itemvalue="CMake Application.__idf_spi_flash" />
       <item itemvalue="CMake Application.__idf_spiffs" />
-      <item itemvalue="CMake Application.__idf_src" />
       <item itemvalue="CMake Application.__idf_tcp_transport" />
       <item itemvalue="CMake Application.__idf_touch_element" />
       <item itemvalue="CMake Application.__idf_unity" />
@@ -1192,6 +1193,7 @@
       <item itemvalue="CMake Application.size" />
       <item itemvalue="CMake Application.uf2-app" />
       <item itemvalue="CMake Application.uf2" />
+      <item itemvalue="CMake Application.__idf_src" />
       <item itemvalue="CMake Application.add-dependency" />
       <item itemvalue="CMake Application.bootloader-flash" />
       <item itemvalue="CMake Application.build-flash-monitor" />
@@ -1249,7 +1251,9 @@
       <workItem from="1736018308295" duration="9621000" />
       <workItem from="1736090057207" duration="8773000" />
       <workItem from="1736286930405" duration="2997000" />
-      <workItem from="1736795863868" duration="3807000" />
+      <workItem from="1736795863868" duration="3972000" />
+      <workItem from="1736889925054" duration="5050000" />
+      <workItem from="1739541324901" duration="26506000" />
     </task>
     <servers />
   </component>

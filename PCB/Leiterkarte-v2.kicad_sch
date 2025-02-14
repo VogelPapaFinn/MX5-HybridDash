@@ -5272,7 +5272,7 @@
 			"GAKAQRgCgEEYAoBBGAKAQRgCgEEYAoBBGAKAiPw/ddz8CsJFjOsAAAAASUVORK5CYII="
 		)
 	)
-	(text_box "- Longer pads on the USB-C port and ESP\n- Bigger JST connectors\n- More GND vias\n- Bigger Cin1 (i guess)\n- Put Power Supply on the upper side\n- Pulldown for speed line\n- Maybe make one shield plane to 3.3V\n- Check MAX9926 max input voltage for the sensor\n- Add pulldown for RPM line\n- Check if RPM voltage is high enough for the voltage divider. Has to be >2.5V on HIGH\n- Filter cap on the RPM line?"
+	(text_box "- Longer pads on the USB-C port and ESP\n- Bigger JST connectors\n- More GND vias\n- Bigger Cin1 (i guess)\n- Put Power Supply on the upper side\n- Pulldown for speed line\n- Maybe make one shield plane to 3.3V\n- Check MAX9926 max input voltage for the sensor\n- Add pulldown for RPM line\n- Check if RPM voltage is high enough for the voltage divider. Has to be >2.5V on HIGH\n- Same applies to the blinkers\n- Filter cap on the RPM line?\n- Connect USB-C 5V to the internal 5V rail"
 		(exclude_from_sim no)
 		(at 177.038 135.89 0)
 		(size 107.188 29.464)
