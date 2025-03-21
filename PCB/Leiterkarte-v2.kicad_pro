@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.0,
-          "height": 0.95,
-          "width": 0.8
+          "drill": 3.2,
+          "height": 6.4,
+          "width": 6.4
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -58,7 +58,148 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "silk_overlap|105750000|88950000|26673e9b-c0f3-4a57-ab9c-f3cc858592c3|5c40fc39-a97d-4ede-9e24-46f7e7682a86",
+          ""
+        ],
+        [
+          "silk_overlap|106250000|56275000|c1ebb084-ca52-42d7-99ae-de581c0adc60|25e505ea-2793-41cb-a35d-d8398c4cb2cd",
+          ""
+        ],
+        [
+          "silk_overlap|106250000|58725000|d3bed6c1-16a1-40d8-bb39-5b236b4abfc4|bea5b8bb-f28b-406f-81d8-9eaaa5998409",
+          ""
+        ],
+        [
+          "silk_overlap|109500000|60950000|c90dec37-b08f-4d23-b6c2-5682739dc76e|f6eff3c2-d762-4030-aed1-17f8a22f613b",
+          ""
+        ],
+        [
+          "silk_overlap|109500000|65450000|67e092c3-3267-49ae-a17d-119c94c34eba|b7584ebb-f90f-4e31-863f-b048aa8333e5",
+          ""
+        ],
+        [
+          "silk_overlap|111750000|90950000|bfb93030-00ab-41da-af63-81d84aa6249d|d44abbf3-3f84-4ac0-9451-3fd43ae847de",
+          ""
+        ],
+        [
+          "silk_overlap|117000000|81200000|76f80a36-2ed4-490c-bde9-77dec1b76305|8b8457bb-c29b-4589-b938-2d8d10991440",
+          ""
+        ],
+        [
+          "silk_overlap|118250000|101200000|f464d029-ebad-4bf7-83f7-880c977a681e|3c1462fc-d06a-4a4b-9118-2e7466497f8f",
+          ""
+        ],
+        [
+          "silk_overlap|124000000|65200000|5482e634-6164-40a2-9b42-13d01dde614c|a2a4db13-8a49-4c87-8f27-091db52dc230",
+          ""
+        ],
+        [
+          "silk_overlap|128500000|99950000|35c0c1f9-08aa-4613-96cb-c6b24ec5fa3a|070d2f5c-7495-4511-877f-962a899261d1",
+          ""
+        ],
+        [
+          "silk_overlap|128750000|64200000|74183945-2a0c-4068-8030-5e698949a2a6|d80f073c-a590-48a5-ad23-9ffd28a84567",
+          ""
+        ],
+        [
+          "silk_overlap|128920000|68120000|ddb861ae-cfcb-4365-969a-8456e9b4deab|7243b1ae-0778-4e3c-b35a-86f0a4a96de1",
+          ""
+        ],
+        [
+          "silk_overlap|130250000|71450000|6ea8b94a-f1e5-43d2-8560-7b264d2d7e7a|c19e814e-2803-45e3-af69-fa5cddfd9063",
+          ""
+        ],
+        [
+          "silk_overlap|130250000|97700000|084af1ba-c572-484f-8171-9e7e0006a763|a33983c5-d880-4acc-9450-5e435e561396",
+          ""
+        ],
+        [
+          "silk_overlap|132750000|99950000|09fecc0d-b236-4d4c-8c4a-c41ffbab2dce|7dea63f7-836e-49d8-8665-fe3377e53c26",
+          ""
+        ],
+        [
+          "silk_overlap|133500000|63450000|6404d842-5ea8-452d-a1c2-4ea8acc21c1e|0af43baa-deab-4f57-931a-f26f7c408472",
+          ""
+        ],
+        [
+          "silk_overlap|135000000|98200000|c8e7a912-1291-4ad5-ab48-e2167446d974|6f8d3ca7-eb6f-4746-b277-558f7f01866f",
+          ""
+        ],
+        [
+          "silk_overlap|135750000|65450000|56f842dd-58b0-45e5-9a68-0ed04b559519|ffc2de36-2ff1-4424-bfc7-a3ba5e2272ce",
+          ""
+        ],
+        [
+          "silk_overlap|138500000|98700000|686905d0-1bbb-42d0-91e6-1c944cb0f560|98faab7c-26f8-40f9-b4eb-a7d4d3091154",
+          ""
+        ],
+        [
+          "silk_overlap|142070000|74750000|1a7606dd-fcb9-45d9-95be-a20f614b4f28|ef81fedc-51f0-4dad-acd0-569193dd32a9",
+          ""
+        ],
+        [
+          "silk_overlap|143000000|99450000|56f78678-8977-456d-bbed-a99b59ecad91|9c71bb9e-97bc-41b6-9105-5963cabad32c",
+          ""
+        ],
+        [
+          "silk_overlap|148250000|101700000|cd97049a-28e8-4e58-bae6-9ceb3763820a|d9bdf92d-c6aa-421b-ac7d-a4f6f4d0f1eb",
+          ""
+        ],
+        [
+          "silk_overlap|151500000|101700000|386816e9-674c-4cf7-a24f-2e97ebae3dd9|dacd2559-5082-412f-89b5-f0ae026c93c0",
+          ""
+        ],
+        [
+          "silk_overlap|152250000|88200000|324d9102-7348-4f27-8e93-2d87e3ca61f5|ed0f5baf-fc87-4c4f-a255-d6361f16a950",
+          ""
+        ],
+        [
+          "silk_overlap|152750000|53450000|1fe0df0e-32e6-4b7e-a557-354b6c46a287|83bb5b29-6440-4e32-8fdc-f6cc2467bd7a",
+          ""
+        ],
+        [
+          "silk_overlap|154000000|74012500|e5abf0f9-afaf-4f24-b301-c308323240a3|f17b6811-f183-4af0-b493-64066663b776",
+          ""
+        ],
+        [
+          "silk_overlap|154062500|71137500|ecba68b1-4fe1-4baa-9b90-cc7b11e16e19|2758c63a-a3e7-43d1-8e6a-d649ae489edb",
+          ""
+        ],
+        [
+          "silk_overlap|158812500|100512500|82b91d89-2549-426a-9768-bfa6df3fbd89|770410e3-3d7e-4e6a-b929-803952f4148b",
+          ""
+        ],
+        [
+          "silk_overlap|162000000|68200000|efe33a30-d7b3-4620-9ea3-cfca2a974552|dea60e47-c130-420d-b576-49f659c7565e",
+          ""
+        ],
+        [
+          "silk_overlap|162000000|76700000|3c9c8c7f-c713-4ca7-aabf-16b1bfcae5f0|caae4f55-ef24-4a9b-84f8-140a2827c332",
+          ""
+        ],
+        [
+          "silk_overlap|170000000|89450000|dff2f398-7bb7-4b2a-a647-4f7dca687f66|8aae23b3-4a22-4df3-8c22-2a3766b0ce8e",
+          ""
+        ],
+        [
+          "silk_overlap|173700000|88750000|3ebed96f-a760-4551-9c14-76c6f1b49a5c|36fcea3a-9384-401a-b082-02b852f1a114",
+          ""
+        ],
+        [
+          "silk_overlap|176700000|88750000|087d51bd-fae6-4d5a-95be-62f2d16448b8|3293fcc5-0a55-4469-8905-6b34c7e03c8e",
+          ""
+        ],
+        [
+          "silk_overlap|83500000|101950000|efd45c04-47ad-445a-ae79-05e5b4eceae6|6d1e11ab-5507-40c6-b20c-61785c416e74",
+          ""
+        ],
+        [
+          "silk_overlap|88750000|77950000|7bec8cfa-34aa-4d79-bb35-90ada8495888|20c5777d-b09a-4b5d-b1f9-54c08b9d9a0b",
+          ""
+        ]
+      ],
       "meta": {
         "version": 2
       },
@@ -131,7 +272,7 @@
         "min_hole_to_hole": 0.5,
         "min_microvia_diameter": 0.2,
         "min_microvia_drill": 0.1,
-        "min_resolved_spokes": 2,
+        "min_resolved_spokes": 1,
         "min_silk_clearance": 0.0,
         "min_text_height": 0.8,
         "min_text_thickness": 0.08,
