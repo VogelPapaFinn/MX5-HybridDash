@@ -1,5 +1,7 @@
 
-# MX5 Hybrid Dash
+# MX5 Hybrid Dash - MISSING A LOT OF UPDATES
+
+(This README contains quite a lot of old information, it will be updated "soon". The project itself is still WIP!)
 
 Just for fun I wanted to build a 'Hybrid Dash' or 'Hybrid Instrument Cluster' for my 2000' MX-5 NB. Hybrid means, that I want to upgrade the OEM instrument cluster to contain some displays and be overall smarter WITHOUT destroying the charm of it. The difference to version 1 is that I drop the RPI4 and the Arduino. Instead everything will be combined on a single PCB and the logic will be handled by a STM32 or ESP32 microcontroller. Furthermore the VR conditioner board will be merged onto the PCB. We plan to integrate the PCB inside the cluster, if possible.
 This branch contains version 2 of the project. As we do not ordered the PCB yet, I could not yet test its functionality in my car. Please not that this is still under development. I am currently designing the circuit and the PCB layout.
