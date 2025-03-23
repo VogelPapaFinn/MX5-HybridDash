@@ -925,6 +925,145 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:C"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "C"
+				(at 0.635 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "C"
+				(at 0.635 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0.9652 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Unpolarized capacitor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "cap capacitor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "C_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "C_0_1"
+				(polyline
+					(pts
+						(xy -2.032 0.762) (xy 2.032 0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "C_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 2.794)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 2.794)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:C_Polarized"
 			(pin_numbers
 				(hide yes)
@@ -1990,6 +2129,143 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Regulator_Linear:AMS1117-3.3"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at -3.81 3.175 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "AMS1117-3.3"
+				(at 0 3.175 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-223-3_TabPin2"
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "http://www.advanced-monolithic.com/pdf/ds1117.pdf"
+				(at 2.54 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "1A Low Dropout regulator, positive, 3.3V fixed output, SOT-223"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "linear regulator ldo fixed positive"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "SOT?223*TabPin2*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "AMS1117-3.3_0_1"
+				(rectangle
+					(start -5.08 -5.08)
+					(end 5.08 1.905)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "AMS1117-3.3_1_1"
+				(pin power_in line
+					(at -7.62 0 0)
+					(length 2.54)
+					(name "VI"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -7.62 90)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "VO"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Transistor_FET:2N7002"
 			(pin_names
 				(hide yes)
@@ -3037,8 +3313,8 @@
 		)
 	)
 	(rectangle
-		(start 94.488 71.374)
-		(end 199.644 118.618)
+		(start 89.408 96.52)
+		(end 226.06 151.638)
 		(stroke
 			(width 0)
 			(type default)
@@ -3049,8 +3325,8 @@
 		(uuid 6c4419ab-f2df-4a40-9d22-ce1e4a1d6547)
 	)
 	(rectangle
-		(start 209.804 77.216)
-		(end 279.146 110.49)
+		(start 25.654 26.416)
+		(end 94.996 59.69)
 		(stroke
 			(width 0)
 			(type default)
@@ -3074,7 +3350,7 @@
 	)
 	(rectangle
 		(start 213.106 24.638)
-		(end 274.066 56.134)
+		(end 276.86 56.134)
 		(stroke
 			(width 0)
 			(type default)
@@ -3098,7 +3374,7 @@
 	)
 	(text "SPI Displays"
 		(exclude_from_sim no)
-		(at 209.55 76.2 0)
+		(at 25.4 25.4 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3131,7 +3407,7 @@
 	)
 	(text "USB C - for flashing"
 		(exclude_from_sim no)
-		(at 135.89 73.66 0)
+		(at 130.81 106.68 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3152,13 +3428,13 @@
 		(uuid "060abe33-fd77-4e4a-a31b-a0d008b0147c")
 	)
 	(junction
-		(at 182.88 93.98)
+		(at 177.8 132.08)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "06c5aec8-c40e-4a18-8d83-1d5a2f8e9e9e")
 	)
 	(junction
-		(at 160.02 102.87)
+		(at 154.94 135.89)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "0da9c968-3ff4-4c53-b5ac-8420d0821c2e")
@@ -3173,7 +3449,7 @@
 		(at 269.24 38.1)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "24c11ea2-d414-4821-b85e-8dfb9374a7b5")
+		(uuid "276eb38a-8ee3-4091-a646-0faef2370ded")
 	)
 	(junction
 		(at 250.19 38.1)
@@ -3182,13 +3458,19 @@
 		(uuid "2db53361-262c-47b3-ac00-4995465e6d52")
 	)
 	(junction
+		(at 208.28 109.22)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "408cd000-11be-4189-828b-b97d57650900")
+	)
+	(junction
 		(at 46.99 110.49)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4baed3cb-a0f2-4241-b833-9fe296ee4895")
 	)
 	(junction
-		(at 160.02 110.49)
+		(at 154.94 143.51)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5329aed0-5521-44cd-a324-dccca3c240de")
@@ -3200,13 +3482,13 @@
 		(uuid "5edde02b-d21c-411f-af1b-59c067d1e4ee")
 	)
 	(junction
-		(at 160.02 113.03)
+		(at 154.94 146.05)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "96effec4-b112-4f8f-8549-055de848ae2d")
 	)
 	(junction
-		(at 157.48 80.01)
+		(at 152.4 113.03)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a0347ca3-1c57-4321-a2c2-8e65d46f8331")
@@ -3224,13 +3506,13 @@
 		(uuid "afbe54a1-d268-45e0-a56d-8dab423046a4")
 	)
 	(junction
-		(at 160.02 105.41)
+		(at 154.94 138.43)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b5351a35-fe24-4330-9351-15eba2accfdc")
 	)
 	(junction
-		(at 182.88 96.52)
+		(at 177.8 134.62)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b5446c0e-9c51-4cb6-b574-8a604c970fdc")
@@ -3242,10 +3524,10 @@
 		(uuid "bf2c44f1-7755-4f15-b33f-851e912d04d4")
 	)
 	(junction
-		(at 265.43 38.1)
+		(at 176.53 109.22)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "c22e909a-1632-4208-97a0-617bfb899b0e")
+		(uuid "c278e5a5-cf25-4f34-858a-e3a18336dd1a")
 	)
 	(junction
 		(at 45.72 93.98)
@@ -3278,7 +3560,7 @@
 		(uuid "e40f1571-0791-42a3-b0b4-995ee0ad9467")
 	)
 	(junction
-		(at 160.02 107.95)
+		(at 154.94 140.97)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ee8d1553-5fd5-44e3-9dd8-7c6e3c5bbcb1")
@@ -3306,16 +3588,16 @@
 		(uuid "357a48ef-ee37-43fb-9f95-e45323496570")
 	)
 	(no_connect
-		(at 115.57 92.71)
+		(at 110.49 125.73)
 		(uuid "576a299f-262b-47f5-a0f9-eda66fd31cfd")
 	)
 	(no_connect
-		(at 156.21 95.25)
+		(at 151.13 128.27)
 		(uuid "e3b567da-5c25-415e-abe8-9094f58f2db2")
 	)
 	(wire
 		(pts
-			(xy 157.48 80.01) (xy 157.48 82.55)
+			(xy 152.4 113.03) (xy 152.4 115.57)
 		)
 		(stroke
 			(width 0)
@@ -3335,7 +3617,7 @@
 	)
 	(wire
 		(pts
-			(xy 100.33 86.36) (xy 100.33 85.09)
+			(xy 95.25 119.38) (xy 95.25 118.11)
 		)
 		(stroke
 			(width 0)
@@ -3355,7 +3637,7 @@
 	)
 	(wire
 		(pts
-			(xy 269.24 38.1) (xy 271.78 38.1)
+			(xy 269.24 38.1) (xy 273.05 38.1)
 		)
 		(stroke
 			(width 0)
@@ -3365,7 +3647,17 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 80.01) (xy 157.48 80.01)
+			(xy 208.28 109.22) (xy 220.98 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1377af15-bdbd-4acb-9722-0db52f4c2b74")
+	)
+	(wire
+		(pts
+			(xy 151.13 113.03) (xy 152.4 113.03)
 		)
 		(stroke
 			(width 0)
@@ -3385,7 +3677,7 @@
 	)
 	(wire
 		(pts
-			(xy 100.33 85.09) (xy 102.87 85.09)
+			(xy 95.25 118.11) (xy 97.79 118.11)
 		)
 		(stroke
 			(width 0)
@@ -3415,7 +3707,7 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 93.98) (xy 186.69 93.98)
+			(xy 177.8 132.08) (xy 181.61 132.08)
 		)
 		(stroke
 			(width 0)
@@ -3425,7 +3717,17 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 107.95) (xy 160.02 107.95)
+			(xy 152.4 109.22) (xy 152.4 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "25ec1156-3146-4394-a324-36e48703a4be")
+	)
+	(wire
+		(pts
+			(xy 151.13 140.97) (xy 154.94 140.97)
 		)
 		(stroke
 			(width 0)
@@ -3435,7 +3737,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 102.87) (xy 160.02 102.87)
+			(xy 151.13 135.89) (xy 154.94 135.89)
 		)
 		(stroke
 			(width 0)
@@ -3445,13 +3747,23 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 96.52) (xy 186.69 96.52)
+			(xy 177.8 134.62) (xy 181.61 134.62)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "2af9a309-6dac-4c13-b38e-adda7c6d1b5c")
+	)
+	(wire
+		(pts
+			(xy 165.1 109.22) (xy 176.53 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "317dfcf0-45f7-4e57-9726-d08b51e5d818")
 	)
 	(wire
 		(pts
@@ -3475,7 +3787,7 @@
 	)
 	(wire
 		(pts
-			(xy 167.64 93.98) (xy 182.88 93.98)
+			(xy 162.56 132.08) (xy 177.8 132.08)
 		)
 		(stroke
 			(width 0)
@@ -3485,7 +3797,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 90.17) (xy 167.64 90.17)
+			(xy 151.13 123.19) (xy 162.56 123.19)
 		)
 		(stroke
 			(width 0)
@@ -3525,16 +3837,6 @@
 	)
 	(wire
 		(pts
-			(xy 262.89 38.1) (xy 265.43 38.1)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "42371df8-d2a3-48bf-aa82-672f3b330df6")
-	)
-	(wire
-		(pts
 			(xy 134.62 38.1) (xy 134.62 45.72)
 		)
 		(stroke
@@ -3552,6 +3854,26 @@
 			(type default)
 		)
 		(uuid "48a1f6d9-0d69-4f05-b9f9-fe2bc21c6251")
+	)
+	(wire
+		(pts
+			(xy 262.89 38.1) (xy 269.24 38.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4aea06d5-6e8e-43bf-a732-ef4b8807bc1b")
+	)
+	(wire
+		(pts
+			(xy 208.28 110.49) (xy 208.28 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4e365247-5182-409a-b74a-9bb632cce6f4")
 	)
 	(wire
 		(pts
@@ -3595,7 +3917,7 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 96.52) (xy 165.1 96.52)
+			(xy 177.8 134.62) (xy 160.02 134.62)
 		)
 		(stroke
 			(width 0)
@@ -3615,7 +3937,37 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 113.03) (xy 156.21 113.03)
+			(xy 194.31 120.65) (xy 194.31 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "62273809-8bbd-4f5e-bddb-45c05b0b2c7f")
+	)
+	(wire
+		(pts
+			(xy 157.48 109.22) (xy 152.4 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "670293ab-51f6-4a41-9676-375101f96806")
+	)
+	(wire
+		(pts
+			(xy 176.53 109.22) (xy 186.69 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "693d4088-be12-4ccf-8870-01277dacd89a")
+	)
+	(wire
+		(pts
+			(xy 154.94 146.05) (xy 151.13 146.05)
 		)
 		(stroke
 			(width 0)
@@ -3625,7 +3977,7 @@
 	)
 	(wire
 		(pts
-			(xy 167.64 90.17) (xy 167.64 93.98)
+			(xy 162.56 123.19) (xy 162.56 132.08)
 		)
 		(stroke
 			(width 0)
@@ -3645,7 +3997,7 @@
 	)
 	(wire
 		(pts
-			(xy 271.78 38.1) (xy 271.78 36.83)
+			(xy 273.05 38.1) (xy 273.05 36.83)
 		)
 		(stroke
 			(width 0)
@@ -3675,7 +4027,7 @@
 	)
 	(wire
 		(pts
-			(xy 165.1 92.71) (xy 156.21 92.71)
+			(xy 160.02 125.73) (xy 151.13 125.73)
 		)
 		(stroke
 			(width 0)
@@ -3685,7 +4037,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 110.49) (xy 160.02 113.03)
+			(xy 154.94 143.51) (xy 154.94 146.05)
 		)
 		(stroke
 			(width 0)
@@ -3705,23 +4057,13 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 107.95) (xy 160.02 110.49)
+			(xy 154.94 140.97) (xy 154.94 143.51)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "855883f4-8d75-4d1e-99a3-22542021961f")
-	)
-	(wire
-		(pts
-			(xy 265.43 38.1) (xy 269.24 38.1)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "869d6d78-1d4e-4343-9c45-92dec675d5e5")
 	)
 	(wire
 		(pts
@@ -3765,6 +4107,16 @@
 	)
 	(wire
 		(pts
+			(xy 201.93 109.22) (xy 208.28 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "91304144-d57c-4ad3-afe2-2391a6baff13")
+	)
+	(wire
+		(pts
 			(xy 46.99 110.49) (xy 46.99 109.22)
 		)
 		(stroke
@@ -3795,7 +4147,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 105.41) (xy 160.02 105.41)
+			(xy 151.13 138.43) (xy 154.94 138.43)
 		)
 		(stroke
 			(width 0)
@@ -3805,7 +4157,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 87.63) (xy 162.56 87.63)
+			(xy 151.13 120.65) (xy 157.48 120.65)
 		)
 		(stroke
 			(width 0)
@@ -3815,7 +4167,7 @@
 	)
 	(wire
 		(pts
-			(xy 165.1 96.52) (xy 165.1 92.71)
+			(xy 160.02 134.62) (xy 160.02 125.73)
 		)
 		(stroke
 			(width 0)
@@ -3855,7 +4207,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 110.49) (xy 160.02 110.49)
+			(xy 151.13 143.51) (xy 154.94 143.51)
 		)
 		(stroke
 			(width 0)
@@ -3865,7 +4217,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 100.33) (xy 160.02 102.87)
+			(xy 154.94 133.35) (xy 154.94 135.89)
 		)
 		(stroke
 			(width 0)
@@ -3955,7 +4307,7 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 100.33) (xy 160.02 100.33)
+			(xy 151.13 133.35) (xy 154.94 133.35)
 		)
 		(stroke
 			(width 0)
@@ -3972,6 +4324,16 @@
 			(type default)
 		)
 		(uuid "cb20592a-2461-4b17-af4e-e5396e8d6b3a")
+	)
+	(wire
+		(pts
+			(xy 208.28 120.65) (xy 208.28 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d0a4c389-8d45-41cf-846a-b00a14ba5bb7")
 	)
 	(wire
 		(pts
@@ -4005,7 +4367,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 102.87) (xy 160.02 105.41)
+			(xy 154.94 135.89) (xy 154.94 138.43)
 		)
 		(stroke
 			(width 0)
@@ -4022,16 +4384,6 @@
 			(type default)
 		)
 		(uuid "d8e934d1-fad8-4eb2-bbae-cd538a9b3668")
-	)
-	(wire
-		(pts
-			(xy 168.91 80.01) (xy 165.1 80.01)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d8f4b62a-3c12-4655-92bd-d3620b32e8a4")
 	)
 	(wire
 		(pts
@@ -4055,7 +4407,17 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 105.41) (xy 160.02 107.95)
+			(xy 176.53 120.65) (xy 176.53 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dcf76a58-d1bd-4dd6-83b8-7e719ed1745e")
+	)
+	(wire
+		(pts
+			(xy 154.94 138.43) (xy 154.94 140.97)
 		)
 		(stroke
 			(width 0)
@@ -4065,7 +4427,17 @@
 	)
 	(wire
 		(pts
-			(xy 110.49 85.09) (xy 115.57 85.09)
+			(xy 220.98 109.22) (xy 220.98 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e222cc87-d062-4533-ad28-f2dabc16d5ca")
+	)
+	(wire
+		(pts
+			(xy 105.41 118.11) (xy 110.49 118.11)
 		)
 		(stroke
 			(width 0)
@@ -4105,7 +4477,7 @@
 	)
 	(wire
 		(pts
-			(xy 170.18 87.63) (xy 175.26 87.63)
+			(xy 165.1 120.65) (xy 168.91 120.65)
 		)
 		(stroke
 			(width 0)
@@ -4115,7 +4487,7 @@
 	)
 	(wire
 		(pts
-			(xy 157.48 82.55) (xy 156.21 82.55)
+			(xy 152.4 115.57) (xy 151.13 115.57)
 		)
 		(stroke
 			(width 0)
@@ -4153,9 +4525,19 @@
 		)
 		(uuid "fcdfd93e-8cb1-4823-81fd-c929c677e341")
 	)
+	(wire
+		(pts
+			(xy 176.53 110.49) (xy 176.53 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fe331d2a-f939-4ed4-bbaf-3499610b41ed")
+	)
 	(hierarchical_label "USB_D+"
 		(shape bidirectional)
-		(at 115.57 87.63 180)
+		(at 110.49 120.65 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4177,7 +4559,7 @@
 	)
 	(hierarchical_label "RST"
 		(shape output)
-		(at 250.19 90.17 270)
+		(at 66.04 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4199,7 +4581,7 @@
 	)
 	(hierarchical_label "CLK"
 		(shape output)
-		(at 220.98 90.17 270)
+		(at 36.83 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4221,7 +4603,7 @@
 	)
 	(hierarchical_label "BL"
 		(shape output)
-		(at 252.73 90.17 270)
+		(at 68.58 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4243,7 +4625,7 @@
 	)
 	(hierarchical_label "CLK"
 		(shape output)
-		(at 229.87 101.6 270)
+		(at 45.72 50.8 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4254,7 +4636,7 @@
 	)
 	(hierarchical_label "CLK"
 		(shape output)
-		(at 266.7 90.17 270)
+		(at 82.55 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4276,7 +4658,7 @@
 	)
 	(hierarchical_label "DIN"
 		(shape output)
-		(at 218.44 90.17 270)
+		(at 34.29 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4287,7 +4669,7 @@
 	)
 	(hierarchical_label "CS3"
 		(shape output)
-		(at 269.24 90.17 270)
+		(at 85.09 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4298,7 +4680,7 @@
 	)
 	(hierarchical_label "BL"
 		(shape output)
-		(at 248.92 101.6 270)
+		(at 64.77 50.8 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4309,7 +4691,7 @@
 	)
 	(hierarchical_label "DC"
 		(shape output)
-		(at 226.06 90.17 270)
+		(at 41.91 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4331,7 +4713,7 @@
 	)
 	(hierarchical_label "CS1"
 		(shape output)
-		(at 223.52 90.17 270)
+		(at 39.37 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4342,7 +4724,7 @@
 	)
 	(hierarchical_label "DC"
 		(shape output)
-		(at 247.65 90.17 270)
+		(at 63.5 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4364,7 +4746,7 @@
 	)
 	(hierarchical_label "CS2"
 		(shape output)
-		(at 245.11 90.17 270)
+		(at 60.96 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4375,7 +4757,7 @@
 	)
 	(hierarchical_label "USB_D-"
 		(shape bidirectional)
-		(at 115.57 90.17 180)
+		(at 110.49 123.19 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4386,7 +4768,7 @@
 	)
 	(hierarchical_label "DIN"
 		(shape output)
-		(at 264.16 90.17 270)
+		(at 80.01 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4397,7 +4779,7 @@
 	)
 	(hierarchical_label "CS2"
 		(shape output)
-		(at 261.62 101.6 270)
+		(at 77.47 50.8 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4419,7 +4801,7 @@
 	)
 	(hierarchical_label "DC"
 		(shape output)
-		(at 236.22 101.6 270)
+		(at 52.07 50.8 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4430,7 +4812,7 @@
 	)
 	(hierarchical_label "CLK"
 		(shape output)
-		(at 242.57 90.17 270)
+		(at 58.42 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4441,7 +4823,7 @@
 	)
 	(hierarchical_label "USB_D-"
 		(shape bidirectional)
-		(at 186.69 96.52 0)
+		(at 181.61 134.62 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4463,7 +4845,7 @@
 	)
 	(hierarchical_label "CS3"
 		(shape output)
-		(at 255.27 101.6 270)
+		(at 71.12 50.8 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4474,7 +4856,7 @@
 	)
 	(hierarchical_label "BL"
 		(shape output)
-		(at 231.14 90.17 270)
+		(at 46.99 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4485,7 +4867,7 @@
 	)
 	(hierarchical_label "DIN"
 		(shape output)
-		(at 240.03 90.17 270)
+		(at 55.88 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4496,7 +4878,7 @@
 	)
 	(hierarchical_label "BL"
 		(shape output)
-		(at 276.86 90.17 270)
+		(at 92.71 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4507,7 +4889,7 @@
 	)
 	(hierarchical_label "RST"
 		(shape output)
-		(at 228.6 90.17 270)
+		(at 44.45 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4518,7 +4900,7 @@
 	)
 	(hierarchical_label "RST"
 		(shape output)
-		(at 274.32 90.17 270)
+		(at 90.17 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4529,7 +4911,7 @@
 	)
 	(hierarchical_label "DIN"
 		(shape output)
-		(at 223.52 101.6 270)
+		(at 39.37 50.8 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4540,7 +4922,7 @@
 	)
 	(hierarchical_label "CS1"
 		(shape output)
-		(at 267.97 101.6 270)
+		(at 83.82 50.8 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4551,7 +4933,7 @@
 	)
 	(hierarchical_label "DC"
 		(shape output)
-		(at 271.78 90.17 270)
+		(at 87.63 39.37 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4562,7 +4944,7 @@
 	)
 	(hierarchical_label "USB_D+"
 		(shape bidirectional)
-		(at 186.69 93.98 0)
+		(at 181.61 132.08 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4584,7 +4966,7 @@
 	)
 	(hierarchical_label "RST"
 		(shape output)
-		(at 242.57 101.6 270)
+		(at 58.42 50.8 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4682,7 +5064,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "05fe714d-5c91-449e-8a23-36d8f191196a")
-		(property "Reference" "TP601"
+		(property "Reference" "TP603"
 			(at 45.72 80.264 0)
 			(effects
 				(font
@@ -4733,7 +5115,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP601")
+					(reference "TP603")
 					(unit 1)
 				)
 			)
@@ -4810,16 +5192,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C")
+		(at 176.53 114.3 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "139eb6fa-e503-4a87-a8c8-f29bff0a5cfb")
+		(property "Reference" "C601"
+			(at 179.07 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10uF"
+			(at 179.07 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 177.4952 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 176.53 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 176.53 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "8717b0e4-ddb3-4e4e-a002-a2af11fe03dc")
+		)
+		(pin "1"
+			(uuid "74864374-d887-4b74-a1b0-1265841402f0")
+		)
+		(instances
+			(project ""
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
+					(reference "C601")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
-		(at 100.33 86.36 0)
+		(at 95.25 119.38 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "1697a4e8-17c5-4490-a2c4-ec5a07d6d46d")
-		(property "Reference" "#PWR0604"
-			(at 100.33 92.71 0)
+		(property "Reference" "#PWR0610"
+			(at 95.25 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4828,7 +5279,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 100.33 90.17 0)
+			(at 95.25 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4836,7 +5287,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 100.33 86.36 0)
+			(at 95.25 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4845,7 +5296,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 100.33 86.36 0)
+			(at 95.25 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4854,7 +5305,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 100.33 86.36 0)
+			(at 95.25 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4868,7 +5319,73 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0604")
+					(reference "#PWR0610")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 220.98 107.95 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1fb3d14a-ca92-4ff9-8aeb-568ca15d56b0")
+		(property "Reference" "#PWR0620"
+			(at 220.98 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 217.932 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 220.98 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 220.98 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 220.98 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0e856d94-b1df-4d39-a45f-fd5b7d776aa4")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
+					(reference "#PWR0620")
 					(unit 1)
 				)
 			)
@@ -4953,7 +5470,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "25d72684-ec74-4140-a499-bf9de31ecd9a")
-		(property "Reference" "TP602"
+		(property "Reference" "TP604"
 			(at 45.72 85.344 0)
 			(effects
 				(font
@@ -5004,7 +5521,72 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP602")
+					(reference "TP604")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 176.53 120.65 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2a2e4219-e076-4c47-8c49-c835394b6411")
+		(property "Reference" "#PWR0617"
+			(at 176.53 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 176.53 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 176.53 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 176.53 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 176.53 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a338ad19-7ca9-4169-b54a-369f7c91c5b4")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
+					(reference "#PWR0617")
 					(unit 1)
 				)
 			)
@@ -5012,15 +5594,15 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 182.88 96.52 0)
+		(at 177.8 134.62 0)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "2afd8b9f-3168-4946-84d3-f933d7c38d35")
-		(property "Reference" "TP608"
-			(at 182.88 98.298 0)
+		(property "Reference" "TP616"
+			(at 177.8 136.398 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5028,7 +5610,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 185.166 97.7899 0)
+			(at 180.086 135.8899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5038,7 +5620,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 187.96 96.52 0)
+			(at 182.88 134.62 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5047,7 +5629,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 187.96 96.52 0)
+			(at 182.88 134.62 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5056,7 +5638,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 182.88 96.52 0)
+			(at 177.8 134.62 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5070,7 +5652,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP608")
+					(reference "TP616")
 					(unit 1)
 				)
 			)
@@ -5078,15 +5660,15 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 255.27 101.6 180)
+		(at 71.12 50.8 180)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "32628161-b86a-4df5-8562-b75dbd9dd3b2")
-		(property "Reference" "TP616"
-			(at 255.27 100.076 0)
+		(property "Reference" "TP612"
+			(at 71.12 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5094,7 +5676,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 252.984 100.3301 0)
+			(at 68.834 49.5301 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5104,7 +5686,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 250.19 101.6 0)
+			(at 66.04 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5113,7 +5695,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 250.19 101.6 0)
+			(at 66.04 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5122,7 +5704,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 255.27 101.6 0)
+			(at 71.12 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5136,7 +5718,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP616")
+					(reference "TP612")
 					(unit 1)
 				)
 			)
@@ -5144,7 +5726,7 @@
 	)
 	(symbol
 		(lib_id "Jumper:SolderJumper_2_Open")
-		(at 161.29 80.01 0)
+		(at 161.29 109.22 0)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
@@ -5152,7 +5734,7 @@
 		(dnp no)
 		(uuid "3cf42d78-9e7f-4609-b220-2d1685a45f54")
 		(property "Reference" "JP601"
-			(at 161.29 77.724 0)
+			(at 161.29 106.934 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5160,7 +5742,7 @@
 			)
 		)
 		(property "Value" "SolderJumper_2_Open"
-			(at 161.29 76.708 0)
+			(at 161.29 105.918 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5169,7 +5751,7 @@
 			)
 		)
 		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_TrianglePad1.0x1.5mm"
-			(at 161.29 80.01 0)
+			(at 161.29 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5178,7 +5760,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 161.29 80.01 0)
+			(at 161.29 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5187,7 +5769,7 @@
 			)
 		)
 		(property "Description" "Solder Jumper, 2-pole, open"
-			(at 161.29 80.01 0)
+			(at 161.29 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5236,7 +5818,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_0805_2012Metric"
+		(property "Footprint" "customFootprints:SOD-323HE"
 			(at 262.89 30.48 0)
 			(effects
 				(font
@@ -5280,7 +5862,7 @@
 	)
 	(symbol
 		(lib_id "USB-C:USB4105-GF-A")
-		(at 135.89 90.17 0)
+		(at 130.81 123.19 0)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom yes)
@@ -5288,7 +5870,7 @@
 		(dnp no)
 		(uuid "4d3d12a8-4552-4b5b-84b4-3c4ce139f0b6")
 		(property "Reference" "USBC601"
-			(at 123.698 76.2 0)
+			(at 118.618 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5296,7 +5878,7 @@
 			)
 		)
 		(property "Value" "USB4105-GF-A"
-			(at 143.764 116.84 0)
+			(at 138.684 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5304,7 +5886,7 @@
 			)
 		)
 		(property "Footprint" "USB-C 2.0:GCT_USB4105-GF-A"
-			(at 135.89 90.17 0)
+			(at 130.81 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5314,7 +5896,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 135.89 90.17 0)
+			(at 130.81 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5323,7 +5905,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 135.89 90.17 0)
+			(at 130.81 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5332,7 +5914,7 @@
 			)
 		)
 		(property "PARTREV" "B4"
-			(at 135.89 90.17 0)
+			(at 130.81 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5342,7 +5924,7 @@
 			)
 		)
 		(property "STANDARD" "Manufacturer Recommendations"
-			(at 135.89 90.17 0)
+			(at 130.81 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5352,7 +5934,7 @@
 			)
 		)
 		(property "MAXIMUM_PACKAGE_HEIGHT" "3.31 mm"
-			(at 135.89 90.17 0)
+			(at 130.81 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5362,7 +5944,7 @@
 			)
 		)
 		(property "MANUFACTURER" "GCT"
-			(at 135.89 90.17 0)
+			(at 130.81 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5430,15 +6012,15 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 248.92 101.6 180)
+		(at 64.77 50.8 180)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "517ab7cd-a54f-4cc6-9036-f5b3fcd6b9c2")
-		(property "Reference" "TP614"
-			(at 250.698 100.076 0)
+		(property "Reference" "TP611"
+			(at 66.548 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5447,7 +6029,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 246.634 100.3301 0)
+			(at 62.484 49.5301 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5457,7 +6039,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 243.84 101.6 0)
+			(at 59.69 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5466,7 +6048,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 243.84 101.6 0)
+			(at 59.69 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5475,7 +6057,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 248.92 101.6 0)
+			(at 64.77 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5489,7 +6071,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP614")
+					(reference "TP611")
 					(unit 1)
 				)
 			)
@@ -5497,15 +6079,15 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 242.57 101.6 180)
+		(at 58.42 50.8 180)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "524f20bb-9951-40c4-ac4f-17674d7a6fe8")
-		(property "Reference" "TP613"
-			(at 244.348 100.076 0)
+		(property "Reference" "TP610"
+			(at 60.198 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5514,7 +6096,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 240.284 100.3301 0)
+			(at 56.134 49.5301 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5524,7 +6106,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 237.49 101.6 0)
+			(at 53.34 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5533,7 +6115,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 237.49 101.6 0)
+			(at 53.34 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5542,7 +6124,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 242.57 101.6 0)
+			(at 58.42 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5556,7 +6138,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP613")
+					(reference "TP610")
 					(unit 1)
 				)
 			)
@@ -5564,15 +6146,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 261.62 90.17 0)
+		(at 77.47 39.37 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "560c0af6-5aaf-4bb6-84c2-028b38116eba")
-		(property "Reference" "#PWR0618"
-			(at 261.62 96.52 0)
+		(property "Reference" "#PWR0609"
+			(at 77.47 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5581,7 +6163,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 261.62 92.71 90)
+			(at 77.47 41.91 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5590,7 +6172,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 261.62 90.17 0)
+			(at 77.47 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5599,7 +6181,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 261.62 90.17 0)
+			(at 77.47 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5608,7 +6190,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 261.62 90.17 0)
+			(at 77.47 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5622,7 +6204,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0618")
+					(reference "#PWR0609")
 					(unit 1)
 				)
 			)
@@ -5630,15 +6212,15 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 261.62 101.6 180)
+		(at 77.47 50.8 180)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "58e4f641-c485-4af2-93b7-947cdac380e3")
-		(property "Reference" "TP617"
-			(at 261.62 100.076 0)
+		(property "Reference" "TP613"
+			(at 77.47 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5646,7 +6228,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 259.334 100.3301 0)
+			(at 75.184 49.5301 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5656,7 +6238,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 256.54 101.6 0)
+			(at 72.39 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5665,7 +6247,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 256.54 101.6 0)
+			(at 72.39 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5674,7 +6256,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 261.62 101.6 0)
+			(at 77.47 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5688,7 +6270,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP617")
+					(reference "TP613")
 					(unit 1)
 				)
 			)
@@ -5696,15 +6278,15 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 236.22 101.6 180)
+		(at 52.07 50.8 180)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "5901b9d2-a80d-4c1e-ab17-9eb8852ded3d")
-		(property "Reference" "TP612"
-			(at 237.998 100.076 0)
+		(property "Reference" "TP609"
+			(at 53.848 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5713,7 +6295,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 233.934 100.3301 0)
+			(at 49.784 49.5301 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5723,7 +6305,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 231.14 101.6 0)
+			(at 46.99 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5732,7 +6314,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 231.14 101.6 0)
+			(at 46.99 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5741,7 +6323,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 236.22 101.6 0)
+			(at 52.07 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5755,7 +6337,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP612")
+					(reference "TP609")
 					(unit 1)
 				)
 			)
@@ -5763,15 +6345,15 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 267.97 101.6 180)
+		(at 83.82 50.8 180)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "592c8a01-1738-4b0b-bffd-7a0dc5dc4a4e")
-		(property "Reference" "TP619"
-			(at 267.97 100.076 0)
+		(property "Reference" "TP614"
+			(at 83.82 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5779,7 +6361,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 265.684 100.3301 0)
+			(at 81.534 49.5301 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5789,7 +6371,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 262.89 101.6 0)
+			(at 78.74 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5798,7 +6380,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 262.89 101.6 0)
+			(at 78.74 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5807,7 +6389,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 267.97 101.6 0)
+			(at 83.82 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5821,7 +6403,78 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP619")
+					(reference "TP614")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Regulator_Linear:AMS1117-3.3")
+		(at 194.31 109.22 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5d256134-e0cd-4889-944e-ad58e2981247")
+		(property "Reference" "U601"
+			(at 194.31 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "AMS1117-3.3"
+			(at 194.31 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-223-3_TabPin2"
+			(at 194.31 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.advanced-monolithic.com/pdf/ds1117.pdf"
+			(at 196.85 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "1A Low Dropout regulator, positive, 3.3V fixed output, SOT-223"
+			(at 194.31 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "42bb8c50-72c8-434d-84f2-1dc9358058f7")
+		)
+		(pin "1"
+			(uuid "a1b487fe-030a-4b51-b58f-c8978b49e9b2")
+		)
+		(pin "2"
+			(uuid "91e8e115-ec71-46bc-9e17-e6aaf82ceb80")
+		)
+		(instances
+			(project ""
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
+					(reference "U601")
 					(unit 1)
 				)
 			)
@@ -5829,7 +6482,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x08")
-		(at 242.57 85.09 90)
+		(at 58.42 34.29 90)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom yes)
@@ -5837,7 +6490,7 @@
 		(dnp no)
 		(uuid "6158a47d-baa0-4d3a-9116-bf0a7a061df6")
 		(property "Reference" "SPI602"
-			(at 233.68 82.804 90)
+			(at 49.53 32.004 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5846,7 +6499,7 @@
 			)
 		)
 		(property "Value" "Conn_01x08"
-			(at 248.412 82.804 90)
+			(at 64.262 32.004 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5854,7 +6507,7 @@
 			)
 		)
 		(property "Footprint" "Connector_JST:JST_XH_S8B-XH-A_1x08_P2.50mm_Horizontal"
-			(at 242.57 85.09 0)
+			(at 58.42 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5863,7 +6516,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 242.57 85.09 0)
+			(at 58.42 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5872,7 +6525,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 242.57 85.09 0)
+			(at 58.42 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5922,7 +6575,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "622146cf-8641-4205-8744-3ca9d57baf68")
-		(property "Reference" "TP605"
+		(property "Reference" "TP607"
 			(at 45.72 95.25 0)
 			(effects
 				(font
@@ -5973,7 +6626,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP605")
+					(reference "TP607")
 					(unit 1)
 				)
 			)
@@ -5988,7 +6641,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "62993fb2-6cf4-4648-bebd-76c081411e07")
-		(property "Reference" "TP606"
+		(property "Reference" "TP608"
 			(at 45.72 98.044 0)
 			(effects
 				(font
@@ -6039,7 +6692,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP606")
+					(reference "TP608")
 					(unit 1)
 				)
 			)
@@ -6054,7 +6707,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6629916c-7790-45f8-9a36-38899e692fd2")
-		(property "Reference" "TP610"
+		(property "Reference" "TP617"
 			(at 228.6 44.958 0)
 			(effects
 				(font
@@ -6105,7 +6758,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP610")
+					(reference "TP617")
 					(unit 1)
 				)
 			)
@@ -6113,15 +6766,15 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 271.78 36.83 0)
+		(at 273.05 36.83 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "67a38f02-80a7-4ffe-b28d-5f90d2642be5")
-		(property "Reference" "#PWR0619"
-			(at 271.78 40.64 0)
+		(property "Reference" "#PWR0622"
+			(at 273.05 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6129,8 +6782,8 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
-			(at 271.78 33.274 0)
+		(property "Value" "+3.3V"
+			(at 273.05 33.274 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6138,7 +6791,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 271.78 36.83 0)
+			(at 273.05 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6147,7 +6800,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 271.78 36.83 0)
+			(at 273.05 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6156,7 +6809,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 271.78 36.83 0)
+			(at 273.05 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6170,7 +6823,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0619")
+					(reference "#PWR0622")
 					(unit 1)
 				)
 			)
@@ -6185,7 +6838,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6b005b3f-2830-4d6c-b0b5-df5a08c23292")
-		(property "Reference" "TP604"
+		(property "Reference" "TP606"
 			(at 45.72 92.71 0)
 			(effects
 				(font
@@ -6236,7 +6889,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP604")
+					(reference "TP606")
 					(unit 1)
 				)
 			)
@@ -6244,15 +6897,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 175.26 87.63 0)
+		(at 168.91 120.65 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "71264f8e-1630-4cc6-b53a-bff91e4a0f97")
-		(property "Reference" "#PWR0611"
-			(at 175.26 93.98 0)
+		(property "Reference" "#PWR0616"
+			(at 168.91 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6261,7 +6914,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 175.26 91.44 0)
+			(at 168.91 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6269,7 +6922,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 175.26 87.63 0)
+			(at 168.91 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6278,7 +6931,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 175.26 87.63 0)
+			(at 168.91 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6287,7 +6940,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 175.26 87.63 0)
+			(at 168.91 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6301,7 +6954,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0611")
+					(reference "#PWR0616")
 					(unit 1)
 				)
 			)
@@ -6309,7 +6962,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 166.37 87.63 90)
+		(at 161.29 120.65 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6317,7 +6970,7 @@
 		(dnp no)
 		(uuid "71f47fa6-1505-4ae0-9313-30654639d6fa")
 		(property "Reference" "Rusb602"
-			(at 166.37 83.312 90)
+			(at 161.29 116.332 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6325,7 +6978,7 @@
 			)
 		)
 		(property "Value" "5.1k"
-			(at 166.37 85.344 90)
+			(at 161.29 118.364 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6333,7 +6986,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 166.37 89.408 90)
+			(at 161.29 122.428 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6342,7 +6995,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 166.37 87.63 0)
+			(at 161.29 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6351,7 +7004,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 166.37 87.63 0)
+			(at 161.29 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6383,7 +7036,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "736bde53-87b4-41a2-a09c-4d6e9ac7f900")
-		(property "Reference" "#PWR0603"
+		(property "Reference" "#PWR0604"
 			(at 46.99 76.2 0)
 			(effects
 				(font
@@ -6433,7 +7086,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0603")
+					(reference "#PWR0604")
 					(unit 1)
 				)
 			)
@@ -6441,7 +7094,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x08")
-		(at 220.98 85.09 90)
+		(at 36.83 34.29 90)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom yes)
@@ -6449,7 +7102,7 @@
 		(dnp no)
 		(uuid "77e68e14-76c0-4cd0-ad80-d49418303faf")
 		(property "Reference" "SPI601"
-			(at 212.09 82.804 90)
+			(at 27.94 32.004 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6458,7 +7111,7 @@
 			)
 		)
 		(property "Value" "Conn_01x08"
-			(at 226.822 82.804 90)
+			(at 42.672 32.004 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6466,7 +7119,7 @@
 			)
 		)
 		(property "Footprint" "Connector_JST:JST_XH_S8B-XH-A_1x08_P2.50mm_Horizontal"
-			(at 220.98 85.09 0)
+			(at 36.83 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6475,7 +7128,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 220.98 85.09 0)
+			(at 36.83 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6484,7 +7137,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 220.98 85.09 0)
+			(at 36.83 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6527,15 +7180,15 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 259.08 90.17 180)
+		(at 74.93 39.37 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "784718f2-660e-4caf-98d2-57e44ba69212")
-		(property "Reference" "#PWR0617"
-			(at 259.08 86.36 0)
+		(property "Reference" "#PWR0608"
+			(at 74.93 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6544,7 +7197,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 259.08 92.71 90)
+			(at 74.93 41.91 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6553,7 +7206,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 259.08 90.17 0)
+			(at 74.93 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6562,7 +7215,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 259.08 90.17 0)
+			(at 74.93 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6571,7 +7224,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 259.08 90.17 0)
+			(at 74.93 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6585,7 +7238,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0617")
+					(reference "#PWR0608")
 					(unit 1)
 				)
 			)
@@ -6836,15 +7489,15 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 234.95 90.17 180)
+		(at 50.8 39.37 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "7adff57a-0dde-4b97-976b-2a1163f88589")
-		(property "Reference" "#PWR0614"
-			(at 234.95 86.36 0)
+		(property "Reference" "#PWR0606"
+			(at 50.8 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6853,7 +7506,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 234.95 92.71 90)
+			(at 50.8 41.91 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6862,7 +7515,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 234.95 90.17 0)
+			(at 50.8 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6871,7 +7524,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 234.95 90.17 0)
+			(at 50.8 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6880,7 +7533,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 234.95 90.17 0)
+			(at 50.8 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6894,7 +7547,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0614")
+					(reference "#PWR0606")
 					(unit 1)
 				)
 			)
@@ -6976,16 +7629,81 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 194.31 120.65 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8469fd83-838c-4e6c-9f36-03e79040880e")
+		(property "Reference" "#PWR0618"
+			(at 194.31 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 194.31 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 194.31 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 194.31 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 194.31 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d439937c-d009-49fb-953a-f0962152679f")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
+					(reference "#PWR0618")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 182.88 93.98 0)
+		(at 177.8 132.08 0)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "95f5af1a-2af3-4acd-a522-83c1c1f5ef52")
-		(property "Reference" "TP607"
-			(at 182.88 92.456 0)
+		(property "Reference" "TP615"
+			(at 177.8 130.556 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6993,7 +7711,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 185.166 95.2499 0)
+			(at 180.086 133.3499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7003,7 +7721,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 187.96 93.98 0)
+			(at 182.88 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7012,7 +7730,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 187.96 93.98 0)
+			(at 182.88 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7021,7 +7739,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 182.88 93.98 0)
+			(at 177.8 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7035,7 +7753,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP607")
+					(reference "TP615")
 					(unit 1)
 				)
 			)
@@ -7050,7 +7768,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "9828966c-047a-431d-9b39-9dd6ce8425a8")
-		(property "Reference" "TP615"
+		(property "Reference" "TP618"
 			(at 249.936 36.576 0)
 			(effects
 				(font
@@ -7101,7 +7819,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP615")
+					(reference "TP618")
 					(unit 1)
 				)
 			)
@@ -7109,15 +7827,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 160.02 113.03 0)
+		(at 154.94 146.05 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "9e8f7f80-2f61-4af6-8c5b-57f808b1f434")
-		(property "Reference" "#PWR0609"
-			(at 160.02 119.38 0)
+		(property "Reference" "#PWR0614"
+			(at 154.94 152.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7126,7 +7844,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 160.02 116.84 0)
+			(at 154.94 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7134,7 +7852,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 160.02 113.03 0)
+			(at 154.94 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7143,7 +7861,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 160.02 113.03 0)
+			(at 154.94 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7152,7 +7870,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 160.02 113.03 0)
+			(at 154.94 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7166,7 +7884,72 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0609")
+					(reference "#PWR0614")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 208.28 120.65 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a601eedc-c761-4c2b-a91e-cc4074f8e551")
+		(property "Reference" "#PWR0619"
+			(at 208.28 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 208.28 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 208.28 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 208.28 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 208.28 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "18161341-00b1-41a6-8165-d451566c2eeb")
+		)
+		(instances
+			(project "Leiterkarte-v2"
+				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
+					(reference "#PWR0619")
 					(unit 1)
 				)
 			)
@@ -7174,7 +7957,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x08")
-		(at 266.7 85.09 90)
+		(at 82.55 34.29 90)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom yes)
@@ -7182,7 +7965,7 @@
 		(dnp no)
 		(uuid "a8d0516e-8281-40ea-b296-420383605200")
 		(property "Reference" "SPI603"
-			(at 257.81 82.804 90)
+			(at 73.66 32.004 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7191,7 +7974,7 @@
 			)
 		)
 		(property "Value" "Conn_01x08"
-			(at 272.542 82.804 90)
+			(at 88.392 32.004 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7199,7 +7982,7 @@
 			)
 		)
 		(property "Footprint" "Connector_JST:JST_XH_S8B-XH-A_1x08_P2.50mm_Horizontal"
-			(at 266.7 85.09 0)
+			(at 82.55 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7208,7 +7991,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 266.7 85.09 0)
+			(at 82.55 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7217,7 +8000,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 266.7 85.09 0)
+			(at 82.55 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7267,7 +8050,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "af3a6fc2-1204-40a8-aef3-5494ebdf2edd")
-		(property "Reference" "#PWR0607"
+		(property "Reference" "#PWR0613"
 			(at 146.05 60.96 0)
 			(effects
 				(font
@@ -7317,7 +8100,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0607")
+					(reference "#PWR0613")
 					(unit 1)
 				)
 			)
@@ -7332,7 +8115,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b35a6326-1955-46cb-b211-26cc4110afc4")
-		(property "Reference" "#PWR0602"
+		(property "Reference" "#PWR0605"
 			(at 46.99 127 0)
 			(effects
 				(font
@@ -7382,7 +8165,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0602")
+					(reference "#PWR0605")
 					(unit 1)
 				)
 			)
@@ -7527,72 +8310,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint_Small")
-		(at 265.43 38.1 0)
-		(unit 1)
-		(exclude_from_sim yes)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "bb0ed9c5-d87d-405a-9304-fad08988043f")
-		(property "Reference" "TP618"
-			(at 265.43 36.576 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "TestPoint_Small"
-			(at 267.716 39.3699 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 270.51 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 270.51 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point"
-			(at 265.43 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "47b0cade-6e1d-4e8f-bf18-241981122072")
-		)
-		(instances
-			(project "Leiterkarte-v2"
-				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP618")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:+3.3V")
 		(at 137.16 29.21 0)
 		(unit 1)
@@ -7601,7 +8318,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "be915be8-7754-409c-adb0-13e824c5b7be")
-		(property "Reference" "#PWR0606"
+		(property "Reference" "#PWR0612"
 			(at 137.16 33.02 0)
 			(effects
 				(font
@@ -7651,7 +8368,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0606")
+					(reference "#PWR0612")
 					(unit 1)
 				)
 			)
@@ -7666,7 +8383,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "c21c2cbf-bfa5-40e7-bdc7-88d7c709eb9e")
-		(property "Reference" "TP603"
+		(property "Reference" "TP605"
 			(at 45.72 90.17 0)
 			(effects
 				(font
@@ -7717,23 +8434,41 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP603")
+					(reference "TP605")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_id "power:+5V")
-		(at 168.91 80.01 0)
+		(lib_id "Device:C")
+		(at 208.28 114.3 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "cb5b6a4a-2059-47bb-859d-1ac832a825ae")
-		(property "Reference" "#PWR0610"
-			(at 168.91 83.82 0)
+		(uuid "c6dd3a64-8514-4e10-82ee-3dab6dbe4e1b")
+		(property "Reference" "C602"
+			(at 210.82 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "22uF"
+			(at 210.82 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 209.2452 118.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7741,16 +8476,8 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+5V"
-			(at 168.91 76.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 168.91 80.01 0)
+		(property "Datasheet" "~"
+			(at 208.28 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7758,8 +8485,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
-			(at 168.91 80.01 0)
+		(property "Description" "Unpolarized capacitor"
+			(at 208.28 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7767,22 +8494,16 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 168.91 80.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
+		(pin "2"
+			(uuid "063bdb08-47fe-4e1b-918f-f5539b5ff22f")
 		)
 		(pin "1"
-			(uuid "ce56bd38-cd25-439c-894c-d19414c725e8")
+			(uuid "4aa76cbd-5754-4776-b47a-39014358b78b")
 		)
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0610")
+					(reference "C602")
 					(unit 1)
 				)
 			)
@@ -7797,7 +8518,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d0d4d358-7425-4d68-bf96-c0f0cf6b814d")
-		(property "Reference" "#PWR0616"
+		(property "Reference" "#PWR0621"
 			(at 240.03 54.61 0)
 			(effects
 				(font
@@ -7847,7 +8568,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0616")
+					(reference "#PWR0621")
 					(unit 1)
 				)
 			)
@@ -7855,15 +8576,15 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 229.87 101.6 180)
+		(at 45.72 50.8 180)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "d1edcedf-fa3a-4723-a6af-28350a4415a2")
-		(property "Reference" "TP611"
-			(at 231.648 100.076 0)
+		(property "Reference" "TP602"
+			(at 47.498 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7872,7 +8593,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 227.584 100.3301 0)
+			(at 43.434 49.5301 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7882,7 +8603,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 224.79 101.6 0)
+			(at 40.64 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7891,7 +8612,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 224.79 101.6 0)
+			(at 40.64 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7900,7 +8621,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 229.87 101.6 0)
+			(at 45.72 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7914,7 +8635,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP611")
+					(reference "TP602")
 					(unit 1)
 				)
 			)
@@ -7922,15 +8643,15 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 213.36 90.17 180)
+		(at 29.21 39.37 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "d4001ef5-4694-498b-bbbb-a890a8ec010d")
-		(property "Reference" "#PWR0612"
-			(at 213.36 86.36 0)
+		(property "Reference" "#PWR0601"
+			(at 29.21 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7939,7 +8660,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 213.36 92.71 90)
+			(at 29.21 41.91 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7948,7 +8669,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 213.36 90.17 0)
+			(at 29.21 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7957,7 +8678,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 213.36 90.17 0)
+			(at 29.21 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7966,7 +8687,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 213.36 90.17 0)
+			(at 29.21 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7980,7 +8701,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0612")
+					(reference "#PWR0601")
 					(unit 1)
 				)
 			)
@@ -7988,15 +8709,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 215.9 90.17 0)
+		(at 31.75 39.37 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "d756a302-27b7-408e-868d-e00eb8212789")
-		(property "Reference" "#PWR0613"
-			(at 215.9 96.52 0)
+		(property "Reference" "#PWR0602"
+			(at 31.75 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8005,7 +8726,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 215.9 92.71 90)
+			(at 31.75 41.91 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8014,7 +8735,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 215.9 90.17 0)
+			(at 31.75 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8023,7 +8744,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 215.9 90.17 0)
+			(at 31.75 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8032,7 +8753,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 215.9 90.17 0)
+			(at 31.75 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8046,7 +8767,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0613")
+					(reference "#PWR0602")
 					(unit 1)
 				)
 			)
@@ -8061,7 +8782,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d83d0bca-43aa-4f16-8ac5-c682b15eab72")
-		(property "Reference" "#PWR0601"
+		(property "Reference" "#PWR0603"
 			(at 40.64 127 0)
 			(effects
 				(font
@@ -8111,7 +8832,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0601")
+					(reference "#PWR0603")
 					(unit 1)
 				)
 			)
@@ -8126,7 +8847,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "da1c861f-70c0-474f-ad83-76bf3b553941")
-		(property "Reference" "#PWR0605"
+		(property "Reference" "#PWR0611"
 			(at 134.62 60.96 0)
 			(effects
 				(font
@@ -8176,7 +8897,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0605")
+					(reference "#PWR0611")
 					(unit 1)
 				)
 			)
@@ -8260,7 +8981,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e40f4ffd-b64c-46a1-85cb-d4755f39046b")
-		(property "Reference" "#PWR0608"
+		(property "Reference" "#PWR0615"
 			(at 157.48 60.96 0)
 			(effects
 				(font
@@ -8310,7 +9031,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0608")
+					(reference "#PWR0615")
 					(unit 1)
 				)
 			)
@@ -8318,15 +9039,15 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint_Small")
-		(at 223.52 101.6 180)
+		(at 39.37 50.8 180)
 		(unit 1)
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "f490a735-4fad-4381-82fb-5af05f310414")
-		(property "Reference" "TP609"
-			(at 225.298 100.076 0)
+		(property "Reference" "TP601"
+			(at 41.148 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8335,7 +9056,7 @@
 			)
 		)
 		(property "Value" "TestPoint_Small"
-			(at 221.234 100.3301 0)
+			(at 37.084 49.5301 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8345,7 +9066,7 @@
 			)
 		)
 		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
-			(at 218.44 101.6 0)
+			(at 34.29 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8354,7 +9075,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 218.44 101.6 0)
+			(at 34.29 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8363,7 +9084,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 223.52 101.6 0)
+			(at 39.37 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8377,7 +9098,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "TP609")
+					(reference "TP601")
 					(unit 1)
 				)
 			)
@@ -8385,7 +9106,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 106.68 85.09 270)
+		(at 101.6 118.11 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8393,7 +9114,7 @@
 		(dnp no)
 		(uuid "fcdcddcf-749c-4bee-a6d8-4d1ce936de40")
 		(property "Reference" "Rusb601"
-			(at 106.68 80.772 90)
+			(at 101.6 113.792 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8401,7 +9122,7 @@
 			)
 		)
 		(property "Value" "5.1k"
-			(at 106.68 82.804 90)
+			(at 101.6 115.824 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8409,7 +9130,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 106.68 83.312 90)
+			(at 101.6 116.332 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8418,7 +9139,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 106.68 85.09 0)
+			(at 101.6 118.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8427,7 +9148,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 106.68 85.09 0)
+			(at 101.6 118.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8452,15 +9173,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 237.49 90.17 0)
+		(at 53.34 39.37 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "fff6f908-89fe-47f9-ab8b-9f1e115304ce")
-		(property "Reference" "#PWR0615"
-			(at 237.49 96.52 0)
+		(property "Reference" "#PWR0607"
+			(at 53.34 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8469,7 +9190,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 237.49 92.71 90)
+			(at 53.34 41.91 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8478,7 +9199,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 237.49 90.17 0)
+			(at 53.34 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8487,7 +9208,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 237.49 90.17 0)
+			(at 53.34 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8496,7 +9217,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 237.49 90.17 0)
+			(at 53.34 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8510,7 +9231,7 @@
 		(instances
 			(project "Leiterkarte-v2"
 				(path "/7159fc5a-6328-470f-acd9-3e0a0aa6e60c/11d63e63-c38a-4dd3-9930-f54f4e905d9d"
-					(reference "#PWR0615")
+					(reference "#PWR0607")
 					(unit 1)
 				)
 			)

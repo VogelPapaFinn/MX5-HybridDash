@@ -1,4 +1,4 @@
-24747763407946955
+24752991387699814
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -92903,6 +92903,20 @@ Logo WEEE
 0
 0
 0
+TPS5430DDAR
+CONV_TPS5430DDAR
+
+
+0
+17
+9
+TPS5430DDAR
+Untitled
+
+
+0
+2
+2
 TerminalBlock
 TerminalBlock_Altech_AK300-2_P5.00mm
 Altech AK300 terminal block, pitch 5.0mm, 45 degree angled, see http://www.mouser.com/ds/2/16/PCBMETRC-24178.pdf
@@ -99557,6 +99571,13 @@ button
 small_button
 
 B3U-1000P-B 
+0
+2
+2
+customFootprints
+SOD-323HE
+
+
 0
 2
 2

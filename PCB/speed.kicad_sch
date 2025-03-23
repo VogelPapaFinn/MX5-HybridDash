@@ -1135,7 +1135,7 @@
 	)
 	(text "Plldwn"
 		(exclude_from_sim no)
-		(at 106.68 102.87 0)
+		(at 106.68 104.14 0)
 		(effects
 			(font
 				(size 1 1)
@@ -1156,7 +1156,7 @@
 	)
 	(text "Plldwn"
 		(exclude_from_sim no)
-		(at 95.25 102.87 0)
+		(at 95.25 104.14 0)
 		(effects
 			(font
 				(size 1 1)
@@ -1715,7 +1715,7 @@
 		(at 179.07 86.36 0)
 		(unit 1)
 		(exclude_from_sim yes)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "29005561-0ac9-408e-b844-df207c8d650c")
@@ -1728,7 +1728,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "10k"
 			(at 180.34 87.63 0)
 			(effects
 				(font
@@ -1737,7 +1737,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 177.292 86.36 90)
 			(effects
 				(font
@@ -1807,7 +1807,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_0805_2012Metric"
+		(property "Footprint" "customFootprints:SOD-323HE"
 			(at 146.05 93.98 0)
 			(effects
 				(font
@@ -2072,7 +2072,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_0805_2012Metric"
+		(property "Footprint" "customFootprints:SOD-323HE"
 			(at 146.05 86.36 0)
 			(effects
 				(font
@@ -2196,7 +2196,7 @@
 				)
 			)
 		)
-		(property "Value" "40k"
+		(property "Value" "47k"
 			(at 116.84 88.138 90)
 			(effects
 				(font
@@ -2264,7 +2264,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "200k"
 			(at 96.52 100.33 0)
 			(effects
 				(font
@@ -2410,7 +2410,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_0805_2012Metric"
+		(property "Footprint" "customFootprints:SOD-323HE"
 			(at 133.35 86.36 0)
 			(effects
 				(font
@@ -2601,7 +2601,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "200k"
 			(at 107.95 100.33 0)
 			(effects
 				(font
@@ -3192,7 +3192,7 @@
 				)
 			)
 		)
-		(property "Value" "40k"
+		(property "Value" "47k"
 			(at 116.84 96.774 90)
 			(effects
 				(font
@@ -3338,7 +3338,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 195.072 92.71 90)
 			(effects
 				(font
@@ -3477,7 +3477,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_0805_2012Metric"
+		(property "Footprint" "customFootprints:SOD-323HE"
 			(at 133.35 93.98 0)
 			(effects
 				(font
@@ -3625,7 +3625,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
 			(at 195.072 102.87 90)
 			(effects
 				(font
