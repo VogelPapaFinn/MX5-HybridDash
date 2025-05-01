@@ -14,18 +14,23 @@ static bool initAdc1Failed_ = false;
 static bool oilPressure_ = false;
 static adc_cali_handle_t adc2OilCaliHandle_;
 static bool initAdc2OilChannelFailed_ = false;
+static void (*oilPressureCallback_)(void *) = NULL;
 
 // Fuel level stuff
 static int fuelLevelInPercent_ = 0;
+static int fuelLevelInLitre_ = 0;
 static float fuelLevelResistance_ = 0.0f;
 static adc_cali_handle_t adc2FuelCaliHandle_;
 static bool initAdc2FuelChannelFailed_ = false;
+static void (*fuelLevelPercentCallback_)(void *) = NULL;
+static void (*fuelLevelLitreCallback_)(void *) = NULL;
 
 // Water temperature stuff
 static float waterTemperature_ = 0.0f;
 static float waterTemperatureResistance_ = 0.0f;
 static adc_cali_handle_t adc2WaterCaliHandle_;
 static bool initAdc2WaterChannelFailed_ = false;
+static void (*waterTemperatureCallback_)(void *) = NULL;
 
 // Speed stuff
 static int speedInHz_ = -1;
@@ -34,6 +39,7 @@ static int64_t lastTimeOfFallingEdgeSpeed_ = 0;
 static int64_t timeOfFallingEdgeSpeed_ = 0;
 static bool speedIsrActive_ = false;
 static bool initSpeedIsrFailed_ = false;
+static void (*speedCallback_)(void *) = NULL;
 
 // RPM stuff
 static int rpmInHz_ = -1;
@@ -42,6 +48,7 @@ static int64_t lastTimeOfFallingEdgeRPM_ = 0;
 static int64_t timeOfFallingEdgeRPM_ = 0;
 static bool rpmIsrActive_ = false;
 static bool initRpmIsrFailed_ = false;
+static void (*rpmCallback_)(void *) = NULL;
 
 // Internal temperature sensor stuff
 static int intTempRawAdcValue_ = 0;
@@ -49,6 +56,7 @@ static int intTempVoltageMV_ = 0;
 static double internalTemperature_ = 0.0;
 static adc_cali_handle_t adc2IntTempCaliHandle_;
 static bool initAdc1IntTempChannelFailed_ = false;
+static void (*internalTemperatureCallback_)(void *) = NULL;
 
 // Temporary stuff so I don't forget anything to implement
 static int tempSensor2_ = -1;
@@ -399,6 +407,39 @@ int sensorManagerInit(void) {
     return 1;    // Initialization succeeded
 }
 
+void sensorManagerRegisterCallback(const SENSOR sensorType, void callback(void *)) {
+    switch (sensorType) {
+        case (SENSOR_OIL_PRESSURE):
+            // Save the cb function
+            oilPressureCallback_ = callback;
+            break;
+        case (SENSOR_FUEL_LEVEL_PERCENT):
+            // Save the cb function
+            fuelLevelPercentCallback_ = callback;
+            break;
+        case (SENSOR_FUEL_LEVEL_LITRE):
+            // Save the cb function
+            fuelLevelLitreCallback_ = callback;
+            break;
+        case (SENSOR_WATER_TEMPERATURE):
+            // Save the cb function
+            waterTemperatureCallback_ = callback;
+            break;
+        case (SENSOR_INTERNAL_TEMPERATURE):
+            // Save the cb function
+            internalTemperatureCallback_ = callback;
+            break;
+        case (SENSOR_SPEED):
+            // Save the cb function
+            speedCallback_ = callback;
+            break;
+        case (SENSOR_RPM):
+            // Save the cb function
+            rpmCallback_ = callback;
+            break;
+    }
+}
+
 void sensorManagerUpdateOilPressure(void) {
     // Was the init successfully?
     if (initAdc2Failed_ || initAdc2OilChannelFailed_) return;
@@ -425,6 +466,11 @@ void sensorManagerUpdateOilPressure(void) {
 
     // Did it change?
     if (oldOilPressureValue != oilPressure_) {
+        // Callback
+        if (oilPressureCallback_ != NULL) {
+            oilPressureCallback_((void *) &oilPressure_);
+        }
+
         // Logging
         loggerInfo("Oil pressure changed! From: '%d' to '%d'", oldOilPressureValue, oilPressure_);
     }
@@ -463,6 +509,16 @@ void sensorManagerUpdateFuelLevel(void) {
 
     // Did it change?
     if (oldFuelLevelValue != fuelLevelInPercent_) {
+        // Callback 1
+        if (fuelLevelPercentCallback_ != NULL) {
+            fuelLevelPercentCallback_((void *) fuelLevelInPercent_);
+        }
+
+        // Callback 2
+        if (fuelLevelLitreCallback_ != NULL) {
+            fuelLevelLitreCallback_((void *) fuelLevelInLitre_);// TODO: Calculate Litres
+        }
+
         // Logging
         loggerInfo("Fuel level changed! From: '%d percent' to '%d percent'", oldFuelLevelValue, fuelLevelInPercent_);
     }
@@ -501,6 +557,11 @@ void sensorManagerUpdateWaterTemperature(void) {
 
     // Did it change?
     if (oldWaterTemperatureValue != waterTemperature_) {
+        // Callback
+        if (waterTemperatureCallback_ != NULL) {
+            waterTemperatureCallback_((void *) &waterTemperature_);
+        }
+
         // Logging
         loggerInfo("Water temperature changed! From: '%d °C' to '%d °C'", oldWaterTemperatureValue, waterTemperature_);
     }
@@ -535,10 +596,24 @@ void sensorManagerUpdateSpeed(void) {
     speedInHz_ = (int) round(1000.0 / fT);
 
     // Is the speed value valid?
-    if (speedInHz_ >= 500) speedInHz_ = -1;
+    if (speedInHz_ >= 500) speedInHz_ = 0;
 
     // Convert the frequency to actual speed
+    const int oldSpeed = speed_;
     speed_ = (int) calculateSpeedFromFrequency();
+
+    // Is it >1
+    if (speed_ < 0) speed_ = 0;
+
+    if (oldSpeed != speed_) {
+        // Callback
+        if (speedCallback_ != NULL) {
+            //speedCallback_((void *) speed_); Problem hier
+        }
+
+        // Logging
+        loggerInfo("Speed changed! From: '%d kmh' to '%d kmh'", oldSpeed, speed_);
+    }
 }
 
 int sensorManagerGetSpeed(void) {
@@ -573,7 +648,21 @@ void sensorManagerUpdateRPM(void) {
     if (rpmInHz_ >= 300) rpmInHz_ = -1;
 
     // Convert the frequency to actual rpm
+    const int oldRpm = rpm_;
     rpm_ = calculateRpmFromFrequency();
+
+    // Is it >1
+    if (rpm_ < 0) rpm_ = 0;
+
+    if (oldRpm != rpm_) {
+        // Callback
+        if (rpmCallback_ != NULL) {
+            rpmCallback_((void *) rpm_);
+        }
+
+        // Logging
+        loggerInfo("RPM changed! From: '%d RPM' to '%d RPM'", oldRpm, rpm_);
+    }
 }
 
 int sensorManagerGetRPM(void) {

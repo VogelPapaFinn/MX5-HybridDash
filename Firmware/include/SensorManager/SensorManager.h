@@ -51,6 +51,16 @@
 
 /* --- Variables, Typedefs etc. --- */
 
+typedef enum {
+    SENSOR_OIL_PRESSURE,
+    SENSOR_FUEL_LEVEL_PERCENT,
+    SENSOR_FUEL_LEVEL_LITRE,
+    SENSOR_WATER_TEMPERATURE,
+    SENSOR_INTERNAL_TEMPERATURE,
+    SENSOR_SPEED,
+    SENSOR_RPM,
+} SENSOR;
+
 /* --- Imported Variables, Typedefs etc. --- */
 
 /* --- Global variables and function (headers) --- */
@@ -62,8 +72,9 @@ int sensorManagerInit(void);
 
 //! \brief Registers a callback function which will be called once the specified value changes
 //! (e.g. oil, fuel, water temp etc.)
-//! TODO: Implement this function, which is probably needed for the GUI part.
-void sensorManagerRegisterCallback(void);
+//! \param sensorType The sensor the callback should be registered on
+//! \param callback The callback function
+void sensorManagerRegisterCallback(const SENSOR sensorType, void callback(void *val));
 
 //! \brief Checks if there is oil pressure
 void sensorManagerUpdateOilPressure(void);

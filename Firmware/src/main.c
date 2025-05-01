@@ -1,6 +1,7 @@
 /* Includes */
 
 // Project
+#include "Core/Core.h"
 #include "FileManager/FileManager.h"
 #include "GUI/GUI.h"
 #include "Logger/Logger.h"
@@ -41,6 +42,9 @@ void app_main(void) {
         // Return, as there is no use in continuing
         return;
     }
+
+    // Initialize the Core
+    coreInit();
 
     while (true) {
         // TESTING ONLY

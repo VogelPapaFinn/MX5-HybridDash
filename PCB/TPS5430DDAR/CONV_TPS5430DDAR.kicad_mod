@@ -519,7 +519,7 @@
 	(pad "9" smd rect
 		(at 0 0)
 		(size 2.95 4.9)
-		(layers "F.Cu")
+		(layers "F.Cu" "F.Paste")
 		(uuid "d0e15d6f-6e60-4e48-aee2-d3f745a5cf06")
 	)
 	(pad "9" thru_hole circle

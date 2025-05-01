@@ -7,7 +7,7 @@
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
-    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="4" type="long" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="6" type="long" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
   </component>
   <component name="CMakePresetLoader">{
@@ -175,13 +175,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="64c84b50-c148-40a8-af48-38eea64c9008" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-15_222450.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-16_004746.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-16_165000.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-17_010425.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2024-11-21_191523.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2025-01-05_002422.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2025-03-07_215814.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2025-03-07_220323.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2025-03-07_220823.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2025-03-07_221326.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2-backups/Leiterkarte-v2-2025-03-08_154111.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_pcb" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_pcb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_prl" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_prl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/Leiterkarte-v2.kicad_sch" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/TPS5430DDAR/CONV_TPS5430DDAR.kicad_mod" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/TPS5430DDAR/CONV_TPS5430DDAR.kicad_mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PCB/fp-info-cache" beforeDir="false" afterPath="$PROJECT_DIR$/../PCB/fp-info-cache" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,9 +217,11 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/components/lvgl/src/misc/lv_area.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/include/FileManager/FileManager.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/Core/Core.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/FileManager/FileManager.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/GUI/GUI.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/Logger/Logger.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/include/SensorManager/SensorManager.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/SensorManager/SensorManager.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/FileManager/FileManager.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/GUI/GUI.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main.c" root0="FORCE_HIGHLIGHTING" />
@@ -240,48 +245,53 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;CMake Application.add-dependency.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.app-flash.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.bootloader.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.build-flash-monitor.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.debug.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.flash-partition-table.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.gdb.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.menuconfig.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.monitor.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Application.openocd.executor&quot;: &quot;Run&quot;,
-    &quot;Embedded GDB Server.app.executor&quot;: &quot;Debug&quot;,
-    &quot;Embedded GDB Server.firmware.elf.executor&quot;: &quot;Debug&quot;,
-    &quot;OpenOCD Download &amp; Run.Debug.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.mappings&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.highlight.symlinks&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.date&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.permissions&quot;: &quot;false&quot;,
-    &quot;WebServerToolWindowPanel.toolwindow.show.size&quot;: &quot;false&quot;,
-    &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
-    &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/finng/Documents/MX5-HybridDash/Firmware/xtensa-esp-elf-gdb/bin/xtensa-esp32-elf-gdb.exe&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.cidr.embedded.config&quot;,
-    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "CMake Application.add-dependency.executor": "Run",
+    "CMake Application.app-flash.executor": "Run",
+    "CMake Application.bootloader-flash.executor": "Run",
+    "CMake Application.bootloader.executor": "Run",
+    "CMake Application.build-flash-monitor.executor": "Run",
+    "CMake Application.debug.executor": "Run",
+    "CMake Application.flash-partition-table.executor": "Run",
+    "CMake Application.gdb.executor": "Run",
+    "CMake Application.menuconfig.executor": "Run",
+    "CMake Application.monitor.executor": "Run",
+    "CMake Application.openocd.executor": "Run",
+    "Embedded GDB Server.Debugging.executor": "Debug",
+    "Embedded GDB Server.app.executor": "Debug",
+    "Embedded GDB Server.firmware.elf.executor": "Debug",
+    "OpenOCD Download & Run.Debug.executor": "Run",
+    "OpenOCD Download & Run.Debugging.executor": "Run",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.west.config.association.type.startup.service": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Shell Script.Start OpenOCD.executor": "Run",
+    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
+    "WebServerToolWindowPanel.toolwindow.show.date": "false",
+    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
+    "WebServerToolWindowPanel.toolwindow.show.size": "false",
+    "cf.advertisement.text.has.clang-format": "true",
+    "cf.advertisement.text.overridden": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "release/v9.2",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/finng/Documents/MX5-HybridDash/Firmware/debug.bat",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "structure.view.defaults.are.configured": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\finng\Documents\MX5-HybridDash\Firmware\src\SensorManager" />
@@ -782,7 +792,10 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="bootloader-flash" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="bootloader-flash" CONFIG_NAME="Debug">
+    <configuration name="bootloader-flash" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="flash -p COM9" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$ContentRoot$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="app" CONFIG_NAME="Debug" RUN_PATH="../idf.bat">
+      <envs>
+        <env name="IDF_PATH" value="..\idf.bat" />
+      </envs>
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -797,7 +810,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="build-flash-monitor" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="build app-flash monitor -p COM4" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$ContentRoot$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="app" CONFIG_NAME="Debug" RUN_PATH="../idf.bat">
+    <configuration name="build-flash-monitor" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="build app-flash monitor -p COM9" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" WORKING_DIR="file://$ContentRoot$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="app" CONFIG_NAME="Debug" RUN_PATH="../idf.bat">
       <envs>
         <env name="IDF_PATH" value="..\idf.bat" />
       </envs>
@@ -1039,18 +1052,25 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="firmware.elf" type="com.jetbrains.cidr.embedded.customgdbserver.type" factoryName="com.jetbrains.cidr.embedded.customgdbserver.factory" nameIsGenerated="true" PROGRAM_PARAMS="-c &quot;tcl_port disabled&quot; -c &quot;gdb_port 3333&quot; -c &quot;telnet_port 4444&quot; -f board/esp32s3-builtin.cfg -c &quot;init; halt; esp appimage_offset 0x10000&quot;" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="firmware.elf" CONFIG_NAME="Debug" version="1" RUN_TARGET_PROJECT_NAME="firmware" RUN_TARGET_NAME="firmware.elf">
-      <custom-gdb-server version="1" gdb-connect=":3333" executable="C:\Users\finng\Documents\MX5-HybridDash\Firmware\openocd-esp32\bin\openocd.exe" warmup-ms="0" download-type="UPDATED_ONLY" reset-cmd="monitor reset" reset-type="AFTER_DOWNLOAD">
-        <debugger kind="GDB">C:\Users\finng\Documents\MX5-HybridDash\Firmware\xtensa-esp-elf-gdb\bin\xtensa-esp32-elf-gdb.exe</debugger>
-      </custom-gdb-server>
-      <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
-      </method>
+    <configuration name="Start OpenOCD" type="ShConfigurationType">
+      <option name="SCRIPT_TEXT" value="" />
+      <option name="INDEPENDENT_SCRIPT_PATH" value="false" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/debug.bat" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="EXECUTE_IN_TERMINAL" value="true" />
+      <option name="EXECUTE_SCRIPT_FILE" value="true" />
+      <envs />
+      <method v="2" />
     </configuration>
-    <configuration name="Debug" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="firmware.elf" CONFIG_NAME="Debug" version="1" RUN_TARGET_PROJECT_NAME="firmware" RUN_TARGET_NAME="firmware.elf">
-      <openocd version="1" gdb-port="3333" telnet-port="4444" board-config="board/esp32s3-builtin.cfg" reset-type="INIT" download-type="UPDATED_ONLY">
-        <debugger kind="GDB">C:\Users\finng\Documents\MX5-HybridDash\Firmware\xtensa-esp-elf-gdb\bin\xtensa-esp32-elf-gdb.exe</debugger>
-      </openocd>
+    <configuration name="Debugging" type="com.jetbrains.cidr.embedded.customgdbserver.type" factoryName="com.jetbrains.cidr.embedded.customgdbserver.factory" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="firmware" TARGET_NAME="firmware.elf" CONFIG_NAME="Debug" version="1" RUN_TARGET_PROJECT_NAME="firmware" RUN_TARGET_NAME="firmware.elf">
+      <custom-gdb-server version="1" gdb-connect=":3333" executable="C:\Espressif\tools\xtensa-esp-elf-gdb\14.2_20240403\xtensa-esp-elf-gdb\bin\xtensa-esp32s3-elf-gdb.exe" warmup-ms="0" download-type="NONE" reset-cmd="monitor reset" reset-type="AFTER_DOWNLOAD">
+        <debugger kind="GDB">C:\Espressif\tools\xtensa-esp-elf-gdb\14.2_20240403\xtensa-esp-elf-gdb\bin\xtensa-esp32s3-elf-gdb.exe</debugger>
+      </custom-gdb-server>
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -1200,8 +1220,8 @@
       <item itemvalue="CMake Application.flash-partition-table" />
       <item itemvalue="CMake Application.menuconfig" />
       <item itemvalue="CMake Application.openocd" />
-      <item itemvalue="Embedded GDB Server.firmware.elf" />
-      <item itemvalue="OpenOCD Download &amp; Run.Debug" />
+      <item itemvalue="Embedded GDB Server.Debugging" />
+      <item itemvalue="Shell Script.Start OpenOCD" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -1253,7 +1273,18 @@
       <workItem from="1736286930405" duration="2997000" />
       <workItem from="1736795863868" duration="3972000" />
       <workItem from="1736889925054" duration="5050000" />
-      <workItem from="1739541324901" duration="26506000" />
+      <workItem from="1739541324901" duration="26742000" />
+      <workItem from="1739574652900" duration="201000" />
+      <workItem from="1739574863295" duration="102000" />
+      <workItem from="1739575926713" duration="231000" />
+      <workItem from="1739612696269" duration="8955000" />
+      <workItem from="1739625673377" duration="2392000" />
+      <workItem from="1739628099808" duration="912000" />
+      <workItem from="1739629026882" duration="14000" />
+      <workItem from="1739629048378" duration="9952000" />
+      <workItem from="1739731762592" duration="4436000" />
+      <workItem from="1741204045088" duration="215000" />
+      <workItem from="1746039443882" duration="3514000" />
     </task>
     <servers />
   </component>
@@ -1272,6 +1303,17 @@
     <isAutomaticCheckingOnLaunch value="false" />
     <isAutomaticFoundErrors value="true" />
     <isAutomaticReloadCMake value="true" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

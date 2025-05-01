@@ -65,6 +65,7 @@ lv_style_t fuelLevelArcStyle_;
 lv_obj_t *fuelLevelInPercentLabel_ = NULL;
 lv_obj_t *fuelLevelInLitreLabel_ = NULL;
 lv_style_t fuelLevelLabelStyle_;
+int lastFuelInPercent_ = -1;
 
 /* --- Private function prototypes --- */
 
@@ -110,7 +111,7 @@ void createAndShowTempScreen(lv_display_t *display);
 
 //! \brief Task which is needed for lvgl to work
 //! \param params void* needed for FreeRTOS to accept this function as task!
-void taskUpdateLvgl(void *params) {
+void IRAM_ATTR taskUpdateLvgl(void *params) {
     // ReSharper disable once CppDFAEndlessLoop
     while (1) {
         // Wait 10ms
@@ -120,6 +121,7 @@ void taskUpdateLvgl(void *params) {
         if (xSemaphoreTake(semaphoreLvTaskHandle_, portMAX_DELAY) == pdTRUE) {
             // Then run the lvgl task handler
             lv_task_handler();
+            xSemaphoreGive(semaphoreLvTaskHandle_);
         }
     }
 }
@@ -129,7 +131,7 @@ void taskUpdateLvgl(void *params) {
 //!        at startup!
 //! \param params void* needed for FreeRTOS to accept this function as task!
 //! \note This task ends itself!
-void taskWaitForFirstFrameDrawn(void *params) {
+void IRAM_ATTR taskWaitForFirstFrameDrawn(void *params) {
     // Bools used to prevent double-checking
     bool display1Completed = false;
     bool display2Completed = false;
@@ -516,14 +518,17 @@ void createAndShowTempScreen(lv_display_t *display) {
         // Apply the background style
         lv_obj_add_style(fuelLevelArcs_[i], &fuelLevelArcStyle_, LV_PART_MAIN);
 
+        // Color them accordingly
         if (i == 0) {
             lv_obj_set_style_arc_color(fuelLevelArcs_[i], lv_color_hex(0x992600), LV_PART_MAIN);
         } else if (i <= 2) {
             lv_obj_set_style_arc_color(fuelLevelArcs_[i], lv_color_hex(0xC69800), LV_PART_MAIN);
         }
-        if (i > 6) {
-            lv_obj_set_style_arc_opa(fuelLevelArcs_[i], LV_OPA_20, LV_PART_MAIN);
-        }
+
+        // Debugging / Testing Stuff
+        // if (i > 6) {
+        //     lv_obj_set_style_arc_opa(fuelLevelArcs_[i], LV_OPA_20, LV_PART_MAIN);
+        // }
     }
 
     // Create the fuel in percent label
@@ -600,9 +605,9 @@ bool guiInit(void) {
     xTaskCreate(&taskWaitForFirstFrameDrawn, "taskWaitForFirstFrameDrawn", 2024, NULL, 0, NULL);
 
     // Build the screens and put them on the displays
-    // createAndShowSpeedometerScreen(display2_);
-    // createAndShowRpmScreen(display2_);
-    createAndShowTempScreen(display2_);
+    createAndShowSpeedometerScreen(display2_);
+    createAndShowRpmScreen(display3_);
+    createAndShowTempScreen(display1_);
 
     // Was everything successful?
     initSuccessful_ = true;
@@ -637,4 +642,50 @@ void guiSetLeftBlinkerActive(const bool active) {
         // Set its opacity to 20% (inactive)
         lv_obj_set_style_opa(blinkerLeft_, LV_OPA_20, LV_PART_MAIN);
     }
+}
+
+void guiSetOilPressure(void *pressure) {
+    // TODO: Show the NO OIL PRESSURE screen or hide it
+}
+
+void guiSetFuelLevelPercent(void *percent) {
+    // Save the old value
+    lastFuelInPercent_ = (int) percent;
+
+    // Set the new text
+    lv_label_set_text_fmt(fuelLevelInPercentLabel_, "%d%%", (int) percent);
+
+    // Check if the fuel level increased (by more than 5%)
+    if (lastFuelInPercent_ < (int) percent + 5) {
+        // Reactivate all fuel blocks
+        for (int i = 0; i < 10; i++) {
+            lv_obj_set_style_arc_opa(fuelLevelArcs_[i], LV_OPA_100, LV_PART_MAIN);
+        }
+    }
+
+    // Update the fuel blocks
+    const int currActiveBlock = ((int) percent + 10) / 10;
+    for (int i = 9; i >= currActiveBlock; i--) {
+        lv_obj_set_style_arc_opa(fuelLevelArcs_[i], LV_OPA_20, LV_PART_MAIN);
+    }
+}
+
+void guiSetFuelLevelLitre(void *litres) {
+    // Set the new text
+    lv_label_set_text_fmt(fuelLevelInLitreLabel_, "%dL", (int) litres);
+}
+
+void guiSetWaterTemperature(void *temp) {
+    // Set the new text
+    lv_label_set_text_fmt(tempLabel_, "%d", (int) temp);
+}
+
+void guiSetSpeed(void *speed) {
+    // Set the new text
+    lv_label_set_text_fmt(speedLabel_, "%d", (int) speed);
+}
+
+void guiSetRpm(void *rpm) {
+    // Set the new text
+    lv_label_set_text_fmt(rpmLabel_, "%d", (int) rpm);
 }

@@ -24,7 +24,7 @@
 /* --- Defines & Macros --- */
 #define GUI_LCD_SPI_HOST SPI2_HOST
 #define GUI_LCD_RES 240
-#define GUI_LCD_BITS_PER_PIXEL (16)
+#define GUI_LCD_Bits _PER_PIXEL(16)
 
 #define GUI_GPIO_LCD1_CS GPIO_NUM_39
 #define GUI_GPIO_LCD2_CS GPIO_NUM_40
@@ -55,5 +55,35 @@ void guiSetRightBlinkerActive(const bool active);
 //! \brief Activates or disables the left blinker visually
 //! \param active If true the blinker is shown
 void guiSetLeftBlinkerActive(const bool active);
+
+//! \brief Updates the oil pressure
+//! \param pressure Boolean indicating if there is oil pressure or not
+//! \note Param is passed as void* as it's a cb function used by the SensorManager
+void IRAM_ATTR guiSetOilPressure(void *pressure);
+
+//! \brief Updates the fuel level percentage
+//! \param percent 0 - 100 how much is the tank filled
+//! \note Param is passed as void* as it's a cb function used by the SensorManager
+void IRAM_ATTR guiSetFuelLevelPercent(void *percent);
+
+//! \brief Updates the fuel level litres
+//! \param litres Float indicating how many litres there are left in the tank
+//! \note Param is passed as void* as it's a cb function used by the SensorManager
+void IRAM_ATTR guiSetFuelLevelLitre(void *litres);
+
+//! \brief Updates the water temperature
+//! \param temp The temperature in Celsius as float
+//! \note Param is passed as void* as it's a cb function used by the SensorManager
+void IRAM_ATTR guiSetWaterTemperature(void *temp);
+
+//! \brief Updates the speed
+//! \param speed The speed as Integer
+//! \note Param is passed as void* as it's a cb function used by the SensorManager
+void IRAM_ATTR guiSetSpeed(void *speed);
+
+//! \brief Updates the RPM
+//! \param rpm The RPM as Integer
+//! \note Param is passed as void* as it's a cb function used by the SensorManager
+void IRAM_ATTR guiSetRpm(void *rpm);
 
 #endif// FIRMWARE_INCLUDE_C_HEADER_TEMPLATE_H_GUI
