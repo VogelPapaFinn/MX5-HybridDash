@@ -1,0 +1,41 @@
+Minimum Requirements:
+- Show RPM
+- Show Speed
+- Show Fuel level
+- Show Blinkers
+- Show Oil pressure
+- Show Coolant temperature
+
+- KM Total
+- KM since start
+- KM since last refueling
+- Fuel consumption L/100km
+- Fuel consumption %/100km
+  
+- Controlling the UI with buttons
+ 
+
+
+Features which could be cool and not that complicated:
+- Shift indicator
+- Last shift on RPM X
+- Tracking route, speed, acceleration etc. [and then send it to the smartphone or smth like that]
+- 0kmh to 100kmh acceleration timer
+- Welcome message on startup
+- GPS speed
+
+
+
+What would be nice but is probably not possible yet or really complicated:
+- LED under needle which lights depending on the RPM/Speed/Fuel level/..
+- Current fuel consumption (in this exact moment -> current fuel injection)
+- Navigation from smartphone
+- Show Speed limits (via GPS and web DB [Expert Level would be via live image recognition])
+- Bluetooth audio connection (to radio)
+- Dimming brightness with the dim switch in the car
+- Configuring via App / WiFi / Website / ...
+- Visual shift indicator via LEDs
+- Visual last shift point via LEDs
+- LED backlight for the whole cluster
+- Replace the lighting icons with another display
+(- Replace the old stepper motors with new ones and control them with the arduino)

@@ -1,0 +1,12 @@
+[submodule "HW/PCBs/DisplayBoard_PCB"]
+	path = HW/PCBs/DisplayBoard_PCB
+	url = https://github.com/VogelPapaFinn/DisplayBoard_PCB.git
+[submodule "HW/PCBs/SensorBoard_PCB"]
+	path = HW/PCBs/SensorBoard_PCB
+	url = https://github.com/VogelPapaFinn/SensorBoard_PCB.git
+[submodule "SW/SensorBoard_FW"]
+	path = SW/SensorBoard_FW
+	url = https://github.com/VogelPapaFinn/SensorBoard_FW.git
+[submodule "SW/DisplayBoard_FW"]
+	path = SW/DisplayBoard_FW
+	url = https://github.com/VogelPapaFinn/DisplayBoard_FW.git
