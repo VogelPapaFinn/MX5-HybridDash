@@ -10,3 +10,7 @@
 [submodule "SW/DisplayBoard_FW"]
 	path = SW/DisplayBoard_FW
 	url = https://github.com/VogelPapaFinn/DisplayBoard_FW.git
+[submodule "SW/esp-idf"]
+	path = SW/esp-idf
+	url = https://github.com/espressif/esp-idf.git
+	branch = release/v5.5
