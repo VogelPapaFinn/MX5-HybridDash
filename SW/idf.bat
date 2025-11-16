@@ -1,1 +1,0 @@
-python ..\esp-idf\tools\idf.py %*
