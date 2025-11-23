@@ -1,0 +1,12 @@
+#pragma once
+
+// Defines ( SB -> DB )
+#define CAN_MSG_REQUEST_HW_UUID 0x02
+#define CAN_MSG_REQUEST_HW_RESET 0x03
+#define CAN_MSG_NEW_SENSOR_DATA 0x04
+#define CAN_MSG_ENTER_UPDATE_MODE 0x15
+#define CAN_MSG_REQUEST_FW_VERSION 0x20
+
+// Defines ( DB -> SB )
+#define CAN_MSG_REGISTER_HW_UUID 0x02
+#define CAN_MSG_RETURN_FW_VERSION 0x21

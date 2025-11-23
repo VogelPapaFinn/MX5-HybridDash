@@ -8,6 +8,7 @@
 #include "freertos/FreeRTOS.h"
 
 // C includes
+#include "can_messages.h"
 
 // Defines
 #define CAN_BUS_SPEED 1000000 // 1 MBit/s
@@ -40,10 +41,17 @@ void disableCanNode();
 //! \brief Queues a message to the can bus
 //! \param message A pointer to the message that should be sent
 //! \param freeMessageAfterwards If true the memory of the message will be freed after successfully queuing it
+//! \param freeMessageDataAfterwards If true the memory of the data will be freed after successfully queuing it
 //! \retval Boolean indicating if queuing worked or not
 //! \note If the queuing fails the memory of the message WON'T be freed!
-bool queueCanBusMessage(twai_frame_t* message,
-                        const bool freeMessageAfterwards);
+bool queueCanBusMessage(twai_frame_t* message, const bool freeMessageAfterwards, const bool freeMessageDataAfterwards);
 
+//! \brief Registers a task that should be notified once a message was received
+//! \param taskToNotify A pointer to the task handle that should be notified
+//! \retval Boolean indicating if the registering was successfull
 bool registerMessageReceivedCb(TaskHandle_t* taskToNotify);
 
+//! \brief Returns a copy of the last message that was received
+//! \retval A twai_frame_t
+//! \note This should be called in the FreeRTOS tasks which get notified
+twai_frame_t getLastReceivedMessage();
