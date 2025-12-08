@@ -1,5 +1,9 @@
 #pragma once
 
+// Project includes
+#include "Global.h"
+#include "can_messages.h"
+
 // espidf includes
 #include "esp_twai.h"
 #include "esp_twai_onchip.h"
@@ -8,7 +12,6 @@
 #include "freertos/FreeRTOS.h"
 
 // C includes
-#include "can_messages.h"
 
 // Defines
 #define CAN_BUS_SPEED 1000000 // 1 MBit/s
@@ -47,11 +50,6 @@ void disableCanNode();
 bool queueCanBusMessage(twai_frame_t* message, const bool freeMessageAfterwards, const bool freeMessageDataAfterwards);
 
 //! \brief Registers a task that should be notified once a message was received
-//! \param taskToNotify A pointer to the task handle that should be notified
-//! \retval Boolean indicating if the registering was successfull
-bool registerMessageReceivedCb(TaskHandle_t* taskToNotify);
-
-//! \brief Returns a copy of the last message that was received
-//! \retval A twai_frame_t
-//! \note This should be called in the FreeRTOS tasks which get notified
-twai_frame_t getLastReceivedMessage();
+//! \param queueHandle A pointer to a queue where to append a QUEUE_EVENT_T
+//! \retval Boolean indicating if the registering was successful
+bool registerMessageReceivedCbQueue(QueueHandle_t* queueHandle);

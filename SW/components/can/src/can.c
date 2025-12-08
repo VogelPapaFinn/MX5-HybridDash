@@ -1,4 +1,7 @@
+// Project includes
 #include "../can.h"
+
+// C includes
 #include <stdio.h>
 #include <string.h>
 
@@ -33,11 +36,11 @@ twai_frame_t lastReceivedMessage_;
 //! keeps track of it
 uint8_t lastReceivedMessageData_[8];
 
-//! \brief A list of FreeRTOS task that should be notified once a message was
+//! \brief A list of FreeRTOS Queues that should be notified once a message was
 //! received
-TaskHandle_t** tasksToNotifyOnMsgReceived_ = NULL;
-//! \brief The amount of registered FreeRTOS task handles
-uint8_t amountOfTasksToNotifyOnMsgReceived_ = 0;
+QueueHandle_t** queuesToNotify_ = NULL;
+//! \brief The amount of registered FreeRTOS queue handles
+uint8_t amountOfQueuesToNotifyOnMsgReceived_ = 0;
 
 /*
  *	Private functions
@@ -102,22 +105,22 @@ static IRAM_ATTR bool receivedMessageCb(twai_node_handle_t nodeHandle, const twa
 	// Save the message
 	lastReceivedMessage_ = rxFrame;
 
-	// Do we have any tasks to notify?
-	if (amountOfTasksToNotifyOnMsgReceived_ == 0)
+	// Do we have any queues to notify?
+	if (amountOfQueuesToNotifyOnMsgReceived_ == 0)
 		return false;
 
+	// Build the event
+	QUEUE_EVENT_T event;
+	event.command = QUEUE_RECEIVED_NEW_CAN_MESSAGE;
+	event.canFrame = rxFrame;
+
 	// Yes, notify all of them
-	BaseType_t higherPrioWoken = pdFALSE;
-	for (uint8_t i = 0; i < amountOfTasksToNotifyOnMsgReceived_; i++) {
-		BaseType_t higherPrioWokenIt = pdFALSE;
-
-		// Notify the task
-		xTaskNotifyFromISR(*tasksToNotifyOnMsgReceived_[i], 0, eNoAction, &higherPrioWokenIt);
-
-		higherPrioWoken |= higherPrioWokenIt;
+	BaseType_t xHigherPriorityTaskWoken;
+	for (uint8_t i = 0; i < amountOfQueuesToNotifyOnMsgReceived_; i++) {
+		xQueueSendFromISR(*queuesToNotify_[i], &event, &xHigherPriorityTaskWoken);
 	}
 
-	return higherPrioWoken;
+	return xHigherPriorityTaskWoken;
 }
 
 /*
@@ -236,32 +239,31 @@ bool queueCanBusMessage(twai_frame_t* message, const bool freeMessageAfterwards,
 	return transmitSuccessful;
 }
 
-bool registerMessageReceivedCb(TaskHandle_t* taskToNotify)
+bool registerMessageReceivedCbQueue(QueueHandle_t* queueHandle)
 {
 	// Is the node enabled?
-	bool wasEnabledBefore = nodeEnabled_;
+	const bool wasEnabledBefore = nodeEnabled_;
 	if (nodeEnabled_) {
 		// Stop it
 		disableCanNode();
 	}
 
 	// Make the array larger
-	const void* newAddr =
-		realloc(tasksToNotifyOnMsgReceived_, sizeof(TaskHandle_t*) * (amountOfTasksToNotifyOnMsgReceived_ + 1));
+	const void* newAddr = realloc(queuesToNotify_, sizeof(QueueHandle_t*) * (amountOfQueuesToNotifyOnMsgReceived_ + 1));
 
 	// Did it work?
 	if (newAddr != NULL) {
-		tasksToNotifyOnMsgReceived_ = (TaskHandle_t**)newAddr;
+		queuesToNotify_ = (QueueHandle_t**)newAddr;
 	}
 	else {
 		return false;
 	}
 
 	// Increase the counter
-	amountOfTasksToNotifyOnMsgReceived_++;
+	amountOfQueuesToNotifyOnMsgReceived_++;
 
 	// Then save the task handle
-	tasksToNotifyOnMsgReceived_[amountOfTasksToNotifyOnMsgReceived_ - 1] = taskToNotify;
+	queuesToNotify_[amountOfQueuesToNotifyOnMsgReceived_ - 1] = queueHandle;
 
 	// Re-enable node if necessary
 	if (wasEnabledBefore) {
@@ -271,5 +273,3 @@ bool registerMessageReceivedCb(TaskHandle_t* taskToNotify)
 
 	return true;
 }
-
-twai_frame_t getLastReceivedMessage() { return lastReceivedMessage_; }
