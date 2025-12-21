@@ -22,32 +22,32 @@ typedef struct
  *	Private variables
  */
 //! \brief The handle of the can node
-twai_node_handle_t* nodeHandle_ = NULL;
+static twai_node_handle_t* nodeHandle_ = NULL;
 
 //! \brief Indicates if the node is currently enabled or not
-bool nodeEnabled_ = false;
+static bool nodeEnabled_ = false;
 
 //! \brief An array keeping track of all current active messages
-ActiveMessage_t* activeMessages_[CAN_QUEUE_DEPTH];
+static ActiveMessage_t* activeMessages_[CAN_QUEUE_DEPTH];
 
 //! \brief The last received message
-twai_frame_t lastReceivedMessage_;
+static twai_frame_t lastReceivedMessage_;
 //! \brief Contains the data of the last received message, lastReceivedMessage_
 //! keeps track of it
-uint8_t lastReceivedMessageData_[8];
+static uint8_t lastReceivedMessageData_[8];
 
 //! \brief A list of FreeRTOS Queues that should be notified once a message was
 //! received
-QueueHandle_t** queuesToNotify_ = NULL;
+static QueueHandle_t** queuesToNotify_ = NULL;
 //! \brief The amount of registered FreeRTOS queue handles
-uint8_t amountOfQueuesToNotifyOnMsgReceived_ = 0;
+static uint8_t amountOfQueuesToNotifyReceived_ = 0;
 
 /*
  *	Private functions
  */
 //! \brief Callback function used to free can bus messages after they were sent
 static IRAM_ATTR bool transmitOfMessageDoneCb(const twai_node_handle_t nodeHandle,
-											  const twai_tx_done_event_data_t* eventData, void* userCtx)
+                                              const twai_tx_done_event_data_t* eventData, void* userCtx)
 {
 	// Is it our handle?
 	if (nodeHandle != *nodeHandle_)
@@ -85,7 +85,7 @@ static IRAM_ATTR bool transmitOfMessageDoneCb(const twai_node_handle_t nodeHandl
 }
 
 static IRAM_ATTR bool receivedMessageCb(twai_node_handle_t nodeHandle, const twai_rx_done_event_data_t* eventData,
-										void* user_ctx)
+                                        void* user_ctx)
 {
 	// Is it our handle?
 	if (nodeHandle != *nodeHandle_)
@@ -106,7 +106,7 @@ static IRAM_ATTR bool receivedMessageCb(twai_node_handle_t nodeHandle, const twa
 	lastReceivedMessage_ = rxFrame;
 
 	// Do we have any queues to notify?
-	if (amountOfQueuesToNotifyOnMsgReceived_ == 0)
+	if (amountOfQueuesToNotifyReceived_ == 0)
 		return false;
 
 	// Build the event
@@ -116,7 +116,7 @@ static IRAM_ATTR bool receivedMessageCb(twai_node_handle_t nodeHandle, const twa
 
 	// Yes, notify all of them
 	BaseType_t xHigherPriorityTaskWoken;
-	for (uint8_t i = 0; i < amountOfQueuesToNotifyOnMsgReceived_; i++) {
+	for (uint8_t i = 0; i < amountOfQueuesToNotifyReceived_; i++) {
 		xQueueSendFromISR(*queuesToNotify_[i], &event, &xHigherPriorityTaskWoken);
 	}
 
@@ -147,7 +147,8 @@ twai_node_handle_t* initializeCanNode(const uint8_t txGpio, const uint8_t rxGpio
 	};
 
 	// Initialize the node
-	if (twai_new_node_onchip(&nodeConfig, nodeHandle_) != ESP_OK) { // It failed, so destroy it
+	if (twai_new_node_onchip(&nodeConfig, nodeHandle_) != ESP_OK) {
+		// It failed, so destroy it
 		destroyCanNode();
 
 		return NULL;
@@ -239,7 +240,7 @@ bool queueCanBusMessage(twai_frame_t* message, const bool freeMessageAfterwards,
 	return transmitSuccessful;
 }
 
-bool registerMessageReceivedCbQueue(QueueHandle_t* queueHandle)
+bool registerCanRxCbQueue(QueueHandle_t* queueHandle)
 {
 	// Is the node enabled?
 	const bool wasEnabledBefore = nodeEnabled_;
@@ -249,7 +250,7 @@ bool registerMessageReceivedCbQueue(QueueHandle_t* queueHandle)
 	}
 
 	// Make the array larger
-	const void* newAddr = realloc(queuesToNotify_, sizeof(QueueHandle_t*) * (amountOfQueuesToNotifyOnMsgReceived_ + 1));
+	const void* newAddr = realloc(queuesToNotify_, sizeof(QueueHandle_t*) * (amountOfQueuesToNotifyReceived_ + 1));
 
 	// Did it work?
 	if (newAddr != NULL) {
@@ -260,10 +261,10 @@ bool registerMessageReceivedCbQueue(QueueHandle_t* queueHandle)
 	}
 
 	// Increase the counter
-	amountOfQueuesToNotifyOnMsgReceived_++;
+	amountOfQueuesToNotifyReceived_++;
 
 	// Then save the task handle
-	queuesToNotify_[amountOfQueuesToNotifyOnMsgReceived_ - 1] = queueHandle;
+	queuesToNotify_[amountOfQueuesToNotifyReceived_ - 1] = queueHandle;
 
 	// Re-enable node if necessary
 	if (wasEnabledBefore) {
@@ -272,4 +273,39 @@ bool registerMessageReceivedCbQueue(QueueHandle_t* queueHandle)
 	}
 
 	return true;
+}
+
+twai_frame_t* generateCanFrame(const uint8_t messageID, const uint32_t senderID, const uint8_t* buffer,
+                               const uint8_t bufferLen)
+{
+	// Allocate the needed memory
+	twai_frame_t* message = malloc(sizeof(twai_frame_t));
+	if (message == NULL) {
+		return NULL;
+	}
+	memset(message, 0, sizeof(twai_frame_t));
+
+	// Activate the 29-Bit ID format
+	message->header.ide = true;
+
+	// Build the frame id
+	message->header.id += messageID << 21;
+	message->header.id += senderID & 0x1FFFFF; // Zero the upper 11 bits of the sender ID
+
+	// Set the buffer
+	if (buffer != NULL && bufferLen > 0) {
+		// Set the length
+		message->header.dlc = bufferLen;
+		message->buffer_len = bufferLen;
+
+		// Set the buffer
+		message->buffer = (uint8_t*)buffer;
+	}
+	else {
+		// There is no data
+		message->header.dlc = 0;
+		message->buffer_len = 0;
+	}
+
+	return message;
 }

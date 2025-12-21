@@ -52,4 +52,12 @@ bool queueCanBusMessage(twai_frame_t* message, const bool freeMessageAfterwards,
 //! \brief Registers a task that should be notified once a message was received
 //! \param queueHandle A pointer to a queue where to append a QUEUE_EVENT_T
 //! \retval Boolean indicating if the registering was successful
-bool registerMessageReceivedCbQueue(QueueHandle_t* queueHandle);
+bool registerCanRxCbQueue(QueueHandle_t* queueHandle);
+
+//! \brief Allocates and configures a CAN frame and returns a ptr to it. NULL if it failed
+//! \param messageID The message ID
+//! \param senderID The sender ID
+//! \param buffer A ptr to the buffer which should be sent
+//! \param bufferLen The length of the buffer
+twai_frame_t* generateCanFrame(const uint8_t messageID, const uint32_t senderID, const uint8_t* buffer,
+                               const uint8_t bufferLen);
