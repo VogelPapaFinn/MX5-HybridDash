@@ -1,7 +1,7 @@
 #pragma once
 
 // Project includes
-#include "Global.h"
+#include "EventQueues.h"
 #include "can_messages.h"
 
 // espidf includes
@@ -16,11 +16,24 @@
 // Defines
 #define CAN_BUS_SPEED 1000000 // 1 MBit/s
 #define CAN_QUEUE_DEPTH 5
+#define CAN_FRAME_HEADER_OFFSET 21
 
 /*
- *	Static Variables
+ *	Extern Variables
  */
+extern uint8_t g_ownCanComId;
 
+/*
+ *	Public typedefs
+ */
+//! \brief An enum which represents the GUI's the display can show
+typedef enum
+{
+	SCREEN_TEMPERATURE,
+	SCREEN_SPEED,
+	SCREEN_RPM,
+	SCREEN_UNKNOWN = 255
+} Screen_t;
 
 /*
  *  Functions
@@ -29,7 +42,7 @@
 //! \param txGpio The GPIO used to send messages
 //! \param rxGpio The GPIO used for receiving messages
 //! \retval A ptr to a twai_node_handle_t on success. NULL on fail
-twai_node_handle_t* initializeCanNode(const uint8_t txGpio, const uint8_t rxGpio);
+twai_node_handle_t* initializeCanNode(uint8_t txGpio, uint8_t rxGpio);
 
 //! \brief Destroys the can bus node handle and frees all of its memory
 void destroyCanNode();
@@ -41,13 +54,15 @@ bool enableCanNode();
 //! \brief Disables the node
 void disableCanNode();
 
+esp_err_t recoverCanDriver();
+
 //! \brief Queues a message to the can bus
 //! \param message A pointer to the message that should be sent
 //! \param freeMessageAfterwards If true the memory of the message will be freed after successfully queuing it
 //! \param freeMessageDataAfterwards If true the memory of the data will be freed after successfully queuing it
 //! \retval Boolean indicating if queuing worked or not
 //! \note If the queuing fails the memory of the message WON'T be freed!
-bool queueCanBusMessage(twai_frame_t* message, const bool freeMessageAfterwards, const bool freeMessageDataAfterwards);
+bool queueCanBusMessage(twai_frame_t* message, bool freeMessageAfterwards, bool freeMessageDataAfterwards);
 
 //! \brief Registers a task that should be notified once a message was received
 //! \param queueHandle A pointer to a queue where to append a QUEUE_EVENT_T
@@ -59,5 +74,5 @@ bool registerCanRxCbQueue(QueueHandle_t* queueHandle);
 //! \param senderID The sender ID
 //! \param buffer A ptr to the buffer which should be sent
 //! \param bufferLen The length of the buffer
-twai_frame_t* generateCanFrame(const uint8_t messageID, const uint32_t senderID, const uint8_t* buffer,
-                               const uint8_t bufferLen);
+twai_frame_t* generateCanFrame(uint8_t messageID, uint32_t senderID, uint8_t** buffer,
+                               uint8_t bufferLen);

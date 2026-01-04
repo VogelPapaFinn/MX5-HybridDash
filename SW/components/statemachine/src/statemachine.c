@@ -4,11 +4,11 @@
  *	Private Variables
  */
 //! \brief Keeps track of the current state we are in
-State_t currentState_ = STATE_INIT;
+uint8_t currentState_ = 0;
 
 /*
  *	Functions
  */
-State_t getCurrentState(void) { return currentState_; }
+uint8_t getCurrentState(void) { return currentState_; }
 
-void setCurrentState(const State_t newState) { currentState_ = newState; }
+void setCurrentState(const uint8_t newState) { currentState_ = newState; }

@@ -1,7 +1,7 @@
 #pragma once
 
 // Project includes
-#include "Global.h"
+#include "EventQueues.h"
 
 // C includes
 #include <stdbool.h>
@@ -16,6 +16,6 @@
 /*
  *	Functions
  */
-State_t getCurrentState(void);
+uint8_t getCurrentState(void);
 
-void setCurrentState(State_t newState);
+void setCurrentState(uint8_t newState);
