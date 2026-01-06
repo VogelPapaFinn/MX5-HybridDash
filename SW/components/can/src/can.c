@@ -6,6 +6,12 @@
 #include <string.h>
 
 /*
+ *	Private Defines
+ */
+#define CAN_BUS_SPEED 1000000 // 1 MBit/s
+#define CAN_QUEUE_DEPTH 10
+
+/*
  * Private structs
  */
 //! \brief A struct which is used to keep track of message memory
@@ -146,6 +152,17 @@ bool onCanStateChanged(twai_node_handle_t handle, const twai_state_change_event_
 	return xHigherPriorityTaskWoken;
 }
 
+bool onCanError(twai_node_handle_t handle, const twai_error_event_data_t *edata, void *user_ctx)
+{
+	// esp_rom_printf("Acknowledge error: %d\n", edata->err_flags.ack_err);
+	// esp_rom_printf("Arb lost: %d\n", edata->err_flags.arb_lost);
+	// esp_rom_printf("Bit error: %d\n", edata->err_flags.bit_err);
+	// esp_rom_printf("Form error: %d\n", edata->err_flags.form_err);
+	// esp_rom_printf("Stuff error: %d\n", edata->err_flags.stuff_err);
+
+	return false;
+}
+
 /*
  *	Public functions
  */
@@ -181,7 +198,7 @@ twai_node_handle_t* initializeCanNode(const uint8_t txGpio, const uint8_t rxGpio
 		.on_tx_done = transmitOfMessageDoneCb,
 		.on_rx_done = receivedMessageCb,
 		.on_state_change = onCanStateChanged,
-		.on_error = NULL,
+		.on_error = onCanError,
 	};
 	if (twai_node_register_event_callbacks(*g_nodeHandle, &cbs, NULL) != ESP_OK) {
 		// Destroy the node

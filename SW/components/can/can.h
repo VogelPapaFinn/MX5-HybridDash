@@ -11,11 +11,9 @@
 // FreeRTOS includes
 #include "freertos/FreeRTOS.h"
 
-// C includes
-
-// Defines
-#define CAN_BUS_SPEED 1000000 // 1 MBit/s
-#define CAN_QUEUE_DEPTH 5
+/*
+ *	Defines
+ */
 #define CAN_FRAME_HEADER_OFFSET 21
 
 /*
