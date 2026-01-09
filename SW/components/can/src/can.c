@@ -5,11 +5,17 @@
 #include <stdio.h>
 #include <string.h>
 
+// espidf includes
+#include <esp_debug_helpers.h>
+#include <esp_log.h>
+
 /*
  *	Private Defines
  */
 #define CAN_BUS_SPEED 1000000 // 1 MBit/s
-#define CAN_QUEUE_DEPTH 10
+#define CAN_QUEUE_DEPTH 30
+#define CAN_FRAME_DATA_LENGTH_B 8
+#define CAN_FRAME_TRANSMIT_TIMEOUT_AFTER_MS 20
 
 /*
  * Private structs
@@ -33,14 +39,7 @@ static twai_node_handle_t* g_nodeHandle = NULL;
 //! \brief Indicates if the node is currently enabled or not
 static bool g_nodeEnabled = false;
 
-//! \brief An array keeping track of all current active messages
-static ActiveMessage_t* g_activeMessages[CAN_QUEUE_DEPTH];
-
-//! \brief The last received message
-static twai_frame_t g_lastReceivedMessage;
-//! \brief Contains the data of the last received message, lastReceivedMessage_
-//! keeps track of it
-static uint8_t g_lastReceivedMessageData[8];
+static TwaiFrame_t g_framesToTransmit[CAN_QUEUE_DEPTH];
 
 //! \brief A list of FreeRTOS Queues that should be notified once a message was
 //! received
@@ -51,43 +50,75 @@ static uint8_t g_amountOfQueuesToNotifyReceived = 0;
 /*
  *	Private functions
  */
+static TwaiFrame_t* keepTrackOfFrame(const TwaiFrame_t* frame)
+{
+	// Iterate through the frame array
+	for (uint8_t i = 0; i < CAN_QUEUE_DEPTH; i++) {
+		// Is the frame in use?
+		if (g_framesToTransmit[i].transmitting) {
+			continue;
+		}
+
+		// We now use this slot
+		g_framesToTransmit[i].transmitting = true;
+
+		// Copy the message here
+		g_framesToTransmit[i] = *frame;
+
+		// Return the pointer to this address
+		return &g_framesToTransmit[i];
+	}
+
+	ESP_LOGE("CanDriver", "Cant keep track of frame. MAX Can queue depth reached!");
+
+	return NULL;
+}
+
 //! \brief Callback function used to free can bus messages after they were sent
 // ReSharper disable once CppDFAConstantFunctionResult
 static IRAM_ATTR bool transmitOfMessageDoneCb(twai_node_handle_t nodeHandle,
-                                              const twai_tx_done_event_data_t* eventData, void* userCtx)
+                                              const twai_tx_done_event_data_t* p_eventData, void* p_userCtx)
 {
-	// Is it our handle?
-	if (nodeHandle != *g_nodeHandle)
+	if (nodeHandle != *g_nodeHandle) {
 		return false;
+	}
 
-	// NULL check
-	if (eventData == NULL)
+	if (p_eventData == NULL) {
 		return false;
+	}
 
-	// Check if it was one of our messages
+	// esp_rom_printf("Transmitting frame with message id %d with buffer %d %d %d %d %d %d %d %d \n", p_eventData->done_tx_frame->header.id >> 21, p_eventData->done_tx_frame->buffer[0],p_eventData->done_tx_frame->buffer[1], p_eventData->done_tx_frame->buffer[2], p_eventData->done_tx_frame->buffer[3], p_eventData->done_tx_frame->buffer[4], p_eventData->done_tx_frame->buffer[5], p_eventData->done_tx_frame->buffer[6], p_eventData->done_tx_frame->buffer[7]);
+
+
+	// Iterate through the frame array
 	for (uint8_t i = 0; i < CAN_QUEUE_DEPTH; i++) {
-		// Is it a slot with a message in it?
-		if (g_activeMessages[i] != NULL) {
-			// Is it the same frame?
-			const twai_frame_t* receivedFrame = eventData->done_tx_frame;
-			if (g_activeMessages[i]->frame->header.id == receivedFrame->header.id &&
-				g_activeMessages[i]->frame->buffer_len == receivedFrame->buffer_len &&
-				g_activeMessages[i]->frame->buffer == receivedFrame->buffer) {
-				// It is, so free it memory
-				if (g_activeMessages[i]->freeDataAfterwards) {
-					free(g_activeMessages[i]->frame->buffer);
-				}
-				free(g_activeMessages[i]);
+		// Is the frame in use?
+		if (!g_framesToTransmit[i].transmitting	) {
+			continue;
+		}
 
-				// Then set it to NULL
-				g_activeMessages[i] = NULL;
+		// Is it the frame which was sent?
+		bool equal = true;
+		equal &= g_framesToTransmit[i].espidfFrame.header.id == p_eventData->done_tx_frame->header.id;
+		equal &= g_framesToTransmit[i].espidfFrame.header.dlc == p_eventData->done_tx_frame->header.dlc;
+		equal &= g_framesToTransmit[i].espidfFrame.buffer_len == p_eventData->done_tx_frame->buffer_len;
+		equal &= g_framesToTransmit[i].espidfFrame.buffer[0] == p_eventData->done_tx_frame->buffer[0];
+		equal &= g_framesToTransmit[i].espidfFrame.buffer[1] == p_eventData->done_tx_frame->buffer[1];
+		equal &= g_framesToTransmit[i].espidfFrame.buffer[2] == p_eventData->done_tx_frame->buffer[2];
+		equal &= g_framesToTransmit[i].espidfFrame.buffer[3] == p_eventData->done_tx_frame->buffer[3];
+		equal &= g_framesToTransmit[i].espidfFrame.buffer[4] == p_eventData->done_tx_frame->buffer[4];
+		equal &= g_framesToTransmit[i].espidfFrame.buffer[5] == p_eventData->done_tx_frame->buffer[5];
+		equal &= g_framesToTransmit[i].espidfFrame.buffer[6] == p_eventData->done_tx_frame->buffer[6];
+		equal &= g_framesToTransmit[i].espidfFrame.buffer[7] == p_eventData->done_tx_frame->buffer[7];
 
-				return false;
-			}
+		if (equal) {
+			// Yes, so mark it as unused
+			g_framesToTransmit[i].transmitting = false;
+
+			return false;
 		}
 	}
 
-	// No match
 	return false;
 }
 
@@ -103,14 +134,14 @@ static IRAM_ATTR bool receivedMessageCb(twai_node_handle_t nodeHandle, const twa
 		return false;
 
 	// Get the message
+	uint8_t buffer[CAN_FRAME_DATA_LENGTH_B] = { 0x00 };
 	twai_frame_t rxFrame = {
-		.buffer = g_lastReceivedMessageData,
-		.buffer_len = sizeof(g_lastReceivedMessageData),
+		.buffer = &buffer[0],
+		.buffer_len = CAN_FRAME_DATA_LENGTH_B,
 	};
 	twai_node_receive_from_isr(nodeHandle, &rxFrame);
 
-	// Save the message
-	g_lastReceivedMessage = rxFrame;
+	// esp_rom_printf("Received frame with message id %d from sender %d with buffer %d %d %d %d %d %d %d %d \n", rxFrame.header.id >> 21, rxFrame.header.id & 0x1FFFFF, rxFrame.buffer[0], rxFrame.buffer[1], rxFrame.buffer[2], rxFrame.buffer[3], rxFrame.buffer[4], rxFrame.buffer[5], rxFrame.buffer[6], rxFrame.buffer[7]);
 
 	// Do we have any queues to notify?
 	if (g_amountOfQueuesToNotifyReceived == 0)
@@ -166,7 +197,53 @@ bool onCanError(twai_node_handle_t handle, const twai_error_event_data_t *edata,
 /*
  *	Public functions
  */
-twai_node_handle_t* initializeCanNode(const uint8_t txGpio, const uint8_t rxGpio)
+void canInitiateFrame(TwaiFrame_t* frame, const uint8_t frameId, const uint32_t senderId, const uint8_t bufferLen)
+{
+	if (frame == NULL) {
+		return;
+	}
+
+	// Activate the 29-bit ID format
+	frame->espidfFrame.header.ide = true;
+
+	// Build the frame ID
+	frame->espidfFrame.header.id = 0;
+	frame->espidfFrame.header.id += frameId << CAN_MESSAGE_ID_OFFSET;
+	frame->espidfFrame.header.id += senderId & 0x1FFFFF; // Zero the top 8-bit
+
+	// Set the buffer ptr
+	frame->espidfFrame.buffer = &frame->buffer[0];
+
+	// Set all unused buffer bytes to 0
+	for (uint8_t i = bufferLen; i < CAN_FRAME_MAX_BUFFER_LENGTH_B; i++) {
+		frame->espidfFrame.buffer[i] = 0;
+	}
+
+	// Set the buffer length
+	frame->espidfFrame.header.dlc = bufferLen;
+	frame->espidfFrame.buffer_len = bufferLen;
+
+	// Not yet transmitted
+	frame->transmitting = false;
+}
+
+bool canQueueFrame(const TwaiFrame_t* frame)
+{
+	if (g_nodeHandle == NULL) {
+		return false;
+	}
+
+	// Keep track of the frame
+	const TwaiFrame_t* trackedFrameInstance = keepTrackOfFrame(frame);
+	if (trackedFrameInstance == NULL) {
+		return false;
+	}
+
+	// Send the frame via can bus
+	return twai_node_transmit(*g_nodeHandle, &trackedFrameInstance->espidfFrame, CAN_FRAME_TRANSMIT_TIMEOUT_AFTER_MS) == ESP_OK;
+}
+
+twai_node_handle_t* canInitializeNode(const uint8_t txGpio, const uint8_t rxGpio)
 {
 	// Allocate memory for the node handler
 	g_nodeHandle = (twai_node_handle_t*)malloc(sizeof(twai_node_handle_t));
@@ -188,7 +265,7 @@ twai_node_handle_t* initializeCanNode(const uint8_t txGpio, const uint8_t rxGpio
 	// Initialize the node
 	if (twai_new_node_onchip(&nodeConfig, g_nodeHandle) != ESP_OK) {
 		// It failed, so destroy it
-		destroyCanNode();
+		canDestroyNode();
 
 		return NULL;
 	}
@@ -202,7 +279,7 @@ twai_node_handle_t* initializeCanNode(const uint8_t txGpio, const uint8_t rxGpio
 	};
 	if (twai_node_register_event_callbacks(*g_nodeHandle, &cbs, NULL) != ESP_OK) {
 		// Destroy the node
-		destroyCanNode();
+		canDestroyNode();
 
 		return NULL;
 	}
@@ -210,7 +287,7 @@ twai_node_handle_t* initializeCanNode(const uint8_t txGpio, const uint8_t rxGpio
 	return g_nodeHandle;
 }
 
-void destroyCanNode()
+void canDestroyNode()
 {
 	// Is it NULL?
 	if (g_nodeHandle == NULL)
@@ -226,7 +303,7 @@ void destroyCanNode()
 	g_nodeHandle = NULL;
 }
 
-bool enableCanNode()
+bool canEnableNode()
 {
 	if (g_nodeHandle == NULL)
 		return false;
@@ -236,7 +313,7 @@ bool enableCanNode()
 	return g_nodeEnabled;
 }
 
-void disableCanNode()
+void canDisableNode()
 {
 	if (g_nodeHandle == NULL)
 		return;
@@ -246,57 +323,18 @@ void disableCanNode()
 	g_nodeEnabled = false;
 }
 
-esp_err_t recoverCanDriver()
+esp_err_t canRecoverDriver()
 {
 	return twai_node_recover(*g_nodeHandle);
 }
 
-#include <esp_debug_helpers.h>
-bool queueCanBusMessage(twai_frame_t* message, const bool freeMessageAfterwards, const bool freeMessageDataAfterwards)
-{
-	// NULL check
-	if (g_nodeHandle == NULL) {
-		return false;
-	}
-
-	// NULL check
-	if (message == NULL) {
-		return false;
-	}
-
-	// Queue it
-	const bool transmitSuccessful = twai_node_transmit(*g_nodeHandle, message, 0) == ESP_OK;
-
-	// Keep track of the message?
-	if (transmitSuccessful && freeMessageAfterwards) {
-		// Yes, so keep track of it
-		for (uint8_t i = 0; i < CAN_QUEUE_DEPTH; i++) {
-			// Is it a slot with a message in it?
-			if (g_activeMessages[i] == NULL) {
-				// Allocate the memory
-				g_activeMessages[i] = malloc(sizeof(ActiveMessage_t));
-				memset(g_activeMessages[i], 0, sizeof(ActiveMessage_t));
-
-				// Set the data
-				g_activeMessages[i]->frame = message;
-				g_activeMessages[i]->freeDataAfterwards = freeMessageDataAfterwards;
-			}
-		}
-	}
-	else {
-		esp_backtrace_print(5);
-	}
-
-	return transmitSuccessful;
-}
-
-bool registerCanRxCbQueue(QueueHandle_t* queueHandle)
+bool canRegisterRxCbQueue(QueueHandle_t* queueHandle)
 {
 	// Is the node enabled?
 	const bool wasEnabledBefore = g_nodeEnabled;
 	if (g_nodeEnabled) {
 		// Stop it
-		disableCanNode();
+		canDisableNode();
 	}
 
 	// Make the array larger
@@ -319,43 +357,8 @@ bool registerCanRxCbQueue(QueueHandle_t* queueHandle)
 	// Re-enable node if necessary
 	if (wasEnabledBefore) {
 		// Start it
-		enableCanNode();
+		canEnableNode();
 	}
 
 	return true;
-}
-
-twai_frame_t* generateCanFrame(const uint8_t messageID, const uint32_t senderID, uint8_t** buffer,
-                               const uint8_t bufferLen)
-{
-	// Allocate the needed memory
-	twai_frame_t* message = malloc(sizeof(twai_frame_t));
-	if (message == NULL) {
-		return NULL;
-	}
-	memset(message, 0, sizeof(twai_frame_t));
-
-	// Activate the 29-Bit ID format
-	message->header.ide = true;
-
-	// Build the frame id
-	message->header.id += messageID << 21;
-	message->header.id += senderID & 0x1FFFFF; // Zero the upper 11 bits of the sender ID
-
-	// Set the buffer
-	if (buffer != NULL && bufferLen > 0) {
-		// Set the length
-		message->header.dlc = bufferLen;
-		message->buffer_len = bufferLen;
-
-		// Set the buffer
-		message->buffer = (uint8_t*)*buffer;
-	}
-	else {
-		// There is no data
-		message->header.dlc = 0;
-		message->buffer_len = 0;
-	}
-
-	return message;
 }

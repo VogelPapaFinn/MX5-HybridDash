@@ -14,7 +14,8 @@
 /*
  *	Defines
  */
-#define CAN_FRAME_HEADER_OFFSET 21
+#define CAN_MESSAGE_ID_OFFSET 21
+#define CAN_FRAME_MAX_BUFFER_LENGTH_B 8
 
 /*
  *	Extern Variables
@@ -24,6 +25,14 @@ extern uint8_t g_ownCanComId;
 /*
  *	Public typedefs
  */
+typedef struct
+{
+  uint8_t buffer[CAN_FRAME_MAX_BUFFER_LENGTH_B];
+  twai_frame_t espidfFrame;
+
+  bool transmitting;
+} TwaiFrame_t;
+
 //! \brief An enum which represents the GUI's the display can show
 typedef enum
 {
@@ -36,41 +45,29 @@ typedef enum
 /*
  *  Functions
  */
+void canInitiateFrame(TwaiFrame_t* frame, uint8_t frameId, uint32_t senderId, uint8_t bufferLen);
+
+bool canQueueFrame(const TwaiFrame_t* frame);
+
 //! \brief Creates and initializes a can bus node handle and returns it
 //! \param txGpio The GPIO used to send messages
 //! \param rxGpio The GPIO used for receiving messages
 //! \retval A ptr to a twai_node_handle_t on success. NULL on fail
-twai_node_handle_t* initializeCanNode(uint8_t txGpio, uint8_t rxGpio);
+twai_node_handle_t* canInitializeNode(uint8_t txGpio, uint8_t rxGpio);
 
 //! \brief Destroys the can bus node handle and frees all of its memory
-void destroyCanNode();
+void canDestroyNode();
 
 //! \brief Enables the node so it can be used for transmitting/receiving
 //! \retval Boolean indicating if it worked or not
-bool enableCanNode();
+bool canEnableNode();
 
 //! \brief Disables the node
-void disableCanNode();
+void canDisableNode();
 
-esp_err_t recoverCanDriver();
-
-//! \brief Queues a message to the can bus
-//! \param message A pointer to the message that should be sent
-//! \param freeMessageAfterwards If true the memory of the message will be freed after successfully queuing it
-//! \param freeMessageDataAfterwards If true the memory of the data will be freed after successfully queuing it
-//! \retval Boolean indicating if queuing worked or not
-//! \note If the queuing fails the memory of the message WON'T be freed!
-bool queueCanBusMessage(twai_frame_t* message, bool freeMessageAfterwards, bool freeMessageDataAfterwards);
+esp_err_t canRecoverDriver();
 
 //! \brief Registers a task that should be notified once a message was received
 //! \param queueHandle A pointer to a queue where to append a QUEUE_EVENT_T
 //! \retval Boolean indicating if the registering was successful
-bool registerCanRxCbQueue(QueueHandle_t* queueHandle);
-
-//! \brief Allocates and configures a CAN frame and returns a ptr to it. NULL if it failed
-//! \param messageID The message ID
-//! \param senderID The sender ID
-//! \param buffer A ptr to the buffer which should be sent
-//! \param bufferLen The length of the buffer
-twai_frame_t* generateCanFrame(uint8_t messageID, uint32_t senderID, uint8_t** buffer,
-                               uint8_t bufferLen);
+bool canRegisterRxCbQueue(QueueHandle_t* queueHandle);
