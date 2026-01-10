@@ -66,9 +66,14 @@ bool canEnableNode();
 esp_err_t canRecoverDriver();
 
 //! \brief Registers a task that should be notified once a message was received
-//! \param queueHandle A pointer to a queue where to append a QUEUE_EVENT_T
+//! \param queueHandle A pointer to a queue where to append a QueueEvent_t
 //! \retval Boolean indicating if the registering was successful
 bool canRegisterRxCbQueue(QueueHandle_t* queueHandle);
+
+//! \brief Unregisters a task that should no longer be notified when a message was received
+//! \param queueHandle A pointer to a queue that should no longer be notified
+//! \retval Boolean indicating if the unregistering was successful
+bool canUnregisterRxCbQueue(const QueueHandle_t* queueHandle);
 
 //! \brief Used to initiate a CAN frame
 //! \param p_frame A pointer to the frame instance that should be initialized

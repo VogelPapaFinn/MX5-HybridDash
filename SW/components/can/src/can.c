@@ -16,6 +16,7 @@
 #define CAN_QUEUE_DEPTH 15
 #define CAN_FRAME_DATA_LENGTH_B 8
 #define CAN_FRAME_TRANSMIT_TIMEOUT_AFTER_MS 20
+#define CAN_MAX_AMOUNT_RX_CB_QUEUES 10
 
 /*
  *	Private variables
@@ -31,10 +32,10 @@ static TwaiFrame_t g_framesToTransmit[CAN_QUEUE_DEPTH];
 
 //! \brief A list of FreeRTOS Queues that should be notified once a message was
 //! received
-static QueueHandle_t** g_queuesToNotify = NULL;
+static QueueHandle_t* g_rxCbQueues[CAN_MAX_AMOUNT_RX_CB_QUEUES] = { NULL };
 
 //! \brief The amount of registered FreeRTOS queue handles
-static uint8_t g_amountOfQueuesToNotifyReceived = 0;
+static uint8_t g_amountRegisteredRxCbQueues = 0;
 
 /*
  *	Callback functions
@@ -120,19 +121,19 @@ static IRAM_ATTR bool receivedFrameCb(twai_node_handle_t nodeHandle, const twai_
 	// esp_rom_printf("Received frame with message id %d from sender %d with buffer %d %d %d %d %d %d %d %d \n", rxFrame.header.id >> 21, rxFrame.header.id & 0x1FFFFF, rxFrame.buffer[0], rxFrame.buffer[1], rxFrame.buffer[2], rxFrame.buffer[3], rxFrame.buffer[4], rxFrame.buffer[5], rxFrame.buffer[6], rxFrame.buffer[7]);
 
 	// Do we have any queues to notify?
-	if (g_amountOfQueuesToNotifyReceived == 0) {
+	if (g_amountRegisteredRxCbQueues == 0) {
 		return false;
 	}
 
 	// Build the event
 	QueueEvent_t event;
-	event.command = RECEIVED_NEW_CAN_MESSAGE;
+	event.command = RECEIVED_NEW_CAN_FRAME;
 	event.canFrame = rxFrame;
 
 	// Notify all registered queues
 	BaseType_t xHigherPriorityTaskWoken;
-	for (uint8_t i = 0; i < g_amountOfQueuesToNotifyReceived; i++) {
-		xQueueSendFromISR(*g_queuesToNotify[i], &event, &xHigherPriorityTaskWoken);
+	for (uint8_t i = 0; i < g_amountRegisteredRxCbQueues; i++) {
+		xQueueSendFromISR(*g_rxCbQueues[i], &event, &xHigherPriorityTaskWoken);
 	}
 
 	return xHigherPriorityTaskWoken;
@@ -158,8 +159,8 @@ bool canStateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_ev
 
 	// Send it to all registered cb queues
 	BaseType_t xHigherPriorityTaskWoken;
-	for (uint8_t i = 0; i < g_amountOfQueuesToNotifyReceived; i++) {
-		xQueueSendFromISR(*g_queuesToNotify[i], &event, &xHigherPriorityTaskWoken);
+	for (uint8_t i = 0; i < g_amountRegisteredRxCbQueues; i++) {
+		xQueueSendFromISR(*g_rxCbQueues[i], &event, &xHigherPriorityTaskWoken);
 	}
 
 	return xHigherPriorityTaskWoken;
@@ -244,24 +245,47 @@ esp_err_t canRecoverDriver()
 
 bool canRegisterRxCbQueue(QueueHandle_t* queueHandle)
 {
-	// Make the array larger
-	const void* newAddr = realloc(g_queuesToNotify, sizeof(QueueHandle_t*) * (g_amountOfQueuesToNotifyReceived + 1));
-
-	// Did it work?
-	if (newAddr != NULL) {
-		g_queuesToNotify = (QueueHandle_t**)newAddr;
-	}
-	else {
+	if (queueHandle == NULL || g_amountRegisteredRxCbQueues >= CAN_MAX_AMOUNT_RX_CB_QUEUES) {
 		return false;
 	}
 
-	// Increase the counter
-	g_amountOfQueuesToNotifyReceived++;
+	// Search an empty slot
+	for (uint8_t i = 0; i < CAN_MAX_AMOUNT_RX_CB_QUEUES; i++) {
+		if (g_rxCbQueues[i] != NULL) {
+			continue;
+		}
 
-	// Then save the task handle
-	g_queuesToNotify[g_amountOfQueuesToNotifyReceived - 1] = queueHandle;
+		// Save it
+		g_rxCbQueues[i] = queueHandle;
 
-	return true;
+		// Increase the counter
+		g_amountRegisteredRxCbQueues++;
+
+		return true;
+	}
+
+	return false;
+}
+
+bool canUnregisterRxCbQueue(const QueueHandle_t* queueHandle)
+{
+	if (queueHandle == NULL) {
+		return false;
+	}
+
+	// Iterate through all known queues
+	for (uint8_t i = 0; i < g_amountRegisteredRxCbQueues; i++) {
+		// Is it the same queue?
+		if (g_rxCbQueues[i] != queueHandle) {
+			continue;
+		}
+
+		g_rxCbQueues[i] = NULL;
+
+		return true;
+	}
+
+	return false;
 }
 
 void canInitiateFrame(TwaiFrame_t* p_frame, const uint8_t frameId, const uint8_t bufferLen)
