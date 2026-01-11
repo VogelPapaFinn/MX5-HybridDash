@@ -30,6 +30,8 @@ static bool g_nodeEnabled = false;
 //! \brief Slots which are used to keep track of frames which should be sent
 static TwaiFrame_t g_framesToTransmit[CAN_QUEUE_DEPTH];
 
+
+
 //! \brief A list of FreeRTOS Queues that should be notified once a message was
 //! received
 static QueueHandle_t* g_rxCbQueues[CAN_MAX_AMOUNT_RX_CB_QUEUES] = { NULL };
@@ -125,15 +127,14 @@ static IRAM_ATTR bool receivedFrameCb(twai_node_handle_t nodeHandle, const twai_
 		return false;
 	}
 
-	// Build the event
-	QueueEvent_t event;
-	event.command = RECEIVED_NEW_CAN_FRAME;
-	event.canFrame = rxFrame;
-
 	// Notify all registered queues
 	BaseType_t xHigherPriorityTaskWoken;
 	for (uint8_t i = 0; i < g_amountRegisteredRxCbQueues; i++) {
-		xQueueSendFromISR(*g_rxCbQueues[i], &event, &xHigherPriorityTaskWoken);
+		if (g_rxCbQueues[i] == NULL) {
+			continue;
+		}
+
+		xQueueSendFromISR(*g_rxCbQueues[i], &rxFrame, &xHigherPriorityTaskWoken);
 	}
 
 	return xHigherPriorityTaskWoken;
@@ -276,11 +277,12 @@ bool canUnregisterRxCbQueue(const QueueHandle_t* queueHandle)
 	// Iterate through all known queues
 	for (uint8_t i = 0; i < g_amountRegisteredRxCbQueues; i++) {
 		// Is it the same queue?
-		if (g_rxCbQueues[i] != queueHandle) {
+		if (*g_rxCbQueues[i] != *queueHandle) {
 			continue;
 		}
 
 		g_rxCbQueues[i] = NULL;
+		g_amountRegisteredRxCbQueues--;
 
 		return true;
 	}
@@ -299,8 +301,11 @@ void canInitiateFrame(TwaiFrame_t* p_frame, const uint8_t frameId, const uint8_t
 
 	// Build the frame ID
 	p_frame->espidfFrame.header.id = 0;
-	p_frame->espidfFrame.header.id += frameId << CAN_MESSAGE_ID_OFFSET;
+	p_frame->espidfFrame.header.id += frameId << CAN_FRAME_ID_OFFSET;
 	p_frame->espidfFrame.header.id += g_ownCanComId & 0x1FFFFF; // Zero the top 8-bit
+
+	// Deactivate variable baud rate
+	p_frame->espidfFrame.header.brs = 0;
 
 	// Set the buffer ptr
 	p_frame->espidfFrame.buffer = &p_frame->buffer[0];

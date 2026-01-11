@@ -14,7 +14,7 @@
 /*
  *	Defines
  */
-#define CAN_MESSAGE_ID_OFFSET 21
+#define CAN_FRAME_ID_OFFSET 21
 #define CAN_FRAME_MAX_BUFFER_LENGTH_B 8
 
 /*
