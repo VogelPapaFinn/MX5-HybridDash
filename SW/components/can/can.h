@@ -50,7 +50,7 @@ typedef enum
 
 /*
  *  Functions
-*/
+ */
 //! \brief Creates and initializes a can bus node handle and returns it
 //! \param txGpio The GPIO used to send messages
 //! \param rxGpio The GPIO used for receiving messages

@@ -31,10 +31,9 @@ static bool g_nodeEnabled = false;
 static TwaiFrame_t g_framesToTransmit[CAN_QUEUE_DEPTH];
 
 
-
 //! \brief A list of FreeRTOS Queues that should be notified once a message was
 //! received
-static QueueHandle_t* g_rxCbQueues[CAN_MAX_AMOUNT_RX_CB_QUEUES] = { NULL };
+static QueueHandle_t* g_rxCbQueues[CAN_MAX_AMOUNT_RX_CB_QUEUES] = {NULL};
 
 //! \brief The amount of registered FreeRTOS queue handles
 static uint8_t g_amountRegisteredRxCbQueues = 0;
@@ -49,7 +48,7 @@ static uint8_t g_amountRegisteredRxCbQueues = 0;
 //! \param p_userCtx Unused user parameters
 //! \retval Bool indicating if a higher task was woken
 static IRAM_ATTR bool transmittedFrameCb(twai_node_handle_t nodeHandle,
-                                              const twai_tx_done_event_data_t* p_eventData, void* p_userCtx)
+                                         const twai_tx_done_event_data_t* p_eventData, void* p_userCtx)
 {
 	if (nodeHandle != g_nodeHandle) {
 		return false;
@@ -72,15 +71,14 @@ static IRAM_ATTR bool transmittedFrameCb(twai_node_handle_t nodeHandle,
 		bool equal = true;
 		equal &= g_framesToTransmit[i].espidfFrame.header.id == p_eventData->done_tx_frame->header.id;
 		equal &= g_framesToTransmit[i].espidfFrame.header.dlc == p_eventData->done_tx_frame->header.dlc;
-		equal &= g_framesToTransmit[i].espidfFrame.buffer_len == p_eventData->done_tx_frame->buffer_len;
-		equal &= g_framesToTransmit[i].espidfFrame.buffer[0] == p_eventData->done_tx_frame->buffer[0];
-		equal &= g_framesToTransmit[i].espidfFrame.buffer[1] == p_eventData->done_tx_frame->buffer[1];
-		equal &= g_framesToTransmit[i].espidfFrame.buffer[2] == p_eventData->done_tx_frame->buffer[2];
-		equal &= g_framesToTransmit[i].espidfFrame.buffer[3] == p_eventData->done_tx_frame->buffer[3];
-		equal &= g_framesToTransmit[i].espidfFrame.buffer[4] == p_eventData->done_tx_frame->buffer[4];
-		equal &= g_framesToTransmit[i].espidfFrame.buffer[5] == p_eventData->done_tx_frame->buffer[5];
-		equal &= g_framesToTransmit[i].espidfFrame.buffer[6] == p_eventData->done_tx_frame->buffer[6];
-		equal &= g_framesToTransmit[i].espidfFrame.buffer[7] == p_eventData->done_tx_frame->buffer[7];
+		equal &= *(g_framesToTransmit[i].espidfFrame.buffer + 0) == *(p_eventData->done_tx_frame->buffer + 0);
+		equal &= *(g_framesToTransmit[i].espidfFrame.buffer + 1) == *(p_eventData->done_tx_frame->buffer + 1);
+		equal &= *(g_framesToTransmit[i].espidfFrame.buffer + 2) == *(p_eventData->done_tx_frame->buffer + 2);
+		equal &= *(g_framesToTransmit[i].espidfFrame.buffer + 3) == *(p_eventData->done_tx_frame->buffer + 3);
+		equal &= *(g_framesToTransmit[i].espidfFrame.buffer + 4) == *(p_eventData->done_tx_frame->buffer + 4);
+		equal &= *(g_framesToTransmit[i].espidfFrame.buffer + 5) == *(p_eventData->done_tx_frame->buffer + 5);
+		equal &= *(g_framesToTransmit[i].espidfFrame.buffer + 6) == *(p_eventData->done_tx_frame->buffer + 6);
+		equal &= *(g_framesToTransmit[i].espidfFrame.buffer + 7) == *(p_eventData->done_tx_frame->buffer + 7);
 
 		if (equal) {
 			// Allow the frame to be reused
@@ -112,12 +110,11 @@ static IRAM_ATTR bool receivedFrameCb(twai_node_handle_t nodeHandle, const twai_
 	}
 
 	// Get the message
-	uint8_t buffer[CAN_FRAME_DATA_LENGTH_B] = { 0x00 };
-	twai_frame_t rxFrame = {
-		.buffer = &buffer[0],
-		.buffer_len = CAN_FRAME_DATA_LENGTH_B,
-	};
-	twai_node_receive_from_isr(nodeHandle, &rxFrame);
+	TwaiFrame_t rxFrame;
+	memset(rxFrame.buffer, 0, CAN_FRAME_MAX_BUFFER_LENGTH_B);
+	rxFrame.espidfFrame.buffer = &rxFrame.buffer[0];
+	rxFrame.espidfFrame.buffer_len = CAN_FRAME_DATA_LENGTH_B;
+	twai_node_receive_from_isr(nodeHandle, &rxFrame.espidfFrame);
 
 	// Debug logging
 	// esp_rom_printf("Received frame with message id %d from sender %d with buffer %d %d %d %d %d %d %d %d \n", rxFrame.header.id >> 21, rxFrame.header.id & 0x1FFFFF, rxFrame.buffer[0], rxFrame.buffer[1], rxFrame.buffer[2], rxFrame.buffer[3], rxFrame.buffer[4], rxFrame.buffer[5], rxFrame.buffer[6], rxFrame.buffer[7]);
@@ -145,7 +142,9 @@ static IRAM_ATTR bool receivedFrameCb(twai_node_handle_t nodeHandle, const twai_
 //! \param p_eventData A pointer to a struct which contains debug information
 //! \param p_userCtx Unused user parameters
 //! \retval Bool indicating if a higher task was woken
-bool canStateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t *p_eventData, void *p_userCtx) {
+bool canStateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t* p_eventData,
+                       void* p_userCtx)
+{
 	// Check if the CAN bus crashed otherwise ignore the state change
 	if (p_eventData->new_sta != TWAI_ERROR_BUS_OFF) {
 		return false;
@@ -182,11 +181,9 @@ static TwaiFrame_t* keepTrackOfFrame(const TwaiFrame_t* p_frame)
 			continue;
 		}
 
-		// Use this frame
-		g_framesToTransmit[i].transmitting = true;
+		// Use this slot
+		memcpy(&g_framesToTransmit[i], p_frame, sizeof(TwaiFrame_t));
 
-		// Copy the message here
-		g_framesToTransmit[i] = *p_frame;
 
 		// Return the pointer to this address
 		return &g_framesToTransmit[i];
@@ -330,11 +327,15 @@ bool canQueueFrame(const TwaiFrame_t* p_frame)
 	}
 
 	// Keep track of the frame
-	const TwaiFrame_t* trackedFrameInstance = keepTrackOfFrame(p_frame);
+	TwaiFrame_t* trackedFrameInstance = keepTrackOfFrame(p_frame);
 	if (trackedFrameInstance == NULL) {
 		return false;
 	}
 
+	// We are now transmitting the frame
+	trackedFrameInstance->transmitting = true;
+
 	// Send the frame via can bus
-	return twai_node_transmit(g_nodeHandle, &trackedFrameInstance->espidfFrame, CAN_FRAME_TRANSMIT_TIMEOUT_AFTER_MS) == ESP_OK;
+	return twai_node_transmit(g_nodeHandle, &trackedFrameInstance->espidfFrame, CAN_FRAME_TRANSMIT_TIMEOUT_AFTER_MS) ==
+		ESP_OK;
 }
