@@ -1,0 +1,108 @@
+(footprint "XUNPU_Button"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 4.9 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "b97f26c2-6d57-45dd-932c-18d22bceaf67")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "XUNPU_Button"
+		(at 0 6.4 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "144e58dd-9717-462f-9bf0-a063c573c7db")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 5.4 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "26f1e9b2-be6e-4bc8-a121-f97cc94c321e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 5.4 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "9c419135-4d1a-4c86-b52e-51bf998acc68")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_rect
+		(start -0.8 -1.2)
+		(end 5.3 1.2)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "481cbb7a-1190-4d23-95b4-62a1577dcb2b")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 7.9 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "39002053-8832-490b-a771-15e20ddbe2c7")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at 0 0)
+		(size 1.05 2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "b4ec0bd6-190c-4b73-a7d8-9e4821abd464")
+	)
+	(pad "2" smd roundrect
+		(at 4.45 0)
+		(size 1.05 2)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "b1e47cc9-8859-4832-a8ce-594514d5744e")
+	)
+	(embedded_fonts no)
+	(model "C:/Users/finng/Documents/MX5-HybridDash/HW/3DModels/SMD_Push_Button.STEP"
+		(offset
+			(xyz 2.25 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 -0 -0)
+		)
+	)
+)

@@ -1,0 +1,124 @@
+(footprint "TDK ACT45B-510-2P-TL003"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at -14.3 -6.4 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "baf63678-cea2-4d79-97be-fced18f56688")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "TDK ACT45B-510-2P-TL003 "
+		(at -15.5 -0.8 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "6aa28a51-f3be-4450-b4bb-f80e48c12f51")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://www.lcsc.com/datasheet/C76584.pdf"
+		(at -14.175 2.05 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f53eca9d-032d-44e8-bb18-7db6ac6249a6")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" "51uH@100kHz 2Line Common Mode Choke Surface Mount 4.5x3.2mm 2.8kΩ@10MHz 200mA DCR 1Ω for CAN"
+		(at -14.175 2.05 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "8f8c1ce3-1fb7-4a76-ba1f-96ed496e7c0c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_rect
+		(start -3.3 -1.9)
+		(end 3.3 1.9)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "26fb7340-d452-4196-be81-cef22f4847b7")
+	)
+	(fp_text user "${REFERENCE}"
+		(at -14.3 -3.4 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "991a54a0-7ff6-45e5-90df-e5c4f0583aad")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -2.275 -1.25)
+		(size 1.35 0.9)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "312a443a-f5ec-473f-87f7-52e1272a7b3a")
+	)
+	(pad "2" smd roundrect
+		(at -2.275 1.25)
+		(size 1.35 0.9)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "4d0f1c2b-c5e5-454a-a865-22d82549577c")
+	)
+	(pad "3" smd roundrect
+		(at 2.275 1.25)
+		(size 1.35 0.9)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "181cb2c4-297f-43d1-a333-a01605fefd5c")
+	)
+	(pad "4" smd roundrect
+		(at 2.275 -1.25)
+		(size 1.35 0.9)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "57c5306e-3c69-46e9-8e38-cb99e298dba8")
+	)
+	(embedded_fonts no)
+	(model "C:/Users/finng/Documents/MX5-HybridDash/HW/3DModels/ACT45B-510-2P-TL003--3DModel-STEP-510211.STEP"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 -0 -0)
+		)
+	)
+)
