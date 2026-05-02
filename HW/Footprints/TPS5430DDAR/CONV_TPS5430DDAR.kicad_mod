@@ -307,8 +307,8 @@
 		(uuid "e5502f6e-9f93-4feb-b3ef-5f9f487725e2")
 	)
 	(fp_line
-		(start -1.95 -2.525)
-		(end 1.95 -2.525)
+		(start -1.95 -2.6)
+		(end 1.95 -2.6)
 		(stroke
 			(width 0.127)
 			(type solid)
@@ -317,8 +317,8 @@
 		(uuid "ba0082b9-6d23-4bc8-8686-a134034e2c83")
 	)
 	(fp_line
-		(start -1.95 2.525)
-		(end 1.95 2.525)
+		(start -1.95 2.6)
+		(end 1.95 2.6)
 		(stroke
 			(width 0.127)
 			(type solid)
