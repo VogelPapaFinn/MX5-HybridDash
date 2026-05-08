@@ -10,13 +10,14 @@
 constexpr auto TAG = "CanNode";
 
 constexpr uint32_t CAN_SPEED = 1000000; // 1 Mbit/s
-constexpr uint8_t  CAN_QUEUE_DEPTH = 15;
+constexpr uint8_t CAN_QUEUE_DEPTH = 15;
 constexpr uint16_t CAN_SEND_TIMEOUT_MS = 200;
 
 /*
  *	Private Static Callback Functions
  */
-static bool staticReceivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_event_data_t* p_eventData, void* p_userCtx)
+static bool staticReceivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_event_data_t* p_eventData,
+                                  void* p_userCtx)
 {
 	// Get the class context from the user arguments
 	auto canNode = static_cast<Can*>(p_userCtx);
@@ -27,7 +28,8 @@ static bool staticReceivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_d
 	return canNode->receivedFrameCb(nodeHandle, p_eventData, nullptr);
 }
 
-static bool staticTransmittedFrameCb(twai_node_handle_t nodeHandle, const twai_tx_done_event_data_t* p_eventData, void* p_userCtx)
+static bool staticTransmittedFrameCb(twai_node_handle_t nodeHandle, const twai_tx_done_event_data_t* p_eventData,
+                                     void* p_userCtx)
 {
 	// Get the class context from the user arguments
 	auto canNode = static_cast<Can*>(p_userCtx);
@@ -38,7 +40,8 @@ static bool staticTransmittedFrameCb(twai_node_handle_t nodeHandle, const twai_t
 	return canNode->transmittedFrameCb(nodeHandle, p_eventData, nullptr);
 }
 
-static bool staticStateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t* p_eventData, void* p_userCtx)
+static bool staticStateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t* p_eventData,
+                                 void* p_userCtx)
 {
 	// Get the class context from the user arguments
 	auto canNode = static_cast<Can*>(p_userCtx);
@@ -115,7 +118,8 @@ bool Can::enable()
 	enabled_ = twai_node_enable(nodeHandle_) == ESP_OK;
 	if (!enabled_) {
 		ESP_LOGE(TAG, "Failed to enable CAN node");
-	} else {
+	}
+	else {
 		ESP_LOGI(TAG, "Enabled CAN node");
 	}
 
@@ -155,10 +159,15 @@ void Can::queueFrame(Frame& canFrame)
 	}
 
 	canFrame.transmitting = true;
-	canFrame.generateTwaiFrame();
-	pendingFrames_.push_back(canFrame);
 
-	if (twai_node_transmit(nodeHandle_, &canFrame.twaiFrame, CAN_SEND_TIMEOUT_MS) != ESP_OK) {
+	esp_rom_printf("Queueing Frame %s\n", canFrame.toString().c_str());
+
+	pendingFrames_.push_back(std::make_shared<Frame>(canFrame));
+
+	const auto trackedFrame = pendingFrames_.back().get();
+	trackedFrame->buildTwaiFrame();
+
+	if (twai_node_transmit(nodeHandle_, &trackedFrame->twaiFrame, CAN_SEND_TIMEOUT_MS) != ESP_OK) {
 		ESP_LOGW(TAG, "Failed to queue CAN frame");
 	}
 }
@@ -177,10 +186,9 @@ bool Can::receivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_even
 	}
 
 	// Get the frame
-	twai_frame_t twaiFrame;
-	twai_node_receive_from_isr(nodeHandle, &twaiFrame);
 	Frame canFrame;
-	canFrame.fromTwaiFrame(twaiFrame);
+	twai_node_receive_from_isr(nodeHandle, &canFrame.twaiFrame);
+	canFrame.fromTwaiFrame();
 
 	// Debug logging
 	//esp_rom_printf("Received frame with message id %d with buffer: ", twaiFrame.header.id);
@@ -194,7 +202,7 @@ bool Can::receivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_even
 	}
 
 	// Notify all callback queues
-	BaseType_t xHigherPriorityTaskWoken;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	for (const auto& queueHandle : rxCbQueueHandles_) {
 		if (queueHandle == nullptr) {
 			continue;
@@ -206,7 +214,8 @@ bool Can::receivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_even
 	return xHigherPriorityTaskWoken;
 }
 
-bool Can::transmittedFrameCb(twai_node_handle_t nodeHandle, const twai_tx_done_event_data_t* p_eventData, void* p_userCtx)
+bool Can::transmittedFrameCb(twai_node_handle_t nodeHandle, const twai_tx_done_event_data_t* p_eventData,
+                             void* p_userCtx)
 {
 	if (nodeHandle != nodeHandle_) {
 		return false;
@@ -225,11 +234,33 @@ bool Can::transmittedFrameCb(twai_node_handle_t nodeHandle, const twai_tx_done_e
 
 	// Free memory
 	for (uint32_t i = 0; i < pendingFrames_.size(); i++) {
-		if (!pendingFrames_.at(i).transmitting || pendingFrames_.at(i).twaiFrame.header.id != p_eventData->done_tx_frame->header.id) {
+		if (!pendingFrames_.at(i).get()->transmitting || pendingFrames_.at(i).get()->twaiFrame.header.id != p_eventData
+			->done_tx_frame->header.id) {
 			continue;
 		}
 
-		free(pendingFrames_.at(i).twaiFrame.buffer);
+		auto const& pFrame = pendingFrames_.at(i).get()->twaiFrame;
+		auto const& tFrame = p_eventData->done_tx_frame;
+
+		bool identical = true;
+
+		// Header
+		identical &= pFrame.header.id == tFrame->header.id;
+		identical &= pFrame.header.dlc == tFrame->header.dlc;
+		identical &= pFrame.header.brs == tFrame->header.brs;
+		identical &= pFrame.header.esi == tFrame->header.esi;
+		identical &= pFrame.header.fdf == tFrame->header.fdf;
+		identical &= pFrame.header.ide == tFrame->header.ide;
+		identical &= pFrame.header.rtr == tFrame->header.rtr;
+
+		// Data
+		identical &= pFrame.buffer_len == tFrame->buffer_len;
+		if (!identical) { continue; }
+		for (uint8_t i = 0; i < pFrame.buffer_len; i++) {
+			identical &= pFrame.buffer[i] == tFrame->buffer[i];
+		}
+
+		if (!identical) { continue; }
 
 		pendingFrames_.erase(pendingFrames_.begin() + i);
 
@@ -239,7 +270,8 @@ bool Can::transmittedFrameCb(twai_node_handle_t nodeHandle, const twai_tx_done_e
 	return false;
 }
 
-bool Can::stateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t* p_eventData, void* p_userCtx)
+bool Can::stateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t* p_eventData,
+                         void* p_userCtx)
 {
 	if (p_eventData == nullptr) {
 		return false;
