@@ -38,7 +38,7 @@ Filesystem* Filesystem::instance_ = nullptr;
 /*
  *	Public Function Implementations
  */
-Filesystem::Filesystem(bool mountSdCard, bool mountSpiffs)
+Filesystem::Filesystem(bool mountSdCard, bool mountConfigPart, bool mountDataPart)
 {
 	bool warningOccured = false;
 	bool errorOccured = false;
@@ -61,10 +61,12 @@ Filesystem::Filesystem(bool mountSdCard, bool mountSpiffs)
 		sdCardMountConfig_.format_if_mount_failed = false;
 		sdCardMountConfig_.max_files = MAX_OPEN_FILES;
 
-		sdCardMounted_ = esp_vfs_fat_sdmmc_mount(SDCARD_BASE_PATH.c_str(), &sdCardHost_, &sdCardSlotConfig_, &sdCardMountConfig_, &sdCardHandler_) == ESP_OK;
+		sdCardMounted_ = esp_vfs_fat_sdmmc_mount(SDCARD_BASE_PATH.c_str(), &sdCardHost_, &sdCardSlotConfig_,
+												 &sdCardMountConfig_, &sdCardHandler_) == ESP_OK;
 		if (sdCardMounted_) {
 			ESP_LOGI(TAG, "Mounted SD Card");
-		} else {
+		}
+		else {
 			ESP_LOGW(TAG, "Couldn't mount SD Card");
 			warningOccured = true;
 		}
@@ -73,7 +75,7 @@ Filesystem::Filesystem(bool mountSdCard, bool mountSpiffs)
 	/*
 	 *	Data Partition
 	 */
-	if (mountSpiffs) {
+	if (mountDataPart) {
 		dataPartConfig_.base_path = DATA_BASE_PATH.c_str();
 		dataPartConfig_.partition_label = DATA_PARTITION_LABEL.c_str();
 		dataPartConfig_.max_files = MAX_OPEN_FILES;
@@ -82,23 +84,27 @@ Filesystem::Filesystem(bool mountSdCard, bool mountSpiffs)
 		dataPartMounted_ = esp_vfs_spiffs_register(&dataPartConfig_) == ESP_OK;
 		if (dataPartMounted_) {
 			ESP_LOGI(TAG, "Mounted data partition");
-		} else {
+		}
+		else {
 			ESP_LOGE(TAG, "Couldn't mount data partition");
 			errorOccured = true;
 		}
+	}
 
-		/*
-		 *	Config Partition
-		 */
+	/*
+	 *	Config Partition
+	 */
+	if (mountConfigPart) {
 		configPartConfig_.base_path = CONFIG_BASE_PATH.c_str();
 		configPartConfig_.partition_label = CONFIG_PARTITION_LABEL.c_str();
 		configPartConfig_.max_files = MAX_OPEN_FILES;
-		configPartConfig_.format_if_mount_failed = false;
+		configPartConfig_.format_if_mount_failed = true;
 
 		configPartMounted_ = esp_vfs_spiffs_register(&configPartConfig_) == ESP_OK;
 		if (configPartMounted_) {
 			ESP_LOGI(TAG, "Mounted config partition");
-		} else {
+		}
+		else {
 			ESP_LOGE(TAG, "Couldn't mount config partition");
 			errorOccured = true;
 		}
@@ -106,23 +112,25 @@ Filesystem::Filesystem(bool mountSdCard, bool mountSpiffs)
 
 	if (warningOccured) {
 		ESP_LOGW(TAG, "Initialized with warnings");
-	} else if (errorOccured) {
+	}
+	else if (errorOccured) {
 		ESP_LOGE(TAG, "Initialized with errors");
-	} else {
+	}
+	else {
 		ESP_LOGI(TAG, "Initialized");
 	}
 }
 
-Filesystem* Filesystem::get(bool mountSdCard, bool mountSpiffs)
+Filesystem* Filesystem::get(bool mountSdCard, bool mountConfigPart, bool mountDataPart)
 {
 	if (instance_ == nullptr) {
-		instance_ = new Filesystem(mountSdCard, mountSdCard);
+		instance_ = new Filesystem(mountSdCard, mountConfigPart, mountDataPart);
 	}
 
 	return instance_;
 }
 
-bool Filesystem::doesFileExist(const std::string& path, Location location)
+bool Filesystem::doesFileExist(const std::string& path, Location location) const
 {
 	if (!isLocationMounted(location)) {
 		return false;
@@ -285,18 +293,21 @@ void Filesystem::test()
 	// Create two files, one on each internal partition
 	if (createFile("hello.txt", CONFIG_PARTITION)) {
 		file1 = openFile("hello.txt", "a+", CONFIG_PARTITION);
-	} else {
+	}
+	else {
 		success = false;
 	}
 	if (createFile("hello.txt", DATA_PARTITION)) {
 		file2 = openFile("hello.txt", "a+", DATA_PARTITION);
-	} else {
+	}
+	else {
 		success = false;
 	}
 	// And one on the SD Card
 	if (createFile("hello.txt", SD_CARD)) {
 		file3 = openFile("hello.txt", "a+", SD_CARD);
-	} else {
+	}
+	else {
 		success = false;
 	}
 
@@ -305,17 +316,20 @@ void Filesystem::test()
 	// Close the files
 	if (file1 != NULL) {
 		fclose(file1);
-	} else {
+	}
+	else {
 		success = false;
 	}
 	if (file2 != NULL) {
 		fclose(file2);
-	} else {
+	}
+	else {
 		success = false;
 	}
 	if (file3 != NULL) {
 		fclose(file3);
-	} else {
+	}
+	else {
 		success = false;
 	}
 
@@ -347,7 +361,8 @@ void Filesystem::test()
 	// Create new file in the newly created directory
 	if (createFile("location/hello.txt", SD_CARD)) {
 		file1 = openFile("hello.txt", "a+", SD_CARD);
-	} else {
+	}
+	else {
 		success = false;
 	}
 
@@ -368,7 +383,8 @@ void Filesystem::test()
 
 	if (success) {
 		ESP_LOGI(TAG, "All Filesystem tests succeeded");
-	} else {
+	}
+	else {
 		ESP_LOGW(TAG, "At least one filesystem test failed");
 	}
 }
@@ -379,19 +395,27 @@ void Filesystem::test()
 bool Filesystem::isLocationMounted(const Location& location) const
 {
 	switch (location) {
-		case SD_CARD: return sdCardMounted_;
-		case DATA_PARTITION: return dataPartMounted_;
-		case CONFIG_PARTITION: return configPartMounted_;
-		default: return false;
+		case SD_CARD:
+			return sdCardMounted_;
+		case DATA_PARTITION:
+			return dataPartMounted_;
+		case CONFIG_PARTITION:
+			return configPartMounted_;
+		default:
+			return false;
 	}
 }
 
 std::string Filesystem::buildFullPath(const std::string& path, const Location& location)
 {
 	switch (location) {
-		case SD_CARD: return SDCARD_BASE_PATH + "/" + path;
-		case DATA_PARTITION: return DATA_BASE_PATH + "/" + path;
-		case CONFIG_PARTITION: return CONFIG_BASE_PATH + "/" + path;
-		default: return path;
+		case SD_CARD:
+			return SDCARD_BASE_PATH + "/" + path;
+		case DATA_PARTITION:
+			return DATA_BASE_PATH + "/" + path;
+		case CONFIG_PARTITION:
+			return CONFIG_BASE_PATH + "/" + path;
+		default:
+			return path;
 	}
 }

@@ -24,9 +24,9 @@ public:
 	/*
 	 *	Public Functions
 	 */
-	static Filesystem* get(bool mountSdCard = true, bool mountSpiffs = true);
+	static Filesystem* get(bool mountSdCard = true, bool mountConfigPart = true, bool mountDataPart = true);
 
-	bool doesFileExist(const std::string& path, Location location);
+	bool doesFileExist(const std::string& path, Location location) const;
 
 	bool createFile(const std::string& path, Location location);
 
@@ -45,7 +45,7 @@ private:
 	/*
 	 *	Private Functions
 	 */
-	Filesystem(bool mountSdCard = true, bool mountSpiffs = true);
+	Filesystem(bool mountSdCard = true, bool mountConfigPart = true, bool mountDataPart = true);
 
 	bool isLocationMounted(const Location& location) const;
 
