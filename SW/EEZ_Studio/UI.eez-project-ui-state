@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[UI.eez-project]:/userPages/1",
+    "selectedUserPageObject": "[UI.eez-project]:/userPages/2",
     "selectedFontObject": "[UI.eez-project]:/fonts/1",
     "selectedBitmapObject": "[UI.eez-project]:/bitmaps/0",
     "subnavigationSelectedItems": {
@@ -191,6 +191,7 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 62.14191729603304,
+              "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
@@ -1080,7 +1081,11 @@
     "[UI.eez-project]:/userPages/0[flow-state]": {
       "selectionFront": {},
       "selectionBack": {
-        "0": {}
+        "0": {
+          "2": {
+            "$selected": true
+          }
+        }
       },
       "transform": {
         "translate": {
@@ -1126,7 +1131,10 @@
       "selectionBack": {
         "0": {
           "5": {},
-          "14": {}
+          "14": {},
+          "15": {
+            "$selected": true
+          }
         }
       },
       "transform": {
@@ -1178,7 +1186,7 @@
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "POSITION AND SIZE"
+    "IMAGE"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,

@@ -15,6 +15,16 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
+/*
+ *	Public constexpr
+ */
+constexpr uint8_t CAN_MASTER_ID = 1;
+constexpr uint8_t CAN_BROADCAST_ID = 0;
+
+
+/*
+ *	CAN Class
+ */
 class Can
 {
 public:

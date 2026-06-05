@@ -4,7 +4,8 @@ namespace CanFrame
 {
 	enum GROUP
 	{
-		CONFIGURATION
+		CONFIGURATION,
+		SENSOR
 	};
 
 	enum CONFIGURATION
@@ -14,5 +15,10 @@ namespace CanFrame
 		CONFIRM_ID,
 		SET_SCREEN,
 		WAKE_UP,
+	};
+
+	enum SENSOR
+	{
+		BROADCAST_DATA
 	};
 }

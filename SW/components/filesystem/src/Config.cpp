@@ -58,6 +58,19 @@ Config::Config(const std::string& path)
 	}
 }
 
+Config::~Config()
+{
+	if (file_ != nullptr) {
+		if (!json_.isNull()) {
+			save();
+			json_.clear();
+		}
+
+		fclose(file_);
+		file_ = nullptr;
+	}
+}
+
 ArduinoJson::JsonDocument* Config::getJson()
 {
 	return &json_;

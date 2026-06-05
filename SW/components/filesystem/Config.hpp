@@ -14,6 +14,8 @@ class Config
 public:
 	Config(const std::string& path);
 
+	~Config();
+
 	ArduinoJson::JsonDocument* getJson();
 
 	bool save();
