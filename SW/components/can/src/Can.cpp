@@ -160,7 +160,7 @@ void Can::queueFrame(Frame& canFrame)
 
 	canFrame.transmitting = true;
 
-	esp_rom_printf("Queueing Frame %s\n", canFrame.toString().c_str());
+	// esp_rom_printf("Queueing Frame %s\n", canFrame.toString().c_str());
 
 	pendingFrames_.push_back(std::make_shared<Frame>(canFrame));
 
