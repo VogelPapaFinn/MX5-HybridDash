@@ -2,7 +2,7 @@
   "navigation": {
     "selectedUserPageObject": "[UI.eez-project]:/userPages/2",
     "selectedFontObject": "[UI.eez-project]:/fonts/1",
-    "selectedBitmapObject": "[UI.eez-project]:/bitmaps/0",
+    "selectedBitmapObject": "[UI.eez-project]:/bitmaps/1",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
     }
@@ -25,6 +25,7 @@
           },
           {
             "type": "border",
+            "selected": 2,
             "size": 240,
             "location": "right",
             "children": [
@@ -72,6 +73,7 @@
           },
           {
             "type": "border",
+            "selected": 0,
             "size": 198.5,
             "location": "bottom",
             "children": [
@@ -1132,15 +1134,13 @@
         "0": {
           "5": {},
           "14": {},
-          "15": {
-            "$selected": true
-          }
+          "15": {}
         }
       },
       "transform": {
         "translate": {
-          "x": -238,
-          "y": -246
+          "x": -230,
+          "y": -231
         },
         "scale": 1
       },
@@ -1186,11 +1186,11 @@
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "IMAGE"
+    "POSITION AND SIZE"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
   "flowZoom": 1,
   "implementationLanguage": "C",
-  "openDialogDefaultPath": "C:\\Users\\finng\\Documents\\MX5-HybridDash\\SW\\DisplayBoard_FW\\res\\ui"
+  "openDialogDefaultPath": "C:\\Users\\finng\\Documents\\MX5-HybridDash\\SW\\DisplayBoard_FW\\res\\img\\png\\oilCan.png"
 }

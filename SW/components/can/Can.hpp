@@ -49,7 +49,7 @@ public:
 		/*
 		 *	Header
 		 */
-		uint16_t dataLengthCode = 0;
+		uint8_t dataLengthCode = 0;
 
 		bool extendedFrameFormat = true;
 
@@ -159,8 +159,7 @@ public:
 	IRAM_ATTR bool receivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_event_data_t* p_eventData,
 	                               void* p_userCtx);
 
-	IRAM_ATTR bool transmittedFrameCb(twai_node_handle_t nodeHandle, const twai_tx_done_event_data_t* p_eventData,
-	                                  void* p_userCtx);
+	void transmittedFrameCb(const twai_frame_t frame);
 
 	IRAM_ATTR bool stateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t* p_eventData,
 	                              void* p_userCtx);
@@ -182,6 +181,8 @@ public:
 
 	void queueFrame(Frame& canFrame);
 
+	QueueHandle_t* getFrameTransmittedQueue();
+
 private:
 	/*
 	 *	Private Member variables
@@ -198,4 +199,9 @@ private:
 	std::vector<QueueHandle_t*> rxCbQueueHandles_;
 
 	std::vector<std::shared_ptr<Frame>> pendingFrames_;
+	SemaphoreHandle_t pendingFramesMutex_ = nullptr;
+
+	TaskHandle_t frameTransmittedTaskHandle_ = nullptr;
+	QueueHandle_t frameTransmittedQueueHandle_ = nullptr;
+
 };

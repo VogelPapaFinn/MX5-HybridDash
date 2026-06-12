@@ -5,7 +5,8 @@ namespace CanFrame
 	enum GROUP
 	{
 		CONFIGURATION,
-		SENSOR
+		SENSOR,
+		WIFI,
 	};
 
 	enum CONFIGURATION
@@ -14,11 +15,23 @@ namespace CanFrame
 		SET_ID,
 		CONFIRM_ID,
 		SET_SCREEN,
+		SET_ROTATION,
+		REGISTRATION_COMPLETED,
 		WAKE_UP,
+		RESTART,
 	};
 
 	enum SENSOR
 	{
 		BROADCAST_DATA
+	};
+
+	enum WIFI
+	{
+		SET_MASTER_IP,
+		SET_SSID,
+		SET_PASSWORD,
+		JOIN_WIFI,
+		EXECUTE_UPDATE,
 	};
 }
