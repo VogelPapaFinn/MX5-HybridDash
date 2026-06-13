@@ -1084,9 +1084,7 @@
       "selectionFront": {},
       "selectionBack": {
         "0": {
-          "2": {
-            "$selected": true
-          }
+          "2": {}
         }
       },
       "transform": {
@@ -1094,7 +1092,7 @@
           "x": -180,
           "y": -180
         },
-        "scale": 1
+        "scale": 1.75
       },
       "timeline": {
         "isEditorActive": false,
@@ -1119,7 +1117,7 @@
           "x": -180,
           "y": -180
         },
-        "scale": 1
+        "scale": 1.75
       },
       "timeline": {
         "isEditorActive": false,
@@ -1139,10 +1137,10 @@
       },
       "transform": {
         "translate": {
-          "x": -230,
-          "y": -231
+          "x": -462.125,
+          "y": -315.35416666666663
         },
-        "scale": 1
+        "scale": 1.75
       },
       "timeline": {
         "isEditorActive": false,
@@ -1190,7 +1188,7 @@
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
-  "flowZoom": 1,
+  "flowZoom": 1.75,
   "implementationLanguage": "C",
   "openDialogDefaultPath": "C:\\Users\\finng\\Documents\\MX5-HybridDash\\SW\\DisplayBoard_FW\\res\\img\\png\\oilCan.png"
 }

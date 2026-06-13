@@ -95,11 +95,7 @@ bool Can::receivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_even
 	canFrame.fromTwaiFrame();
 
 	// Debug logging
-	//esp_rom_printf("Received frame with message id %d with buffer: ", twaiFrame.header.id);
-	//for (uint16_t i = 0; i < twaiFrame.buffer_len; i++) {
-	//	esp_rom_printf("%d ", twaiFrame.buffer[i]);
-	//}
-	//esp_rom_printf("\n");
+	// esp_rom_printf("Received frame: %s \n", canFrame.toString().c_str());
 
 	if (rxCbQueueHandles_.empty()) {
 		return false;
@@ -310,7 +306,7 @@ void Can::queueFrame(Frame& canFrame)
 
 	canFrame.transmitting = true;
 
-	// esp_rom_printf("Queueing Frame %s\n", canFrame.toString().c_str());
+	// ESP_LOGI(TAG, "Transmitting Frame %s", canFrame.toString().c_str());
 
 	// Acquire the mutex lock
 	if (xSemaphoreTake(pendingFramesMutex_, portMAX_DELAY) != pdTRUE) {

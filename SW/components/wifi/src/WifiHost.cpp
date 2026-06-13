@@ -79,7 +79,7 @@ bool WifiHost::start()
 	wifiConfig_.ap.ssid_len = static_cast<uint8_t>(ssid_.size());
 	wifiConfig_.ap.channel = 1;
 	wifiConfig_.ap.authmode = WIFI_AUTH_WPA2_PSK;
-	wifiConfig_.ap.max_connection = 4;
+	wifiConfig_.ap.max_connection = 8;
 	strlcpy((char*)wifiConfig_.ap.ssid, ssid_.c_str(), sizeof(wifiConfig_.ap.ssid));
 	strlcpy((char*)wifiConfig_.ap.password, password_.c_str(), sizeof(wifiConfig_.ap.password));
 
@@ -96,6 +96,17 @@ bool WifiHost::start()
 	if (esp_wifi_start() != ESP_OK) {
 		ESP_LOGE(TAG, "Couldn't start Wifi AP.");
 		return false;
+	}
+
+	/*
+	 *	Get IP address
+	 */
+	esp_netif_ip_info_t ipInfo;
+	if (esp_netif_get_ip_info(espNetif_, &ipInfo) == ESP_OK) {
+		ip_[0] = ipInfo.ip.addr >> 0;
+		ip_[1] = ipInfo.ip.addr >> 8;
+		ip_[2] = ipInfo.ip.addr >> 16;
+		ip_[3] = ipInfo.ip.addr >> 24;
 	}
 
 	// Everything worked
