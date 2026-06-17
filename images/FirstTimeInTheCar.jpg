@@ -1,0 +1,76 @@
+# MX5 Hybrid Dash
+
+maybe die grafik die du auf den pcbs hast?
+
+<table>
+<tr>
+<td>
+Very cool, short description of what this project is. What does it do? What is the goal? we love cars. This text is in a very cool box.
+</td>
+</tr>
+</table>
+
+## Features
+
+Features that can be displayed on the displays:
+- RPM
+- Speed
+- Blinker rechts & links
+- Öldruck (schalter)
+- Tank Füllstand
+- Wasser Temperatur
+- Kommunikation mit OEM Steuergerät (Nicht OBDII)
+    - 33 Sensoren bzw. Werte (teilweise liefert ein Sensor mehrere Einheiten bspw °C und V)
+
+## Section List
+
+update this when decided
+- [MX5 Hybrid Dash](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#mx5-hybrid-dash)
+- [Section List](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#mx5-hybrid-dash)
+- [Demo](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#section-list)
+- [Information about the folders and their content](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#information-about-the-folders-and-their-content)
+- [Additional Information](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#3d-models--additional-information)
+- [Contact](https://github.com/VogelPapaFinn/MX5-HybridDash/tree/v1?tab=readme-ov-file#contact)
+
+## Components
+
+wonderful images of components and explanations 
+
+maybe diagramm von dem aufbau? irgendwie sowas oder so
+
+```mermaid
+flowchart
+
+DisplayA & DisplayB & DisplayC --- PCB --- ECU
+```
+
+image of assembled cluster! nice!
+
+#### Display
+
+look at this display, isnt it wonderful?
+
+## Installation
+
+explanation how the devices are installed (Steuergerät and stuff?)
+
+## 3D Models & Additional Information
+
+I designed the display mounts myself with the free-to-use websoftware "OnShape". You can find the 3D model [here](https://cad.onshape.com/documents/e7f03f8bc2dd589c93d10406/w/4d8f17b09202eb8b20daf352/e/a5ddfcce33940dbfa6af1e26?renderMode=0&uiState=66dc995cdcc2976b5f7d5d22). In this OnShape project you can find the bracket and a "cover" which is glued to the top of it. Note: Im not satisfied with it being glued but at the moment I do not have an alternative solution.
+
+Additional ressources that were useful during development:
+- [A thread](https://forum.miata.net/vb/showthread.php?t=780170) I created to gather information around this project.
+- [The used displays](https://www.waveshare.com/1.28inch-LCD-Module.htm) which I bought from amazon. They are manufactured by 'WaveShare' and have a screen size of 1.28"
+- [Information about the oil gauge](https://www.miata.net/garage/opg2/)
+- [Information about the water temperature relative to the resistance measured](https://www.miataturbo.net/megasquirt-18/water-temo-gauge-thermistor-values-74383/)
+- [JLCPCB - A PCB manufacturar](https://jlcpcb.com/)
+- [Circuit designer](http://falstad.com/circuit/circuitjs.html) to test small,simple circuits and their behavior
+- [3D Model of bracket for a display](https://makerworld.com/en/models/437158#profileId-342358) which inspired my design. It made creating the "claw" mechanism which holds the display into place way easier!
+
+
+## Contact
+
+If you have any questions or anything else you are welcome to contact me. There are three possible ways (ranked by my preference):
+1. Contact me via the Miata.net forum. Either via my linked thread or via a [private message](https://forum.miata.net/vb/member.php?u=307577)
+2. Create an issue here in this GitHub repository
+3. Contact me on discord: 'vogelpapafinn'
