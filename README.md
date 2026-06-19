@@ -33,12 +33,12 @@ My car is a pre-Facelift model and therefore does not have an OBDII connector (a
 
 At the moment I knowThis of 33 different values that are readable: *(Valus NOT Sensors, as some Sensors output multiple units)*
 * **Alternator** - Load (%)
-* **Alternator** - Desired Voltage (°V)
+* **Alternator** - Desired Voltage (V)
 * **Cabin Fan** - Toggle
 * **Brake** - Toggle
 * **Rear Window Defroster** - Toggle
 * **Daytime Lights** - Toggle
-* **Coolant** - Sensor Voltage (°V)
+* **Coolant** - Sensor Voltage (V)
 * **Alternator** - Temperature (°C)
 * **EGR** - Toggle
 * **Cooling Fan Speed** - On, Slow Speed
@@ -52,18 +52,18 @@ At the moment I knowThis of 33 different values that are readable: *(Valus NOT S
 * **Idle Bypass** - Time (ms)
 * **Idle Switch** - Toggle
 * **Engine** - Load (%)
-* **Airmass** (°V)
+* **Airmass** (V)
 * **Airmass** (g/s)
 * **Main Relais** - Toggle
 * **Engine** - Check Engine Light 
-* **Airmass Pre-Cat** - Voltage (°V)
+* **Airmass Pre-Cat** - Voltage (V)
 * **Power Steering** - Pressure Switch Toggle
 * **RPM**
 * **EGR** - Valve Position
 * **Ignition Timing** - Advancing (°)
 * **Immobilizer** - Toggle
-* **Throttle** - Voltage (°V)
-* **ECU** - Input Voltage (°V)
+* **Throttle** - Voltage (V)
+* **ECU** - Input Voltage (V)
 * **Speed** (KMH)
 
 ## Future Plans
