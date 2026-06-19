@@ -91,6 +91,6 @@ If you have any questions or anything else you are welcome to contact me. There 
 2. Create an issue here in this GitHub repository
 3. Contact me via the Miata.net forum. Either via my linked thread or via a [private message](https://forum.miata.net/vb/member.php?u=307577)
 
-## Lizenz
+## License
 
 The whole project is published under the **GPLv3** license. Basically this means everybody can use, alter and provide the project, free and commercial as long as the provided code and hardware stays open source for the user. Note, that this is my conclusion of the license, before acting please read the license and its terms yourself!!
