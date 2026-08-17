@@ -39,7 +39,7 @@ At the moment I knowThis of 33 different values that are readable: *(Valus NOT S
 * **Rear Window Defroster** - Toggle
 * **Daytime Lights** - Toggle
 * **Coolant** - Sensor Voltage (V)
-* **Alternator** - Temperature (°C)
+* **Coolant** - Temperature (°C)
 * **EGR** - Toggle
 * **Cooling Fan Speed** - On, Slow Speed
 * **Cooling Fan Speed** - On, Medium Speed
