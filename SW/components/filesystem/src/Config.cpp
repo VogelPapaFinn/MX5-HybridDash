@@ -1,4 +1,4 @@
-#include "../../components/filesystem/Config.hpp"
+#include "Config.hpp"
 
 // C++ includes
 #include <vector>
@@ -11,21 +11,24 @@ constexpr auto TAG = "Config";
 /*
  *	Public Function Implementations
  */
-Config::Config(const std::string& path)
+Config::Config(SystemContext* p_sysCon)
+{
+	sysCon_ = p_sysCon;
+}
+
+bool Config::open(const std::string& path)
 {
 	path_ = path;
 
-	filesystem_ = Filesystem::get();
-
-	if(!filesystem_->doesFileExist(path_, Filesystem::CONFIG_PARTITION)) {
+	if(!sysCon_->filesystem->doesFileExist(path_, Filesystem::CONFIG_PARTITION)) {
 		ESP_LOGW(TAG, "Couldn't open config file. File %s does not exist", path_.c_str());
-		return;
+		return false;
 	}
 
-	file_ = filesystem_->openFile(path_, "r", Filesystem::CONFIG_PARTITION);
+	file_ = sysCon_->filesystem->openFile(path_, "r", Filesystem::CONFIG_PARTITION);
 	if(file_ == nullptr) {
 		ESP_LOGW(TAG, "Failed to open config file %s", path_.c_str());
-		return;
+		return false;
 	}
 
 	fseek(file_, 0, SEEK_END);
@@ -36,7 +39,7 @@ Config::Config(const std::string& path)
 		file_ = nullptr;
 
 		ESP_LOGW(TAG, "Failed to read config file %s. File is empty", path_.c_str());
-		return;
+		return false;
 	}
 
 	std::vector<char> fileContent(fileSize);
@@ -46,7 +49,7 @@ Config::Config(const std::string& path)
 		file_ = nullptr;
 
 		ESP_LOGW(TAG, "Failed to read config file %s. File is empty", path_.c_str());
-		return;
+		return false;
 	}
 
 	fclose(file_);
@@ -54,8 +57,10 @@ Config::Config(const std::string& path)
 
 	if (ArduinoJson::deserializeJson(json_, fileContent.data(), bytesRead) != ArduinoJson::DeserializationError::Ok) {
 		ESP_LOGW(TAG, "Failed to parse config file %s", path_.c_str());
-		return;
+		return false;
 	}
+
+	return true;
 }
 
 Config::~Config()
@@ -81,12 +86,12 @@ bool Config::save()
 	std::string output = "";
 	ArduinoJson::serializeJsonPretty(json_, output);
 
-	if(!filesystem_->doesFileExist(path_, Filesystem::CONFIG_PARTITION)) {
+	if(!sysCon_->filesystem->doesFileExist(path_, Filesystem::CONFIG_PARTITION)) {
 		ESP_LOGW(TAG, "Couldn't open config file for saving. File %s does not exist", path_.c_str());
 		return false;
 	}
 
-	file_ = filesystem_->openFile(path_, "w", Filesystem::CONFIG_PARTITION);
+	file_ = sysCon_->filesystem->openFile(path_, "w", Filesystem::CONFIG_PARTITION);
 	if(file_ == nullptr) {
 		ESP_LOGW(TAG, "Failed to open config file %s", path_.c_str());
 		return false;

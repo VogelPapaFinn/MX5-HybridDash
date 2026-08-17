@@ -96,8 +96,8 @@ static void staticSynchronizeTimeTask(void* p_param)
 /*
  *	Public Function Implementations
  */
-WifiJoin::WifiJoin() :
-	Wifi(WIFI_TYPE::JOIN),
+WifiJoin::WifiJoin(SystemContext* p_sysCon) :
+	Wifi(p_sysCon, WIFI_TYPE::JOIN),
 	wifiConfig_()
 {
 }

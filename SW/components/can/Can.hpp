@@ -1,17 +1,11 @@
 #pragma once
 
 // C and C++ includes
-#include <vector>
-#include <cstring>
 #include <memory>
-
-// Component includes
-#include "CanGroupsAndFunctions.hpp"
+#include <vector>
 
 // espidf includes
-#include "esp_attr.h"
 #include "esp_twai_onchip.h"
-#include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
@@ -20,7 +14,6 @@
  */
 constexpr uint8_t CAN_MASTER_ID = 1;
 constexpr uint8_t CAN_BROADCAST_ID = 0;
-
 
 /*
  *	CAN Class
@@ -156,13 +149,7 @@ public:
 	/*
 	 *	Public Callback functions
 	 */
-	IRAM_ATTR bool receivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_event_data_t* p_eventData,
-	                               void* p_userCtx);
-
-	void transmittedFrameCb(const twai_frame_t frame);
-
-	IRAM_ATTR bool stateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t* p_eventData,
-	                              void* p_userCtx);
+	void transmittedFrameCb(twai_frame_t frame);
 
 	/*
 	 *	Public Functions
@@ -174,10 +161,6 @@ public:
 	void deinitialize() const;
 
 	bool enable();
-
-	void registerRxCbQueue(QueueHandle_t* queueHandle);
-
-	void deregisterRxCbQueue(const QueueHandle_t* queueHandle);
 
 	void queueFrame(Frame& canFrame);
 
@@ -191,12 +174,10 @@ private:
 	gpio_num_t txGpio_ = GPIO_NUM_NC;
 
 	twai_node_handle_t nodeHandle_;
-	twai_onchip_node_config_t nodeConfig_ = {};
+	twai_onchip_node_config_t nodeConfig_;
 	twai_event_callbacks_t nodeCallbacks_;
 
 	bool enabled_ = false;
-
-	std::vector<QueueHandle_t*> rxCbQueueHandles_;
 
 	std::vector<std::shared_ptr<Frame>> pendingFrames_;
 	SemaphoreHandle_t pendingFramesMutex_ = nullptr;

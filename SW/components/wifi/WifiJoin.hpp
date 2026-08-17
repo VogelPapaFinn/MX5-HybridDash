@@ -15,7 +15,7 @@
 class WifiJoin : public Wifi
 {
 public:
-	WifiJoin();
+	WifiJoin(SystemContext* p_sysCon);
 
 	~WifiJoin() override;
 

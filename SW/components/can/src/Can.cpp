@@ -1,6 +1,10 @@
-#include "../Can.hpp"
+#include "Can.hpp"
+
+// Project includes
+#include "Events.hpp"
 
 // espidf includes
+#include "esp_event.h"
 #include "esp_log.h"
 #include "esp_twai.h"
 
@@ -15,21 +19,9 @@ constexpr uint16_t CAN_SEND_TIMEOUT_MS = 200;
 
 /*
  *	Private Static Callback Functions
- */
-static bool staticReceivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_event_data_t* p_eventData,
-                                  void* p_userCtx)
-{
-	// Get the class context from the user arguments
-	auto canNode = static_cast<Can*>(p_userCtx);
-	if (canNode == nullptr) {
-		return false;
-	}
-
-	return canNode->receivedFrameCb(nodeHandle, p_eventData, nullptr);
-}
-
-static bool staticTransmittedFrameCb(twai_node_handle_t nodeHandle, const twai_tx_done_event_data_t* p_eventData,
-                                     void* p_userCtx)
+*/
+static bool staticTransmittedFrameCb(twai_node_handle_t p_nodeHandle, const twai_tx_done_event_data_t* p_eventData,
+									 void* p_userCtx)
 {
 	// Get the class context from the user arguments
 	const auto can = static_cast<Can*>(p_userCtx);
@@ -43,28 +35,54 @@ static bool staticTransmittedFrameCb(twai_node_handle_t nodeHandle, const twai_t
 	return xHigherPriorityTaskWoken;
 }
 
-static bool staticStateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t* p_eventData,
-                                 void* p_userCtx)
+static bool staticReceivedFrameCb(twai_node_handle_t p_nodeHandle, const twai_rx_done_event_data_t* p_eventData,
+                                  void* p_userCtx)
 {
-	// Get the class context from the user arguments
-	auto canNode = static_cast<Can*>(p_userCtx);
-	if (canNode == nullptr) {
+	if (p_eventData == nullptr) {
 		return false;
 	}
 
-	return canNode->stateChangedCb(nodeHandle, p_eventData, nullptr);
+	// Get the frame
+	Can::Frame canFrame;
+	twai_node_receive_from_isr(p_nodeHandle, &canFrame.twaiFrame);
+	canFrame.fromTwaiFrame();
+
+	// Queue it to the event loop
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+	esp_event_isr_post(SYSTEM_EVENT_BASE, CAN_FRAME_RECEIVED, &canFrame, sizeof(canFrame), &xHigherPriorityTaskWoken);
+
+	return xHigherPriorityTaskWoken;
+}
+
+static bool staticStateChangedCb(twai_node_handle_t p_nodeHandle, const twai_state_change_event_data_t* p_eventData,
+                                 void* p_userCtx)
+{
+	if (p_eventData == nullptr) {
+		return false;
+	}
+
+	if (p_eventData->new_sta != TWAI_ERROR_BUS_OFF) {
+		return false;
+	}
+
+	esp_rom_printf("State changed from %d to %d\n", p_eventData->old_sta, p_eventData->new_sta);
+	// esp_rom_printf("An error occurred. Arbitration lost: %d \n Bit error: %d \n Form error: %d \n Stuff error: %d \n ACK error: %d \n val: %d", edata->err_flags.arb_lost, edata->err_flags.bit_err, edata->err_flags.form_err, edata->err_flags.stuff_err, edata->err_flags.ack_err, edata->err_flags.val);
+
+	twai_node_recover(p_nodeHandle);
+
+	return false;
 }
 
 /*
  *	Private Tasks
  */
-static void canFrameTransmittedTask(void* param)
+static void canFrameTransmittedTask(void* p_param)
 {
-	if (param == nullptr) {
+	if (p_param == nullptr) {
 		vTaskDelete(nullptr);
 	}
 
-	auto can = static_cast<Can*>(param);
+	auto can = static_cast<Can*>(p_param);
 
 	twai_frame_t rxFrame;
 	while (true) {
@@ -79,41 +97,6 @@ static void canFrameTransmittedTask(void* param)
 /*
  *	Private Callback functions implementations
  */
-bool Can::receivedFrameCb(twai_node_handle_t nodeHandle, const twai_rx_done_event_data_t* p_eventData, void* p_userCtx)
-{
-	if (nodeHandle != nodeHandle_) {
-		return false;
-	}
-
-	if (p_eventData == nullptr) {
-		return false;
-	}
-
-	// Get the frame
-	Frame canFrame;
-	twai_node_receive_from_isr(nodeHandle, &canFrame.twaiFrame);
-	canFrame.fromTwaiFrame();
-
-	// Debug logging
-	// esp_rom_printf("Received frame: %s \n", canFrame.toString().c_str());
-
-	if (rxCbQueueHandles_.empty()) {
-		return false;
-	}
-
-	// Notify all callback queues
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	for (const auto& queueHandle : rxCbQueueHandles_) {
-		if (queueHandle == nullptr) {
-			continue;
-		}
-
-		xQueueSendFromISR(*queueHandle, &canFrame, &xHigherPriorityTaskWoken);
-	}
-
-	return xHigherPriorityTaskWoken;
-}
-
 void Can::transmittedFrameCb(const twai_frame_t frame)
 {
 	// Debug logging
@@ -165,25 +148,6 @@ void Can::transmittedFrameCb(const twai_frame_t frame)
 
 	// Unlock the mutex
 	xSemaphoreGive(pendingFramesMutex_);
-}
-
-bool Can::stateChangedCb(twai_node_handle_t nodeHandle, const twai_state_change_event_data_t* p_eventData,
-                         void* p_userCtx)
-{
-	if (p_eventData == nullptr) {
-		return false;
-	}
-
-	if (p_eventData->new_sta != TWAI_ERROR_BUS_OFF) {
-		return false;
-	}
-
-	esp_rom_printf("State changed from %d to %d\n", p_eventData->old_sta, p_eventData->new_sta);
-	// esp_rom_printf("An error occurred. Arbitration lost: %d \n Bit error: %d \n Form error: %d \n Stuff error: %d \n ACK error: %d \n val: %d", edata->err_flags.arb_lost, edata->err_flags.bit_err, edata->err_flags.form_err, edata->err_flags.stuff_err, edata->err_flags.ack_err, edata->err_flags.val);
-
-	twai_node_recover(nodeHandle_);
-
-	return false;
 }
 
 /*
@@ -270,32 +234,6 @@ bool Can::enable()
 	}
 
 	return enabled_;
-}
-
-void Can::registerRxCbQueue(QueueHandle_t* queueHandle)
-{
-	if (queueHandle == nullptr) {
-		return;
-	}
-
-	rxCbQueueHandles_.push_back(queueHandle);
-}
-
-void Can::deregisterRxCbQueue(const QueueHandle_t* queueHandle)
-{
-	if (queueHandle == nullptr) {
-		return;
-	}
-
-	// Erase the handle from the vector
-	for (uint32_t i = 0; i < rxCbQueueHandles_.size(); i++) {
-		if (rxCbQueueHandles_.at(i) != queueHandle) {
-			continue;
-		}
-
-		rxCbQueueHandles_.erase(rxCbQueueHandles_.begin() + i);
-		return;
-	}
 }
 
 void Can::queueFrame(Frame& canFrame)

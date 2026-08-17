@@ -12,16 +12,18 @@
 class Config
 {
 public:
-	Config(const std::string& path);
+	Config(SystemContext* p_sysCon);
 
 	~Config();
+
+	bool open(const std::string& path);
 
 	ArduinoJson::JsonDocument* getJson();
 
 	bool save();
 
 private:
-	Filesystem* filesystem_ = nullptr;
+	SystemContext* sysCon_ = nullptr;
 
 	std::string path_;
 

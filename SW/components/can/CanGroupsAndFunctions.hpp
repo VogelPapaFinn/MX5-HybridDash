@@ -1,6 +1,6 @@
 #pragma once
 
-namespace CanFrame
+namespace CanFrameGroups
 {
 	enum GROUP
 	{

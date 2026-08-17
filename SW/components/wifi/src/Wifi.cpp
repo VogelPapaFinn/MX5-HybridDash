@@ -8,8 +8,9 @@ constexpr auto TAG = "Wifi";
 /*
  *	Public Function Implementations
  */
-Wifi::Wifi(WIFI_TYPE type) : type_(type)
+Wifi::Wifi(SystemContext* p_sysCon, WIFI_TYPE type) : type_(type)
 {
+	sysCon_ = p_sysCon;
 }
 
 void Wifi::callOnSuccess(const std::function<void()>& cb)

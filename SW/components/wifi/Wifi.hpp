@@ -1,5 +1,8 @@
 #pragma once
 
+// Project includes
+#include "SystemContext.hpp"
+
 // C++ includes
 #include <array>
 #include <string>
@@ -20,7 +23,7 @@ public:
 	/*
 	 *	Public Functions
 	 */
-	Wifi(WIFI_TYPE type);
+	Wifi(SystemContext* p_sysCon, WIFI_TYPE type);
 
 	virtual ~Wifi() = default;
 
@@ -46,6 +49,8 @@ protected:
 	/*
 	 *	Variables
 	 */
+	SystemContext* sysCon_ = nullptr;
+
 	WIFI_TYPE type_;
 
 	bool connected_ = false;
