@@ -133,11 +133,6 @@ bool WifiJoin::start()
 		return false;
 	}
 
-	if (esp_event_loop_create_default() != ESP_OK) {
-		ESP_LOGE(TAG, "Failed to initiate ESP event loop");
-		return false;
-	}
-
 	/*
 	 *	Joining AP
 	 */
