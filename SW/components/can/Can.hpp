@@ -173,9 +173,9 @@ private:
 	gpio_num_t rxGpio_ = GPIO_NUM_NC;
 	gpio_num_t txGpio_ = GPIO_NUM_NC;
 
-	twai_node_handle_t nodeHandle_;
-	twai_onchip_node_config_t nodeConfig_;
-	twai_event_callbacks_t nodeCallbacks_;
+	twai_node_handle_t nodeHandle_ = {};
+	twai_onchip_node_config_t nodeConfig_ = {};
+	twai_event_callbacks_t nodeCallbacks_ = {};
 
 	bool enabled_ = false;
 

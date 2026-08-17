@@ -48,10 +48,9 @@ static bool staticReceivedFrameCb(twai_node_handle_t p_nodeHandle, const twai_rx
 	canFrame.fromTwaiFrame();
 
 	// Queue it to the event loop
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	esp_event_isr_post(SYSTEM_EVENT_BASE, CAN_FRAME_RECEIVED, &canFrame, sizeof(canFrame), &xHigherPriorityTaskWoken);
+	esp_event_post(SYSTEM_EVENT_BASE, CAN_FRAME_RECEIVED, &canFrame, sizeof(canFrame), portMAX_DELAY);
 
-	return xHigherPriorityTaskWoken;
+	return false;
 }
 
 static bool staticStateChangedCb(twai_node_handle_t p_nodeHandle, const twai_state_change_event_data_t* p_eventData,
@@ -164,6 +163,7 @@ Can::Can(const gpio_num_t rxGpio, const gpio_num_t txGpio)
 	nodeConfig_.io_cfg.tx = txGpio_;
 	nodeConfig_.bit_timing.bitrate = CAN_SPEED;
 	nodeConfig_.tx_queue_depth = CAN_QUEUE_DEPTH;
+	nodeConfig_.intr_priority = ESP_INTR_FLAG_LEVEL1;
 
 	nodeCallbacks_.on_tx_done = staticTransmittedFrameCb;
 	nodeCallbacks_.on_rx_done = staticReceivedFrameCb;
