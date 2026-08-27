@@ -230,8 +230,7 @@
                   },
                   "icon": "svg:page"
                 }
-              ],
-              "active": true
+              ]
             },
             {
               "type": "row",
@@ -251,7 +250,8 @@
                       "enableClose": false,
                       "icon": "svg:properties"
                     }
-                  ]
+                  ],
+                  "active": true
                 },
                 {
                   "type": "tabset",
@@ -1090,7 +1090,7 @@
       "transform": {
         "translate": {
           "x": -180,
-          "y": -180
+          "y": -380
         },
         "scale": 1.75
       },
@@ -1132,7 +1132,10 @@
         "0": {
           "5": {},
           "14": {},
-          "15": {}
+          "15": {},
+          "16": {
+            "$selected": true
+          }
         }
       },
       "transform": {

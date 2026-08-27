@@ -35,11 +35,11 @@ public:
 
 	void callOnSuccess(const std::function<void()>& cb);
 
-	void setSSID(std::string ssid);
+	void setSsid(std::string ssid);
 
 	void setPassword(std::string password);
 
-	std::string getSSID();
+	std::string getSsid();
 
 	std::string getPassword();
 

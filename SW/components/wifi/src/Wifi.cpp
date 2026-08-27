@@ -18,7 +18,7 @@ void Wifi::callOnSuccess(const std::function<void()>& cb)
 	callOnSuccess_ = cb;
 }
 
-void Wifi::setSSID(const std::string ssid)
+void Wifi::setSsid(const std::string ssid)
 {
 	ssid_ = ssid;
 }
@@ -28,7 +28,7 @@ void Wifi::setPassword(const std::string password)
 	password_ = password;
 }
 
-std::string Wifi::getSSID()
+std::string Wifi::getSsid()
 {
 	return ssid_;
 }
