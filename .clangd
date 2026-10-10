@@ -1,0 +1,31 @@
+CompileFlags:
+  Add:
+    - -Wno-unknown-warning-option
+    - -Wno-unknown-attributes
+  Remove:
+    # xtensa-gcc-spezifische Flags, die clang nicht kennt
+    - -mlongcalls
+    - -mdisable-hardware-atomics
+    - -mno-disable-hardware-atomics
+    - -mtext-section-literals
+    - -mno-serialize-volatile
+    - -mfix-esp32-psram-cache-*
+    - -fstrict-volatile-bitfields
+    - -fno-tree-switch-conversion
+    - -fno-shrink-wrap
+    - -fno-tree-scev-cprop
+    - -fno-tree-loop-distribute-patterns
+    - -fno-inline-functions-called-once
+    - -fno-inline-small-functions
+    - -fuse-cxa-atexit
+    - -fzero-initialized-in-bss
+    - -freorder-blocks
+    - -Wlogical-op
+    - -Wformat-signedness
+    - -Wformat-truncation
+    - -Wformat-overflow
+    - -Wno-old-style-declaration
+    - -specs=*
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None

@@ -1,0 +1,51 @@
+{
+  "name": "ESP-IDF DisplayBoard_FW",
+  "image": "espressif/idf:v5.5",
+  // SW/ wird gemountet, damit ../components im Container erreichbar ist
+  "workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspace,type=bind",
+  "workspaceFolder": "/workspace/DisplayBoard_FW",
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  "runArgs": [
+    "--privileged",
+    "--security-opt",
+    "label=disable"
+  ],
+  "mounts": [
+    "source=/dev,target=/dev,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "espressif.esp-idf-extension",
+        "ms-vscode.cpptools",
+        "llvm-vs-code-extensions.vscode-clangd"
+      ],
+      "settings": {
+        "idf.espIdfPath": "/opt/esp/idf",
+        "idf.toolsPath": "/opt/esp",
+        "idf.gitPath": "/usr/bin/git",
+
+        // IntelliSense, clang-format und clang-tidy laufen über clangd (esp-clang)
+        "C_Cpp.intelliSenseEngine": "disabled",
+        "C_Cpp.formatting": "disabled",
+        "clangd.path": "/usr/local/bin/clangd",
+        // Kein eigenes clangd herunterladen: nur esp-clang kennt Xtensa
+        "clangd.checkUpdates": false,
+        "clangd.arguments": [
+          "--compile-commands-dir=/workspace/DisplayBoard_FW/build",
+          "--query-driver=/opt/esp/tools/**/bin/xtensa-esp*-elf-*",
+          "--background-index",
+          "--clang-tidy",
+          "--header-insertion=never",
+          "--completion-style=detailed"
+        ],
+        "[c]": {
+          "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+        },
+        "[cpp]": {
+          "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+        }
+      }
+    }
+  }
+}
