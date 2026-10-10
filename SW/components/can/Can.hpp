@@ -65,10 +65,7 @@ public:
 
 		bool transmitting = false;
 
-		twai_frame_t twaiFrame = {
-			.buffer = data,
-			.buffer_len = 8
-		};
+		twai_frame_t twaiFrame = {.buffer = data, .buffer_len = 8};
 
 		/*
 		 *	Functions
@@ -184,5 +181,4 @@ private:
 
 	TaskHandle_t frameTransmittedTaskHandle_ = nullptr;
 	QueueHandle_t frameTransmittedQueueHandle_ = nullptr;
-
 };
