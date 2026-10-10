@@ -106,25 +106,27 @@ Gui::Gui(SystemContext* p_sysCon)
 	/*
 	 * Register callbacks
 	 */
-	lv_display_set_flush_cb(display_, [](lv_display_t* p_display, const lv_area_t* p_area, uint8_t* p_pxMap)
-	{
-		/*
-		 *	Preparations
-		 */
-		if (p_display == nullptr || lv_display_get_user_data(p_display) == nullptr || p_area == nullptr || p_pxMap == nullptr) {
-			return;
-		}
+	lv_display_set_flush_cb(display_,
+							[](lv_display_t* p_display, const lv_area_t* p_area, uint8_t* p_pxMap)
+							{
+								/*
+								 *	Preparations
+								 */
+								if (p_display == nullptr || lv_display_get_user_data(p_display) == nullptr ||
+									p_area == nullptr || p_pxMap == nullptr) {
+									return;
+								}
 
-		/*
-		 *	Get the GUI instance
-		 */
-		auto gui = static_cast<Gui*>(lv_display_get_user_data(p_display));
+								/*
+								 *	Get the GUI instance
+								 */
+								auto gui = static_cast<Gui*>(lv_display_get_user_data(p_display));
 
-		/*
-		 *	Call the flush function
-		 */
-		gui->flushToDisplay(p_area, p_pxMap);
-	});
+								/*
+								 *	Call the flush function
+								 */
+								gui->flushToDisplay(p_area, p_pxMap);
+							});
 	lv_tick_set_cb(xTaskGetTickCount);
 
 	/*
@@ -141,9 +143,7 @@ Gui::Gui(SystemContext* p_sysCon)
 	registerToEvents();
 }
 
-SemaphoreHandle_t Gui::getGuiMutex() const {
-	return guiMutex_;
-}
+SemaphoreHandle_t Gui::getGuiMutex() const { return guiMutex_; }
 
 /*
  *	Private Function Implementations
