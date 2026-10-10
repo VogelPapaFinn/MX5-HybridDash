@@ -47,3 +47,10 @@ idf_component_register(SRCS ${FILES}
 spiffs_create_partition_image(data "../data/" FLASH_INTO_PROJECT)
 
 spiffs_create_partition_image(config "../config/" FLASH_INTO_PROJECT)
+
+add_custom_target(app-flash-monitor)
+add_dependencies(app-flash-monitor
+        app
+        flash
+        monitor
+)

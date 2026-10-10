@@ -1,0 +1,42 @@
+{
+    "editor.fontFamily": "'JetBrains Mono', monospace",
+    "editor.fontSize": 14,
+    "editor.lineHeight": 1.6,
+    "editor.fontLigatures": true,
+    "idf.currentSetup": "/opt/esp/idf",
+    "idf.flashType": "JTAG",
+    "idf.port": "/dev/ttyACM1",
+    "idf.openOcdConfigs": [
+        "board/esp32s3-builtin.cfg"
+    ],
+    // IntelliSense, clang-format und clang-tidy über clangd
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "C_Cpp.formatting": "disabled",
+    "clangd.path": "/usr/local/bin/clangd",
+    "clangd.checkUpdates": false,
+    "clangd.arguments": [
+        "--compile-commands-dir=/workspace/SensorBoard_FW/build",
+        "--query-driver=/opt/esp/tools/**/bin/xtensa-esp*-elf-*",
+        "--background-index",
+        "--clang-tidy",
+        "--header-insertion=never",
+        "--completion-style=detailed"
+    ],
+    "[c]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.formatOnPaste": true,
+    "files.exclude": {
+        "build": true,
+        "managed_components": true
+    },
+    "search.exclude": {
+        "build": true,
+        "managed_components": true
+    },
+}
