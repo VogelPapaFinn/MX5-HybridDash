@@ -28,7 +28,5 @@ protected:
 	 */
 	std::vector<uint8_t> lastLevels_;
 
-	double resistance_ = 0.0;
-
 	float smoothedValue_ = -1.0f;
 };

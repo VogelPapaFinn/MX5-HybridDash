@@ -32,7 +32,7 @@ constexpr uint8_t AMOUNT_LEVEL_TUPLES = std::size(LEVEL_RESISTANCE_TUPLES);
 /*
  *	Public Function Implementations
  */
-FuelLevel::FuelLevel(adc_oneshot_unit_handle_t p_adc) : PassiveSensor(GPIO_NUM_1, ADC_CHANNEL_0, p_adc) {}
+FuelLevel::FuelLevel(adc_oneshot_unit_handle_t p_adc) : PassiveSensor(SENSOR::TYPE::FUEL_LEVEL, GPIO_NUM_1, ADC_CHANNEL_0, p_adc) {}
 
 int FuelLevel::get()
 {

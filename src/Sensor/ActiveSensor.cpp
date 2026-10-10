@@ -28,7 +28,7 @@ static IRAM_ATTR void staticIsr(void* arg)
 /*
  *	Public Function Implementations
  */
-ActiveSensor::ActiveSensor(const gpio_num_t gpio, const gpio_int_type_t& triggeringEdge)
+ActiveSensor::ActiveSensor(SENSOR::TYPE type, const gpio_num_t gpio, const gpio_int_type_t& triggeringEdge) : Sensor(type)
 {
 	/*
 	 *	Setup the GPIO

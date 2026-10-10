@@ -17,8 +17,8 @@ constexpr unsigned int ADC_SAMPLE_COUNT = 10;
 /*
  *	Public Function Implementations
  */
-PassiveSensor::PassiveSensor(gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc,
-							 adc_unit_t unit)
+PassiveSensor::PassiveSensor(SENSOR::TYPE type, gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc,
+							 adc_unit_t unit) : Sensor(type)
 {
 	gpio_ = gpio;
 	channel_ = adcChannel;
@@ -105,6 +105,10 @@ void PassiveSensor::read()
 }
 
 int PassiveSensor::get() { return voltage_; }
+
+double PassiveSensor::getResistance() const {
+	return resistance_;
+}
 
 void PassiveSensor::specificRead() {}
 

@@ -23,7 +23,7 @@ constexpr uint16_t DEBOUNCE_TIME_US = 2000;
 /*
  *	Public Function Implementations
  */
-Speed::Speed() : ActiveSensor(GPIO_NUM_10, GPIO_INTR_POSEDGE) {}
+Speed::Speed() : ActiveSensor(SENSOR::TYPE::SPEED, GPIO_NUM_10, GPIO_INTR_POSEDGE) {}
 
 int Speed::get()
 {

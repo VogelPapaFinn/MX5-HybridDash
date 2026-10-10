@@ -10,7 +10,7 @@
 class ActiveSensor : public Sensor
 {
 public:
-	ActiveSensor(gpio_num_t gpio, const gpio_int_type_t& triggeringEdge);
+	ActiveSensor(SENSOR::TYPE type, gpio_num_t gpio, const gpio_int_type_t& triggeringEdge);
 
 	~ActiveSensor() override;
 

@@ -47,9 +47,9 @@ private:
 
 	void setupSensorDataLogging();
 
-	void setupWifi() const;
-
 	void logSensorData() const;
+
+	void setupWifi() const;
 
 	void connectDisplaysToWifi() const;
 

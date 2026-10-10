@@ -516,14 +516,14 @@ void Operation::setupSensorDataLogging()
 	 *	Initialize the header in the .csv file
 	 */
 	if (sensorDataCsv_ != nullptr) {
-		fprintf(sensorDataCsv_, "FuelLevel, OilPressure, WaterTemperature, RPM, Speed, LIndicator, RIndicator");
+		fprintf(sensorDataCsv_, "FuelLevel R, FuelLevel %%, OilPressure R, WaterTemperature R, WaterTemperature °C, RPM, Speed, LIndicator, RIndicator, Coolant °C (ECU), Coolant V (ECU), Injection ms (ECU), RPM (ECU), Speed kmh (ECU)");
 	}
 
 	/*
 	 *	Track specified ECU sensors and add them to the header
 	 */
 	// Append the sensors to the list of tracked sensors
-	const auto sensorsToTrack = {COOLANT_C, COOLANT_V, INJECTION_MS, RPM, SPEED_KMH};
+	const auto sensorsToTrack = {ECU::COOLANT_C, ECU::COOLANT_V, ECU::INJECTION_MS, ECU::RPM, ECU::SPEED_KMH};
 	for (auto& sensor : sensorsToTrack) {
 		if (!ECU_SENSORS.contains(sensor)) {
 			continue;
@@ -542,6 +542,69 @@ void Operation::setupSensorDataLogging()
 	fprintf(sensorDataCsv_, ";\n");
 	fflush(sensorDataCsv_);
 	fsync(fileno(sensorDataCsv_));
+}
+
+void Operation::logSensorData() const
+{
+	/*
+	 *	Error protection
+	 */
+	if (sensorDataCsv_ == nullptr) {
+		xTimerStop(sensorDataLoggingTimer_, portMAX_DELAY);
+		return;
+	}
+
+	/*
+	 *	Request new data from the ECU
+	 */
+	for (const auto& sensor : ecuSensors_) {
+		sysCon_->kline->readPid(sensor->id);
+	}
+
+	/*
+	 *	Append active & passive hardware sensor data
+	 */
+	std::string row = "";
+	for (auto& sensor : sensors_) {
+		if (sensor->getType() == SENSOR::TYPE::FUEL_LEVEL || sensor->getType() == SENSOR::TYPE::OIL_PRESSURE || sensor->getType() == SENSOR::TYPE::WATER_TEMPERATURE) {
+			row += std::to_string(static_cast<PassiveSensor*>(sensor)->getResistance());
+			row += ", ";
+			row += std::to_string(sensor->get());
+		} else {
+			row += std::to_string(sensor->get());
+		}
+
+		row += ", ";
+	}
+
+	/*
+	 *	Append ECU sensor data
+	 */
+	for (const auto& ecuSensor : ecuSensors_) {
+		row += std::to_string(ecuSensor->getConvertedValue());
+
+		// Check if we need to append a comma at the end
+		if (ecuSensor != ecuSensors_.back()) {
+			row += ", ";
+		}
+	}
+
+	// Finish the row
+	row += ';';
+
+	/*
+	 *	Write data to the .csv file
+	 */
+	fprintf(sensorDataCsv_, "%s\n", row.c_str());
+
+	/*
+	 *	Flush to actual file every X seconds
+	 */
+	static unsigned int s_counter = 0;
+	if (++s_counter % SENSOR_DATA_SAVE_INTERVAL == 0) {
+		fflush(sensorDataCsv_);
+		fsync(fileno(sensorDataCsv_));
+	}
 }
 
 void Operation::setupWifi() const
@@ -610,61 +673,6 @@ void Operation::setupWifi() const
 	sysCon_->wifi->start();
 }
 
-void Operation::logSensorData() const
-{
-	/*
-	 *	Error protection
-	 */
-	if (sensorDataCsv_ == nullptr) {
-		xTimerStop(sensorDataLoggingTimer_, portMAX_DELAY);
-		return;
-	}
-
-	/*
-	 *	Request new data from the ECU
-	 */
-	for (const auto& sensor : ecuSensors_) {
-		sysCon_->kline->readPid(sensor->id);
-	}
-
-	/*
-	 *	Append active & passive hardware sensor data
-	 */
-	std::string row = "";
-	for (const auto& sensor : sensors_) {
-		row += std::to_string(sensor->get());
-		row += ", ";
-	}
-
-	/*
-	 *	Append ECU sensor data
-	 */
-	for (const auto& ecuSensor : ecuSensors_) {
-		row += std::to_string(ecuSensor->getConvertedValue());
-
-		// Check if we need to append a comma at the end
-		if (ecuSensor != ecuSensors_.back()) {
-			row += ", ";
-		}
-	}
-
-	// Finish the row
-	row += ';';
-
-	/*
-	 *	Write data to the .csv file
-	 */
-	fprintf(sensorDataCsv_, "%s\n", row.c_str());
-
-	/*
-	 *	Flush to actual file every X seconds
-	 */
-	static unsigned int s_counter = 0;
-	if (++s_counter % SENSOR_DATA_SAVE_INTERVAL == 0) {
-		fflush(sensorDataCsv_);
-		fsync(fileno(sensorDataCsv_));
-	}
-}
 
 void Operation::connectDisplaysToWifi() const
 {

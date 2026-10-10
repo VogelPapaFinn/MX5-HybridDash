@@ -21,6 +21,11 @@ constexpr auto UNIT_DEGREE = "°";
 constexpr auto BITMASK_FUNCTION = [](const uint32_t raw) { return raw > 0 ? 1.0 : 0.0; };
 
 /*
+ *	Use namespace
+ */
+using namespace ECU;
+
+/*
  *	Public Struct
  */
 struct EcuSensor

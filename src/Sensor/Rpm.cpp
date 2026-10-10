@@ -21,7 +21,7 @@ constexpr uint16_t MAX_RPM = 8000;
 /*
  *	Public Function Implementations
  */
-Rpm::Rpm() : ActiveSensor(GPIO_NUM_9, GPIO_INTR_NEGEDGE) {}
+Rpm::Rpm() : ActiveSensor(SENSOR::TYPE::RPM, GPIO_NUM_9, GPIO_INTR_NEGEDGE) {}
 
 int Rpm::get()
 {

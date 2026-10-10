@@ -17,7 +17,7 @@ constexpr unsigned int ALLOW_CHANGE_AFTER_US = 50000;
 /*
  *	Public Function Implementations
  */
-RightIndicator::RightIndicator() : ActiveSensor(GPIO_NUM_7, GPIO_INTR_ANYEDGE)
+RightIndicator::RightIndicator() : ActiveSensor(SENSOR::TYPE::RIGHT_INDICATOR, GPIO_NUM_7, GPIO_INTR_ANYEDGE)
 {
 	gpio_set_pull_mode(gpio_, GPIO_FLOATING);
 }

@@ -10,11 +10,13 @@
 class PassiveSensor : public Sensor
 {
 public:
-	PassiveSensor(gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc, adc_unit_t unit = ADC_UNIT_2);
+	PassiveSensor(SENSOR::TYPE type, gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc, adc_unit_t unit = ADC_UNIT_2);
 
 	void read();
 
 	int get() override;
+
+	double getResistance() const;
 
 protected:
 	/*
@@ -30,6 +32,8 @@ protected:
 	 *	Private Variables
 	 */
 	bool setup_ = false;
+
+	double resistance_ = 0.0;
 
 	int lastVoltage_ = 0;
 

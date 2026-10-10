@@ -24,6 +24,4 @@ protected:
 	 *	Private Variables
 	 */
 	int temperature_ = 0;
-
-	double resistance_ = 0.0;
 };
