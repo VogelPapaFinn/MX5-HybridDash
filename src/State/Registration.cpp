@@ -17,7 +17,11 @@ const auto TAG = "Registration";
 /*
  *	Public Function Implementations
  */
-Registration::Registration(SystemContext* p_sysCon) : State(State::REGISTRATION) { sysCon_ = p_sysCon; }
+Registration::Registration(Can* p_can, std::vector<Display>* p_displays) : State(State::REGISTRATION)
+{
+	can_ = p_can;
+	displays_ = p_displays;
+}
 
 Registration::~Registration()
 {
@@ -40,7 +44,7 @@ void Registration::enter()
 	registerToEvents();
 
 	// Start the first display
-	sysCon_->displays.at(0)->turnOn();
+	displays_->at(0).turnOn();
 }
 
 /*
@@ -92,12 +96,12 @@ void Registration::nextDisplay()
 	/*
 	 *	Turn on the next display
 	 */
-	sysCon_->displays.at(currDisplay)->turnOn();
+	displays_->at(currDisplay).turnOn();
 }
 
 void Registration::wakeUpAllDisplays() const
 {
-	Can::Frame frame;
+	Can::Frame_t frame;
 	frame.sender = CAN_MASTER_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURATION;
@@ -105,5 +109,5 @@ void Registration::wakeUpAllDisplays() const
 	frame.dataLengthCode = 0;
 	frame.answer = false;
 
-	sysCon_->can->queueFrame(frame);
+	can_->queueFrame(frame);
 }

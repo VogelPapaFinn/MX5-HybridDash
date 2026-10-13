@@ -5,17 +5,19 @@
 
 // Project includes
 #include "Can.hpp"
+#include "Driver/Display.hpp"
 #include "Driver/KLine.hpp"
 #include "Sensor/PassiveSensor.hpp"
 #include "State/State.hpp"
 #include "WebInterface/WebInterface.hpp"
+
 
 /*
  *	Public struct
  */
 struct SensorContext
 {
-	SystemContext* sysCon = nullptr;
+	Can* can = nullptr;
 	std::vector<Sensor*>* sensors = nullptr;
 };
 
@@ -25,7 +27,8 @@ struct SensorContext
 class Operation : public State
 {
 public:
-	Operation(SystemContext* p_sysCon);
+	Operation(Filesystem* p_fs, adc_oneshot_unit_handle_t p_adc1, KLine* p_kline, Wifi* p_wifi, Config* p_config,
+			  Can* p_can, std::vector<Display>* p_displays);
 
 	~Operation();
 
@@ -39,7 +42,7 @@ private:
 	 */
 	void registerToEvents();
 
-	void handleCanFrame(const Can::Frame* p_frame) const;
+	void handleCanFrame(const Can::Frame_t* p_frame) const;
 
 	void setupPassiveSensorReadings();
 
@@ -49,13 +52,21 @@ private:
 
 	void logSensorData() const;
 
-	void setupWifi() const;
+	void setupWifi();
 
 	void connectDisplaysToWifi() const;
 
 	/*
 	 *	Private Variables
 	 */
+	Filesystem* fs_ = nullptr;
+	adc_oneshot_unit_handle_t adc1_ = nullptr;
+	Wifi* wifi_ = nullptr;
+	KLine* kline_ = nullptr;
+	Config* config_ = nullptr;
+	Can* can_ = nullptr;
+	std::vector<Display>* displays_ = nullptr;
+
 	SensorContext senCon_;
 
 	std::vector<Sensor*> sensors_;

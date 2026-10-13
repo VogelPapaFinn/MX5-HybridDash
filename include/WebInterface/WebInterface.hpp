@@ -1,9 +1,10 @@
 #pragma once
 
 // Project includes
+#include "Driver/KLine.hpp"
 #include "WifiHost.hpp"
 #include "WifiJoin.hpp"
-#include "Driver/KLine.hpp"
+
 
 // espidf includes
 #include "esp_http_server.h"
@@ -11,7 +12,7 @@
 class WebInterface
 {
 public:
-	WebInterface(SystemContext* p_sysCon);
+	WebInterface(Filesystem* p_fs);
 
 	void send(int clientFD, const std::string& data) const;
 
@@ -29,6 +30,7 @@ public:
 	esp_err_t displayUpdateDownloadHandler(httpd_req_t* p_reqst);
 
 	void websocketCrashed(const int fd);
+
 private:
 	/*
 	 *	Private Functions
@@ -38,7 +40,7 @@ private:
 	/*
 	 *	Private Variables
 	 */
-	SystemContext* sysCon_;
+	Filesystem* fs_ = nullptr;
 
 	bool initialized_ = false;
 

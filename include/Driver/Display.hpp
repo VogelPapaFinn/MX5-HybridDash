@@ -1,7 +1,7 @@
 #pragma once
 
 // Project includes
-#include "SystemContext.hpp"
+#include "Can.hpp"
 
 // C++ includes
 #include <thread>
@@ -15,7 +15,6 @@
 class Display
 {
 public:
-
 	/**
 	 * \brief Constructor to initialize the display with power GPIO, CAN ID and screen number.
 	 *
@@ -24,7 +23,8 @@ public:
 	 * \param[in] screen The screen number on which the display is connected.
 	 * \param[in] rotateBy180 If true, rotates the display by 180 degrees.
 	 */
-	explicit Display(SystemContext* p_sysCon, gpio_num_t powerGpio, const uint8_t& canId, const uint8_t& screen, const bool& rotateBy180);
+	explicit Display(Can* p_can, gpio_num_t powerGpio, const uint8_t& canId, const uint8_t& screen,
+					 const bool& rotateBy180);
 
 	void reset();
 
@@ -50,7 +50,7 @@ public:
 	bool isRotated() const;
 
 private:
-	SystemContext* sysCon_ = nullptr;
+	Can* can_ = nullptr;
 
 	//! CAN ID of the display.
 	uint8_t canId_ = 0;

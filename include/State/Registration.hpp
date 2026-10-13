@@ -1,13 +1,15 @@
 #pragma once
 
 // Project include
+#include "Can.hpp"
+#include "Driver/Display.hpp"
 #include "State/State.hpp"
-#include "SystemContext.hpp"
+
 
 class Registration : public State
 {
 public:
-	Registration(SystemContext* p_sysCon);
+	Registration(Can* p_can, std::vector<Display>* p_displays);
 
 	~Registration();
 
@@ -26,5 +28,8 @@ private:
 	/*
 	 *	Private Variables
 	 */
+	Can* can_ = nullptr;
+	std::vector<Display>* displays_ = nullptr;
+
 	uint8_t currDisplay = 0;
 };

@@ -6,7 +6,6 @@
 #include "Handler/RegistrationHandler.hpp"
 #include "State/Operation.hpp"
 #include "State/Registration.hpp"
-#include "SystemContext.hpp"
 
 // espidf includes
 #include <freertos/FreeRTOS.h>
@@ -37,53 +36,54 @@ constexpr gpio_num_t GPIO_DISPLAY3 = GPIO_NUM_21;
  */
 //! \brief Current application state.
 static std::shared_ptr<State> g_currentState;
+static Filesystem g_fs;
+static KLine g_kline;
+static adc_oneshot_unit_handle_t g_adc1 = nullptr;
+static Config g_config(&g_fs);
+static Can g_can(GPIO_CAN_RX, GPIO_CAN_TX);
+static std::vector<Display> g_displays = {Display(&g_can, GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
+										  Display(&g_can, GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
+										  Display(&g_can, GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
+static WifiHost g_wifi;
+static WebInterface g_webinterface(&g_fs);
 
 /*
  *	Helper functions
  */
 //! \brief Registers necessary events for system initialization.
-static void registerToEvents(SystemContext* p_sysCon)
+static void registerToEvents()
 {
 	/*
 	 *	Registration Completed
 	 */
 	esp_event_handler_instance_register(
 		SYSTEM_EVENT_BASE, REGISTRATION_COMPLETED,
-		[](void* p_systemContext, esp_event_base_t, int32_t, void*)
+		[](void*, esp_event_base_t, int32_t, void*)
 		{
-			/*
-			 *	Get the system context
-			 */
-			if (p_systemContext == nullptr) {
-				return;
-			}
-
-			auto sysCon = static_cast<SystemContext*>(p_systemContext);
-
 			/*
 			 *	Enter the operation state
 			 */
-			g_currentState = std::make_shared<Operation>(sysCon);
+			g_currentState =
+				std::make_shared<Operation>(&g_fs, g_adc1, &g_kline, &g_wifi, &g_config, &g_can, &g_displays);
 			g_currentState->enter();
 		},
-		p_sysCon, nullptr);
+		nullptr, nullptr);
 }
 
 //! \brief Creates and opens the configuration file.
-//! \param sysCon The system context used for configuration.
-static void createAndOpenConfigFile(SystemContext& sysCon)
+static void createAndOpenConfigFile()
 {
 	/*
 	 *	Create default config, if config doesnt exist
 	 */
-	if (!sysCon.filesystem->doesFileExist(CONFIG_NAME, Filesystem::CONFIG_PARTITION)) {
-		sysCon.filesystem->createFile(CONFIG_NAME, Filesystem::CONFIG_PARTITION);
+	if (!g_fs.doesFileExist(CONFIG_NAME, Filesystem::CONFIG_PARTITION)) {
+		g_fs.createFile(CONFIG_NAME, Filesystem::CONFIG_PARTITION);
 
-		if (!sysCon.filesystem->doesFileExist(DEFAULT_CONFIG_NAME, Filesystem::CONFIG_PARTITION)) {
-			Config defaultConfig(&sysCon);
+		if (!g_fs.doesFileExist(DEFAULT_CONFIG_NAME, Filesystem::CONFIG_PARTITION)) {
+			Config defaultConfig(&g_fs);
 			defaultConfig.open(DEFAULT_CONFIG_NAME);
 
-			Config newConfig(&sysCon);
+			Config newConfig(&g_fs);
 			newConfig.open(CONFIG_NAME);
 			*newConfig.getJson() = *defaultConfig.getJson();
 
@@ -94,12 +94,26 @@ static void createAndOpenConfigFile(SystemContext& sysCon)
 	/*
 	 *	Load the config file
 	 */
-	sysCon.config->open(CONFIG_NAME);
-	const auto& jsonConfig = sysCon.config->getJson();
+	g_config.open(CONFIG_NAME);
+	const auto& jsonConfig = g_config.getJson();
 	if (jsonConfig != nullptr) {
 		std::string str;
 		serializeJsonPretty(*jsonConfig, str);
 		ESP_LOGI(TAG, "%s", str.c_str());
+	}
+}
+
+static void printLogHeader()
+{
+	ESP_LOGI(TAG, "--- --- --- --- --- --- ---");
+	ESP_LOGI(TAG, "Startup");
+}
+
+static void startEventLoop()
+{
+	if (esp_event_loop_create_default() != ESP_OK) {
+		ESP_LOGE(TAG, "Error creating default event loop. Rebooting...");
+		esp_restart();
 	}
 }
 
@@ -111,80 +125,36 @@ extern "C" void app_main(void)
 	// NEEDED FOR DEBUGGING
 	vTaskDelay(pdMS_TO_TICKS(100));
 
-	/*
-	 *	Print startup logging header
-	 */
-	ESP_LOGI(TAG, "--- --- --- --- --- --- ---");
-	ESP_LOGI(TAG, "Startup");
+	printLogHeader();
+	startEventLoop();
 
-	/*
-	 *	Start the event loop
-	 */
-	if (esp_event_loop_create_default() != ESP_OK) {
-		ESP_LOGE(TAG, "Error creating default event loop. Rebooting...");
-		esp_restart();
-	}
-
-	/*
-	 *	Create all necessary instances
-	 */
-	// System Context
-	SystemContext sysCon;
-
-	// Can
-	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
-	can.initialize();
-	can.enable();
-
-	// Filesystem
-	Filesystem fs;
-
-	// Config
-	Config config(&sysCon);
-
-	// KLine
-	KLine kline;
-	kline.readEcuId();
-
-	// Displays
-	Display display1(&sysCon, GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true);
-	Display display2(&sysCon, GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false);
-	Display display3(&sysCon, GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false);
+	g_can.initialize();
+	g_can.enable();
 
 	// Registration Handler
-	RegistrationHandler regHandler(&sysCon);
+	RegistrationHandler regHandler(&g_can, &g_displays);
 
 	/*
 	 *	Setup the ADC1
 	 */
-	if (adc_oneshot_new_unit(&ADC1_UNIT_CONFIG, &sysCon.adc1) != ESP_OK) {
+	if (adc_oneshot_new_unit(&ADC1_UNIT_CONFIG, &g_adc1) != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to initialize ADC1");
 	}
 
 	/*
 	 *	Register the necessary events
 	 */
-	registerToEvents(&sysCon);
-
-	/*
-	 *	Build the SystemContext
-	 */
-	sysCon.can = &can;
-	sysCon.filesystem = &fs;
-	sysCon.config = &config;
-	sysCon.displays = {&display1, &display2, &display3};
-	sysCon.wifi = nullptr;
-	sysCon.kline = &kline;
+	registerToEvents();
 
 	/*
 	 *	Ensure the config file exists and is loaded
 	 */
-	createAndOpenConfigFile(sysCon);
+	createAndOpenConfigFile();
 
 	/*
 	 *	Create and enter the registration state
 	 */
-	g_currentState = std::make_shared<Registration>(&sysCon);
+	g_currentState = std::make_shared<Registration>(&g_can, &g_displays);
 	g_currentState->enter();
 
 	while (true) {
