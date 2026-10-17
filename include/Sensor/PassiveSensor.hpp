@@ -1,43 +1,39 @@
 #pragma once
 
-// Project includes
-#include "Sensor.hpp"
-
 // espidf includes
 #include "driver/gpio.h"
 #include "esp_adc/adc_oneshot.h"
 
-class PassiveSensor : public Sensor
+class PassiveSensor
 {
 public:
-	PassiveSensor(SENSOR::TYPE type, gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc, adc_unit_t unit = ADC_UNIT_2);
+	PassiveSensor(gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc,
+				  adc_unit_t unit = ADC_UNIT_2);
 
 	void read();
 
-	int get() override;
-
-	double getResistance() const;
+	virtual int get() = 0;
 
 protected:
 	/*
 	 *	Private Functions
 	 */
-	virtual void specificRead();
+	virtual void specificRead() = 0;
 
-	static double calcVoltageDividerR2(int voltageMv, int r1);
+	static uint16_t calcVoltageDividerR2(int voltageMv, int r1);
 
-	void notifyAboutNewValue() override;
+	int readSample(const unsigned int sampleSize);
+
+	int convertSampleToVoltage(const int sample);
 
 	/*
 	 *	Private Variables
 	 */
 	bool setup_ = false;
 
-	double resistance_ = 0.0;
-
-	int lastVoltage_ = 0;
-
 	int voltage_ = 0;
+
+	uint16_t resistance_ = 0;
 
 	adc_oneshot_unit_handle_t adc_ = nullptr;
 

@@ -30,7 +30,7 @@
     },
     "editor.formatOnSave": true,
     "editor.formatOnType": false,
-    "editor.formatOnPaste": true,
+    "editor.formatOnPaste": false,
     "files.exclude": {
       "**/build": true,
       "**/managed_components": true

@@ -38,57 +38,57 @@ constexpr auto BROADCAST_SENSOR_DATA_HZ = 100;
  */
 static void staticBroadcastSensorData(void* p_sensorContext, esp_event_base_t, int32_t, void*)
 {
-	/*
-	 *	Get the sensors vector
-	 */
-	if (p_sensorContext == nullptr) {
-		return;
-	}
-
-	const auto sensorContext = static_cast<SensorContext*>(p_sensorContext);
-
-	/*
-	 *	Build basic CAN frame
-	 */
-	Can::Frame_t frame;
-	frame.sender = CAN_MASTER_ID;
-	frame.target = CAN_BROADCAST_ID;
-	frame.group = CanFrameGroups::GROUP::SENSOR;
-	frame.function = CanFrameGroups::SENSOR::BROADCAST_DATA;
-	frame.dataLengthCode = 8;
-	frame.answer = false;
-
-	/*
-	 *	Add sensor data
-	 */
-	const auto& sensors = sensorContext->sensors;
-
-	// Fuel Level
-	frame.data[0] = sensors->at(0)->get();
-
-	// Oil Pressure
-	frame.data[1] = sensors->at(1)->get();
-
-	// Water Temperature
-	frame.data[2] = sensors->at(2)->get() > 90 ? 90 : sensors->at(2)->get();
-
-	// RPM
-	frame.data[3] = sensors->at(3)->get() >> 8;
-	frame.data[4] = sensors->at(3)->get() & 0xFF;
-
-	// Speed
-	frame.data[5] = sensors->at(4)->get();
-
-	// Left Indicator
-	frame.data[6] = sensors->at(5)->get();
-
-	// Right Indicator
-	frame.data[7] = sensors->at(6)->get();
-
-	/*
-	 *	Send the frame
-	 */
-	sensorContext->can->queueFrame(frame);
+	///*
+	// *	Get the sensors vector
+	// */
+	// if (p_sensorContext == nullptr) {
+	// return;
+	// }
+	//
+	//  const auto sensorContext = static_cast<SensorContext*>(p_sensorContext);
+	//
+	///*
+	// *	Build basic CAN frame
+	// */
+	// Can::Frame_t frame;
+	// frame.sender = CAN_MASTER_ID;
+	// frame.target = CAN_BROADCAST_ID;
+	// frame.group = CanFrameGroups::GROUP::SENSOR;
+	// frame.function = CanFrameGroups::SENSOR::BROADCAST_DATA;
+	// frame.dataLengthCode = 8;
+	// frame.answer = false;
+	//
+	///*
+	// *	Add sensor data
+	// */
+	// const auto& sensors = sensorContext->sensors;
+	//
+	//// Fuel Level
+	// frame.data[0] = sensors->at(0)->get();
+	//
+	//// Oil Pressure
+	// frame.data[1] = sensors->at(1)->get();
+	//
+	//// Water Temperature
+	// frame.data[2] = sensors->at(2)->get() > 90 ? 90 : sensors->at(2)->get();
+	//
+	//// RPM
+	// frame.data[3] = sensors->at(3)->get() >> 8;
+	// frame.data[4] = sensors->at(3)->get() & 0xFF;
+	//
+	//// Speed
+	// frame.data[5] = sensors->at(4)->get();
+	//
+	//// Left Indicator
+	// frame.data[6] = sensors->at(5)->get();
+	//
+	//// Right Indicator
+	// frame.data[7] = sensors->at(6)->get();
+	//
+	///*
+	// *	Send the frame
+	// */
+	// sensorContext->can->queueFrame(frame);
 }
 
 /*
@@ -104,13 +104,6 @@ Operation::Operation(Filesystem* p_fs, adc_oneshot_unit_handle_t p_adc1, KLine* 
 	config_ = p_config;
 	can_ = p_can;
 	displays_ = p_displays;
-
-	/*
-	 *	Install ISR Service for the Active Sensors
-	 */
-	if (gpio_install_isr_service(ESP_INTR_FLAG_IRAM) != ESP_OK) {
-		ESP_LOGE(TAG, "Failed to install the ISR service");
-	}
 
 	/*
 	 *	Get the current logging file index
@@ -146,80 +139,8 @@ Operation::Operation(Filesystem* p_fs, adc_oneshot_unit_handle_t p_adc1, KLine* 
 	ESP_LOGI(TAG, "Created sensor log file %s", fileName.c_str());
 }
 
-Operation::~Operation()
-{
-	/*
-	 *	Unregister from all events
-	 */
-	for (const auto& event : eventHandlers_) {
-		const auto& base = std::get<0>(event);
-		const auto& id = std::get<1>(event);
-		const auto& handler = std::get<2>(event);
-
-		esp_event_handler_instance_unregister(base, id, handler);
-	}
-	eventHandlers_.clear();
-
-	/*
-	 *	Stop all timers
-	 */
-	for (const auto& sensorEntry : passiveSensorTimers_) {
-		xTimerStop(sensorEntry.second, portMAX_DELAY);
-	}
-	xTimerStop(sensorDataLoggingTimer_, portMAX_DELAY);
-
-	/*
-	 *	Delete all sensors
-	 */
-	for (auto& sensor : sensors_) {
-		free(sensor);
-	}
-
-	/*
-	 *	Remove ISR Service for the Active Sensors
-	 */
-	gpio_uninstall_isr_service();
-}
-
 void Operation::enter()
 {
-	/*
-	 *	Register to all events
-	 */
-	registerToEvents();
-
-	/*
-	 *	Setup passive sensors
-	 */
-	const auto adc1 = adc1_;
-	sensors_.push_back(new FuelLevel(adc1));
-	sensors_.push_back(new OilPressure(adc1));
-	sensors_.push_back(new WaterTemperature(adc1));
-
-	/*
-	 *	Setup active sensors
-	 */
-	sensors_.push_back(new Rpm());
-	sensors_.push_back(new Speed());
-	sensors_.push_back(new LeftIndicator());
-	sensors_.push_back(new RightIndicator());
-
-	/*
-	 *	Setup the sensor context
-	 */
-	senCon_.can = can_;
-	senCon_.sensors = &sensors_;
-
-	/*
-	 *	Setup the periodic reading of each passive sensor
-	 */
-	setupPassiveSensorReadings();
-
-	/*
-	 *	Setup sensor data broadcasting
-	 */
-	setupSensorBroadcasting();
-
 	/*
 	 *	Setup the .csv logging of the sensor data
 	 */
@@ -301,321 +222,125 @@ void Operation::handleCanFrame(const Can::Frame_t* p_frame) const
 /*
  *	Private Function Implementations
  */
-void Operation::registerToEvents()
-{
-	/*
-	 *	CAN frame received
-	 */
-	eventHandlers_.push_back(std::make_tuple(SYSTEM_EVENT_BASE, CAN_FRAME_RECEIVED, esp_event_handler_instance_t()));
-	esp_event_handler_instance_register(
-		SYSTEM_EVENT_BASE, CAN_FRAME_RECEIVED,
-		[](void* p_state, esp_event_base_t, int32_t, void* p_payload)
-		{
-			/*
-			 *	Get the state ptr
-			 */
-			if (p_state == nullptr) {
-				return;
-			}
-
-			// Convert it
-			Operation* state = static_cast<Operation*>(p_state);
-
-			/*
-			 *	Get the payload
-			 */
-			if (p_payload == nullptr) {
-				return;
-			}
-
-			Can::Frame_t* frame = static_cast<Can::Frame_t*>(p_payload);
-
-			/*
-			 *	Pass the register call
-			 */
-			state->handleCanFrame(frame);
-		},
-		this, &get<2>(eventHandlers_.back()));
-
-	/*
-	 *	Display update completed
-	 */
-	eventHandlers_.push_back(
-		std::make_tuple(SYSTEM_EVENT_BASE, DISPLAY_UPDATE_DOWNLOADED, esp_event_handler_instance_t()));
-	esp_event_handler_instance_register(
-		SYSTEM_EVENT_BASE, DISPLAY_UPDATE_DOWNLOADED,
-		[](void* p_state, esp_event_base_t, int32_t, void*)
-		{
-			/*
-			 *	Get the state ptr
-			 */
-			if (p_state == nullptr) {
-				return;
-			}
-
-			// Convert it
-			Operation* state = static_cast<Operation*>(p_state);
-
-			/*
-			 *	Execute the update on the next display
-			 */
-			state->executeDisplayUpdate(state->displays_->at(0).getCanId());
-		},
-		this, &get<2>(eventHandlers_.back()));
-}
-
-void Operation::setupPassiveSensorReadings()
-{
-	// Fuel Level
-	PassiveSensor* sensor = static_cast<PassiveSensor*>(sensors_.at(0));
-	passiveSensorTimers_[sensor] =
-		xTimerCreate("Periodic Fuel Level read timer", pdMS_TO_TICKS(FUEL_LEVEL_READ_INTERVAL_MS), pdTRUE, &sensors_,
-					 [](const TimerHandle_t p_timerHandle)
-					 {
-						 /*
-						  *	Get the sensors vector
-						  */
-						 const auto sensors = static_cast<std::vector<Sensor*>*>(pvTimerGetTimerID(p_timerHandle));
-
-						 /*
-						  *	Cast the sensor
-						  */
-						 const auto sensor = static_cast<PassiveSensor*>(sensors->at(0));
-
-						 /*
-						  *	Read the sensor
-						  */
-						 sensor->read();
-					 });
-	xTimerStart(passiveSensorTimers_[sensor], 0);
-
-	// Oil Pressure
-	sensor = static_cast<PassiveSensor*>(sensors_.at(1));
-	passiveSensorTimers_[sensor] = xTimerCreate(
-		"Periodic Oil Pressure read timer", pdMS_TO_TICKS(OIL_PRESSURE_READ_INTERVAL_MS), pdTRUE, &sensors_,
-		[](const TimerHandle_t p_timerHandle)
-		{
-			/*
-			 *	Get the sensors vector
-			 */
-			const auto sensors = static_cast<std::vector<Sensor*>*>(pvTimerGetTimerID(p_timerHandle));
-
-			/*
-			 *	Cast the sensor
-			 */
-			const auto sensor = static_cast<PassiveSensor*>(sensors->at(1));
-
-			/*
-			 *	Read the sensor
-			 */
-			sensor->read();
-		});
-	xTimerStart(passiveSensorTimers_[sensor], 0);
-
-	// Water Temperature
-	sensor = static_cast<PassiveSensor*>(sensors_.at(2));
-	passiveSensorTimers_[sensor] = xTimerCreate(
-		"Periodic Water Temperature read timer", pdMS_TO_TICKS(WATER_TEMP_READ_INTERVAL_MS), pdTRUE, &sensors_,
-		[](const TimerHandle_t p_timerHandle)
-		{
-			/*
-			 *	Get the sensors vector
-			 */
-			const auto sensors = static_cast<std::vector<Sensor*>*>(pvTimerGetTimerID(p_timerHandle));
-
-			/*
-			 *	Cast the sensor
-			 */
-			const auto sensor = static_cast<PassiveSensor*>(sensors->at(2));
-
-			/*
-			 *	Read the sensor
-			 */
-			sensor->read();
-		});
-	xTimerStart(passiveSensorTimers_[sensor], 0);
-
-	/*
-	 *	Initial reading of all passive sensors
-	 */
-	static_cast<PassiveSensor*>(sensors_.at(0))->read();
-	static_cast<PassiveSensor*>(sensors_.at(1))->read();
-	static_cast<PassiveSensor*>(sensors_.at(2))->read();
-}
-
-void Operation::setupSensorBroadcasting()
-{
-	/*
-	 *	Fuel Level Changed
-	 */
-	eventHandlers_.push_back(std::make_tuple(SYSTEM_EVENT_BASE, FUEL_LEVEL_CHANGED, esp_event_handler_instance_t()));
-	esp_event_handler_instance_register(SYSTEM_EVENT_BASE, FUEL_LEVEL_CHANGED, staticBroadcastSensorData, &senCon_,
-										&get<2>(eventHandlers_.back()));
-
-	/*
-	 *	Oil Pressure Changed
-	 */
-	eventHandlers_.push_back(std::make_tuple(SYSTEM_EVENT_BASE, OIL_PRESSURE_CHANGED, esp_event_handler_instance_t()));
-	esp_event_handler_instance_register(SYSTEM_EVENT_BASE, OIL_PRESSURE_CHANGED, staticBroadcastSensorData, &senCon_,
-										&get<2>(eventHandlers_.back()));
-
-	/*
-	 *	Water Temperature Changed
-	 */
-	eventHandlers_.push_back(std::make_tuple(SYSTEM_EVENT_BASE, WATER_TEMP_CHANGED, esp_event_handler_instance_t()));
-	esp_event_handler_instance_register(SYSTEM_EVENT_BASE, WATER_TEMP_CHANGED, staticBroadcastSensorData, &senCon_,
-										&get<2>(eventHandlers_.back()));
-
-	/*
-	 *	RPM Changed
-	 */
-	eventHandlers_.push_back(std::make_tuple(SYSTEM_EVENT_BASE, RPM_CHANGED, esp_event_handler_instance_t()));
-	esp_event_handler_instance_register(SYSTEM_EVENT_BASE, RPM_CHANGED, staticBroadcastSensorData, &senCon_,
-										&get<2>(eventHandlers_.back()));
-
-	/*
-	 *	Speed Changed
-	 */
-	eventHandlers_.push_back(std::make_tuple(SYSTEM_EVENT_BASE, SPEED_CHANGED, esp_event_handler_instance_t()));
-	esp_event_handler_instance_register(SYSTEM_EVENT_BASE, SPEED_CHANGED, staticBroadcastSensorData, &senCon_,
-										&get<2>(eventHandlers_.back()));
-
-	/*
-	 *	Left Indicator Changed
-	 */
-	eventHandlers_.push_back(
-		std::make_tuple(SYSTEM_EVENT_BASE, LEFT_INDICATOR_ACTIVE_CHANGED, esp_event_handler_instance_t()));
-	esp_event_handler_instance_register(SYSTEM_EVENT_BASE, LEFT_INDICATOR_ACTIVE_CHANGED, staticBroadcastSensorData,
-										&senCon_, &get<2>(eventHandlers_.back()));
-
-	/*
-	 *	Right Indicator Changed
-	 */
-	eventHandlers_.push_back(
-		std::make_tuple(SYSTEM_EVENT_BASE, RIGHT_INDICATOR_ACTIVE_CHANGED, esp_event_handler_instance_t()));
-	esp_event_handler_instance_register(SYSTEM_EVENT_BASE, RIGHT_INDICATOR_ACTIVE_CHANGED, staticBroadcastSensorData,
-										&senCon_, &get<2>(eventHandlers_.back()));
-}
-
 void Operation::setupSensorDataLogging()
 {
-	/*
-	 *	Setup data logging
-	 */
-	sensorDataLoggingTimer_ =
-		xTimerCreate("Sensor data logging timer", pdMS_TO_TICKS(SENSOR_DATA_LOGGING_INTERVAL_MS), pdTRUE, this,
-					 [](const TimerHandle_t p_timerHandle)
-					 {
-						 /*
-						  *	Get the state instance
-						  */
-						 const auto state = static_cast<Operation*>(pvTimerGetTimerID(p_timerHandle));
-
-						 /*
-						  *	Trigger the logging function
-						  */
-						 state->logSensorData();
-					 });
-	xTimerStart(sensorDataLoggingTimer_, 0);
-
-	/*
-	 *	Initialize the header in the .csv file
-	 */
-	if (sensorDataCsv_ != nullptr) {
-		fprintf(sensorDataCsv_,
-				"FuelLevel R, FuelLevel %%, OilPressure R, WaterTemperature R, WaterTemperature °C, RPM, Speed, "
-				"LIndicator, RIndicator, Coolant °C (ECU), Coolant V (ECU), Injection ms (ECU), RPM (ECU), Speed kmh "
-				"(ECU)");
-	}
-
-	/*
-	 *	Track specified ECU sensors and add them to the header
-	 */
-	// Append the sensors to the list of tracked sensors
-	const auto sensorsToTrack = {ECU::COOLANT_C, ECU::COOLANT_V, ECU::INJECTION_MS, ECU::RPM, ECU::SPEED_KMH};
-	for (auto& sensor : sensorsToTrack) {
-		if (!ECU_SENSORS.contains(sensor)) {
-			continue;
-		}
-
-		// Track sensor
-		ecuSensors_.push_back(&ECU_SENSORS[sensor]);
-
-		// Append to header
-		fprintf(sensorDataCsv_, ", %s", ECU_SENSORS[sensor].name.c_str());
-	}
-
-	/*
-	 *	End the header
-	 */
-	fprintf(sensorDataCsv_, ";\n");
-	fflush(sensorDataCsv_);
-	fsync(fileno(sensorDataCsv_));
+	///*
+	// *	Setup data logging
+	// */
+	// sensorDataLoggingTimer_ =
+	//	xTimerCreate("Sensor data logging timer", pdMS_TO_TICKS(SENSOR_DATA_LOGGING_INTERVAL_MS), pdTRUE, this,
+	//				 [](const TimerHandle_t p_timerHandle)
+	//				 {
+	//					 /*
+	//					  *	Get the state instance
+	//					  */
+	//					 const auto state = static_cast<Operation*>(pvTimerGetTimerID(p_timerHandle));
+	//
+	//					 /*
+	//					  *	Trigger the logging function
+	//					  */
+	//					 state->logSensorData();
+	//				 });
+	// xTimerStart(sensorDataLoggingTimer_, 0);
+	//
+	///*
+	// *	Initialize the header in the .csv file
+	// */
+	// if (sensorDataCsv_ != nullptr) {
+	//	fprintf(sensorDataCsv_,
+	// "FuelLevel R, FuelLevel %%, OilPressure R, WaterTemperature R, WaterTemperature °C, RPM, Speed, "
+	// "LIndicator, RIndicator, Coolant °C (ECU), Coolant V (ECU), Injection ms (ECU), RPM (ECU), Speed kmh "
+	//			"(ECU)");
+	//}
+	//
+	///*
+	// *	Track specified ECU sensors and add them to the header
+	// */
+	//// Append the sensors to the list of tracked sensors
+	// const auto sensorsToTrack = {ECU::COOLANT_C, ECU::COOLANT_V, ECU::INJECTION_MS, ECU::RPM, ECU::SPEED_KMH};
+	// for (auto& sensor : sensorsToTrack) {
+	//	if (!ECU_SENSORS.contains(sensor)) {
+	//	continue;
+	//	}
+	//
+	//	// Track sensor
+	//	ecuSensors_.push_back(&ECU_SENSORS[sensor]);
+	//
+	//	// Append to header
+	//	fprintf(sensorDataCsv_, ", %s", ECU_SENSORS[sensor].name.c_str());
+	//}
+	//
+	///*
+	// *	End the header
+	// */
+	// fprintf(sensorDataCsv_, ";\n");
+	// fflush(sensorDataCsv_);
+	// fsync(fileno(sensorDataCsv_));
 }
 
 void Operation::logSensorData() const
 {
-	/*
-	 *	Error protection
-	 */
-	if (sensorDataCsv_ == nullptr) {
-		xTimerStop(sensorDataLoggingTimer_, portMAX_DELAY);
-		return;
-	}
-
-	/*
-	 *	Request new data from the ECU
-	 */
-	for (const auto& sensor : ecuSensors_) {
-		kline_->readPid(sensor->id);
-	}
-
-	/*
-	 *	Append active & passive hardware sensor data
-	 */
-	std::string row = "";
-	for (auto& sensor : sensors_) {
-		if (sensor->getType() == SENSOR::TYPE::FUEL_LEVEL || sensor->getType() == SENSOR::TYPE::OIL_PRESSURE ||
-			sensor->getType() == SENSOR::TYPE::WATER_TEMPERATURE) {
-			row += std::to_string(static_cast<PassiveSensor*>(sensor)->getResistance());
-			row += ", ";
-			row += std::to_string(sensor->get());
-		}
-		else {
-			row += std::to_string(sensor->get());
-		}
-
-		row += ", ";
-	}
-
-	/*
-	 *	Append ECU sensor data
-	 */
-	for (const auto& ecuSensor : ecuSensors_) {
-		row += std::to_string(ecuSensor->getConvertedValue());
-
-		// Check if we need to append a comma at the end
-		if (ecuSensor != ecuSensors_.back()) {
-			row += ", ";
-		}
-	}
-
-	// Finish the row
-	row += ';';
-
-	/*
-	 *	Write data to the .csv file
-	 */
-	fprintf(sensorDataCsv_, "%s\n", row.c_str());
-
-	/*
-	 *	Flush to actual file every X seconds
-	 */
-	static unsigned int s_counter = 0;
-	if (++s_counter % SENSOR_DATA_SAVE_INTERVAL == 0) {
-		fflush(sensorDataCsv_);
-		fsync(fileno(sensorDataCsv_));
-	}
+	// /*
+	//  *	Error protection
+	//  */
+	// if (sensorDataCsv_ == nullptr) {
+	// 	xTimerStop(sensorDataLoggingTimer_, portMAX_DELAY);
+	// 	return;
+	// }
+	//
+	// /*
+	//  *	Request new data from the ECU
+	//  */
+	// for (const auto& sensor : ecuSensors_) {
+	// 	kline_->readPid(sensor->id);
+	// }
+	//
+	// /*
+	//  *	Append active & passive hardware sensor data
+	//  */
+	// std::string row = "";
+	// for (auto& sensor : sensors_) {
+	// 	if (sensor->getType() == SENSOR::TYPE::FUEL_LEVEL || sensor->getType() == SENSOR::TYPE::OIL_PRESSURE ||
+	// 		sensor->getType() == SENSOR::TYPE::WATER_TEMPERATURE) {
+	// 		row += ""; // std::to_string(static_cast<PassiveSensor*>(sensor)->getResistance());
+	// 		row += ", ";
+	// 		row += std::to_string(sensor->get());
+	// 	}
+	// 	else {
+	// 		row += std::to_string(sensor->get());
+	// 	}
+	//
+	// 	row += ", ";
+	// }
+	//
+	// /*
+	//  *	Append ECU sensor data
+	//  */
+	// for (const auto& ecuSensor : ecuSensors_) {
+	// 	row += std::to_string(ecuSensor->getConvertedValue());
+	//
+	// 	// Check if we need to append a comma at the end
+	// 	if (ecuSensor != ecuSensors_.back()) {
+	// 		row += ", ";
+	// 	}
+	// }
+	//
+	// // Finish the row
+	// row += ';';
+	//
+	// /*
+	//  *	Write data to the .csv file
+	//  */
+	// fprintf(sensorDataCsv_, "%s\n", row.c_str());
+	//
+	// /*
+	//  *	Flush to actual file every X seconds
+	//  */
+	// static unsigned int s_counter = 0;
+	// if (++s_counter % SENSOR_DATA_SAVE_INTERVAL == 0) {
+	// 	fflush(sensorDataCsv_);
+	// 	fsync(fileno(sensorDataCsv_));
+	// }
 }
 
 void Operation::setupWifi()

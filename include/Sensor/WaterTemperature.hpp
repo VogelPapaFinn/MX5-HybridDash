@@ -8,7 +8,7 @@ class WaterTemperature : public PassiveSensor
 public:
 	WaterTemperature(adc_oneshot_unit_handle_t p_adc);
 
-	int get();
+	int get() override;
 
 protected:
 	/*
@@ -16,12 +16,5 @@ protected:
 	 */
 	void specificRead() override;
 
-	void calcTemperature(uint16_t r);
-
-	void notifyAboutNewValue() override;
-
-	/*
-	 *	Private Variables
-	 */
-	int temperature_ = 0;
+	int calculateTemp(uint16_t r);
 };

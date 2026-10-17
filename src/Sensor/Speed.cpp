@@ -17,67 +17,58 @@
 constexpr auto TAG = "Speed";
 
 constexpr float MPH_TO_KMH = 1.60934;
-
 constexpr uint16_t DEBOUNCE_TIME_US = 2000;
+constexpr float CAR_STANDING_TIMEOUT_S = 0.5f;
 
 /*
  *	Public Function Implementations
  */
-Speed::Speed() : ActiveSensor(SENSOR::TYPE::SPEED, GPIO_NUM_10, GPIO_INTR_POSEDGE) {}
+Speed::Speed() : ActiveSensor(GPIO_NUM_10, GPIO_INTR_POSEDGE) {}
 
 int Speed::get()
 {
-	/*
-	 * Check if the car is standing
-	 */
-	portENTER_CRITICAL_ISR(&mux_);
-	const int64_t timeSinceLastTrigger = esp_timer_get_time() - fallingEdgeTime_;
-	portEXIT_CRITICAL_ISR(&mux_);
-
-	// The car is standing still
-	const float secondsSinceLastTrigger = static_cast<float>(timeSinceLastTrigger) / 1000000.0f;
-	if (secondsSinceLastTrigger >= 0.5f) {
+	if (!isCarMoving(newestTriggerTime_)) {
 		return 0;
 	}
 
-	/*
-	 * Calculate the current speed
-	 */
-	const int64_t time = fallingEdgeTime_ - lastFallingEdgeTime_;
-	const float seconds = static_cast<float>(time) / 1000000.0f;
-
-	// Error detection
-	if (seconds <= 0) {
-		return 0;
-	}
-
-	hz_ = 1.0f / seconds;
-	const float mph = hz_ * 0.9f;
-	kmh_ = static_cast<int>(round(mph * MPH_TO_KMH));
-
-	return kmh_;
+	return calculateKmh(newestTriggerTime_, previousTriggerTime_);
 }
 
 void Speed::cb()
 {
-	portENTER_CRITICAL_ISR(&mux_);
+	const int64_t now = esp_timer_get_time();
 
 	// Debouncing, allow a new trigger only after X us passed
-	const int64_t now = esp_timer_get_time();
-	if ((now - fallingEdgeTime_) > DEBOUNCE_TIME_US) {
-		lastFallingEdgeTime_ = fallingEdgeTime_;
-		fallingEdgeTime_ = now;
+	if ((now - newestTriggerTime_) > DEBOUNCE_TIME_US) {
+		previousTriggerTime_ = newestTriggerTime_;
+		newestTriggerTime_ = now;
 	}
-
-	portEXIT_CRITICAL_ISR(&mux_);
-
-	/*
-	 *	Notify about new value
-	 */
-	notifyAboutNewValue();
 }
 
-void Speed::notifyAboutNewValue()
+/*
+ *	Private Function Implementations
+ */
+bool Speed::isCarMoving(int64_t newestTriggerTime)
 {
-	esp_event_isr_post(SYSTEM_EVENT_BASE, SPEED_CHANGED, nullptr, 0, nullptr);
+	const int64_t usSinceLastTrigger = esp_timer_get_time() - newestTriggerTime_; // Microseconds
+	const float sSinceLastTrigger = static_cast<float>(usSinceLastTrigger) / 1000000.0f; // Seconds
+
+	return sSinceLastTrigger < CAR_STANDING_TIMEOUT_S;
+}
+
+uint8_t Speed::calculateKmh(int64_t newestTriggerTime, int64_t previousTriggerTime)
+{
+	const int64_t usTimeInbetween = newestTriggerTime_ - previousTriggerTime_; // Microseconds
+	const float sTimeInbetween = static_cast<float>(usTimeInbetween) / 1000000.0f; // Seconds
+
+	// Error detection
+	if (sTimeInbetween <= 0) {
+		return 0;
+	}
+
+	const float hz = 1.0f / sTimeInbetween;
+	const float mph = hz * 0.9f;
+	const float kmh = round(mph * MPH_TO_KMH);
+
+	return static_cast<uint8_t>(kmh);
 }

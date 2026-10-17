@@ -12,13 +12,13 @@
  */
 constexpr auto TAG = "PassiveSensor";
 constexpr double VOLTAGE = 3.3;
-constexpr unsigned int ADC_SAMPLE_COUNT = 10;
+constexpr unsigned int ADC_SAMPLE_SIZE = 10;
 
 /*
  *	Public Function Implementations
  */
-PassiveSensor::PassiveSensor(SENSOR::TYPE type, gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc,
-							 adc_unit_t unit) : Sensor(type)
+PassiveSensor::PassiveSensor(gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc,
+							 adc_unit_t unit)
 {
 	gpio_ = gpio;
 	channel_ = adcChannel;
@@ -52,67 +52,20 @@ void PassiveSensor::read()
 		return;
 	}
 
-	/*
-	 *	Read value from ADC
-	 */
-	int value = 0;
-	int valueSum = 0;
-	int successfullReads = 0;
+	// Get a sample
+	const int sample = readSample(ADC_SAMPLE_SIZE);
 
-	// Take a sample amount
-	for (unsigned int i = 0; i < ADC_SAMPLE_COUNT; i++) {
-		// Read from the adc
-		if (adc_oneshot_read(adc_, channel_, &value) == ESP_OK) {
-			successfullReads++;
-			valueSum += value;
-			continue;
-		}
+	// Convert the adc value to a voltage
+	voltage_ = convertSampleToVoltage(sample);
 
-		// Something went wrong
-		ESP_LOGW(TAG, "Failed to read channel %d", channel_);
-	}
-
-	// Not a single read succeeded. Stop here!
-	if (successfullReads == 0) {
-		ESP_LOGW(TAG, "Failed to read any data from channel %d", channel_);
-		return;
-	}
-
-	/*
-	 *	Calculate the adc value to a voltage
-	 */
-	if (adc_cali_raw_to_voltage(calibrationHandle_, valueSum / successfullReads, &voltage_) != ESP_OK) {
-		// Something went wrong. Stop here!
-		voltage_ = 0;
-		ESP_LOGW(TAG, "Couldn't convert adc channel %d value to voltage", channel_);
-		return;
-	}
-
-	/*
-	 *	Add an event to the loop if the value changed
-	 */
-	if (lastVoltage_ == voltage_) {
-		return;
-	}
-
-	/*
-	 *	Call the sensor specific read logic
-	 */
+	// Call the sensor specific read logic
 	specificRead();
-
-	lastVoltage_ = voltage_;
-	notifyAboutNewValue();
 }
 
-int PassiveSensor::get() { return voltage_; }
-
-double PassiveSensor::getResistance() const {
-	return resistance_;
-}
-
-void PassiveSensor::specificRead() {}
-
-double PassiveSensor::calcVoltageDividerR2(const int voltageMv, const int r1)
+/*
+ *	Private Function Implementations
+ */
+uint16_t PassiveSensor::calcVoltageDividerR2(const int voltageMv, const int r1)
 {
 	const double vOut = static_cast<double>(voltageMv) / 1000.0;
 	const double r = r1;
@@ -123,10 +76,44 @@ double PassiveSensor::calcVoltageDividerR2(const int voltageMv, const int r1)
 	}
 
 	// R2 = R1 * (voltageMv / (preR1VoltageV - voltageMv))
-	return r * (vOut / (VOLTAGE - vOut));
+	return static_cast<uint16_t>(r * (vOut / (VOLTAGE - vOut)));
 }
 
-void PassiveSensor::notifyAboutNewValue()
+int PassiveSensor::readSample(const unsigned int sampleSize)
 {
-	esp_event_post(SYSTEM_EVENT_BASE, PASSIVE_SENSOR_VALUE_CHANGED, &voltage_, sizeof(voltage_), portMAX_DELAY);
+	int sample = 0;
+	int allSamples = 0;
+	int successfullReads = 0;
+
+	// Take a sample amount
+	for (unsigned int i = 0; i < sampleSize; i++) {
+		if (adc_oneshot_read(adc_, channel_, &sample) != ESP_OK) {
+			continue;
+		}
+
+		// Add to sample data
+		allSamples += sample;
+		successfullReads++;
+	}
+
+	// Something went wrong
+	if (successfullReads == 0) {
+		ESP_LOGW(TAG, "Failed to read any sample from channel %d", channel_);
+		return 0;
+	}
+
+	return allSamples / successfullReads;
+}
+
+int PassiveSensor::convertSampleToVoltage(const int sample)
+{
+	int voltage = 0;
+
+	if (adc_cali_raw_to_voltage(calibrationHandle_, sample, &voltage_) != ESP_OK) {
+		// Something went wrong
+		ESP_LOGW(TAG, "Couldn't convert adc channel %d value to voltage", channel_);
+		return 0;
+	}
+
+	return voltage;
 }

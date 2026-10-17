@@ -25,7 +25,6 @@ typedef struct
 constexpr auto TAG = "WaterTemperature";
 
 constexpr uint16_t R1 = 3000;
-
 constexpr TempResistanceTuple_t TEMP_RESISTANCE_TUPLES[] = {
 	{0, 5743}, {5, 4627}, {10, 3749}, {15, 3053}, {20, 2499}, {25, 2056}, {30, 1700}, {35, 1412}, {40, 1178},
 	{45, 987}, {50, 830}, {55, 701},  {60, 595},  {65, 507},  {70, 433},  {75, 371},  {80, 319},  {85, 276},
@@ -35,30 +34,29 @@ constexpr uint8_t AMOUNT_TEMP_TUPLES = std::size(TEMP_RESISTANCE_TUPLES);
 /*
  *	Public Function Implementations
  */
-WaterTemperature::WaterTemperature(adc_oneshot_unit_handle_t p_adc) :
-	PassiveSensor(SENSOR::TYPE::WATER_TEMPERATURE, GPIO_NUM_6, ADC_CHANNEL_5, p_adc)
-{
-}
+WaterTemperature::WaterTemperature(adc_oneshot_unit_handle_t p_adc) : PassiveSensor(GPIO_NUM_6, ADC_CHANNEL_5, p_adc) {}
 
-int WaterTemperature::get() { return temperature_; }
+int WaterTemperature::get() { return calculateTemp(resistance_); }
 
 void WaterTemperature::specificRead() { resistance_ = calcVoltageDividerR2(voltage_, R1); }
 
 /*
  *	Private Function Implementations
  */
-void WaterTemperature::calcTemperature(const uint16_t r)
+int WaterTemperature::calculateTemp(const uint16_t r)
 {
+	int temp = 0;
+
 	// Below our range
 	if (r > TEMP_RESISTANCE_TUPLES[0].r) {
-		temperature_ = TEMP_RESISTANCE_TUPLES[0].temp;
-		return;
+		temp = TEMP_RESISTANCE_TUPLES[0].temp;
+		return temp;
 	}
 
 	// Above our range
 	if (r < TEMP_RESISTANCE_TUPLES[AMOUNT_TEMP_TUPLES - 1].r) {
-		temperature_ = TEMP_RESISTANCE_TUPLES[AMOUNT_TEMP_TUPLES - 1].temp + 1;
-		return;
+		temp = TEMP_RESISTANCE_TUPLES[AMOUNT_TEMP_TUPLES - 1].temp + 1;
+		return temp;
 	}
 	// Iterate through all entries
 	for (int i = 0; i < AMOUNT_TEMP_TUPLES - 1; i++) {
@@ -72,16 +70,10 @@ void WaterTemperature::calcTemperature(const uint16_t r)
 
 			// Calculate the value with linear interpolation
 			// y = y1 + (x - x1) * (y2 - y1) / (x2 - x1)
-			temperature_ = temp1 + ((r - r1) * ((temp2 - temp1)) / (r2 - r1));
-			return;
+			temp = temp1 + ((r - r1) * ((temp2 - temp1)) / (r2 - r1));
+			return temp;
 		}
 	}
-}
 
-void WaterTemperature::notifyAboutNewValue()
-{
-	calcTemperature(resistance_);
-	const auto& value = get();
-
-	esp_event_post(SYSTEM_EVENT_BASE, WATER_TEMP_CHANGED, &value, sizeof(value), portMAX_DELAY);
+	return temp;
 }

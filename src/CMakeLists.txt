@@ -25,6 +25,7 @@ set(FILES
         "Handler/RegistrationHandler.cpp"
 
         # Sensors
+        "Sensor/SensorHandler.cpp"
         "Sensor/ActiveSensor.cpp"
         "Sensor/PassiveSensor.cpp"
 

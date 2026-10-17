@@ -16,8 +16,6 @@ protected:
 	 */
 	void specificRead() override;
 
-	void notifyAboutNewValue() override;
-
 	/*
 	 *	Private Variables
 	 */

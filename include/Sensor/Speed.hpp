@@ -22,16 +22,15 @@ private:
 	/*
 	 *	Private Functions
 	 */
-	void notifyAboutNewValue() override;
+	bool isCarMoving(int64_t newestTriggerTime);
+
+	uint8_t calculateKmh(int64_t newestTriggerTime, int64_t previousTriggerTime);
 
 	/*
 	 *	Private Variables
 	 */
-	volatile int64_t lastFallingEdgeTime_ = 0;
-	volatile int64_t fallingEdgeTime_ = 0;
-	portMUX_TYPE mux_ = portMUX_INITIALIZER_UNLOCKED;
-
-	double hz_ = 0.0;
+	volatile int64_t previousTriggerTime_ = 0;
+	volatile int64_t newestTriggerTime_ = 0;
 
 	uint8_t kmh_ = 0;
 };

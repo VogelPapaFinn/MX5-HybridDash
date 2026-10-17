@@ -21,12 +21,12 @@ protected:
 
 	void calcLevel();
 
-	void notifyAboutNewValue() override;
+	float getMedianElement(std::vector<uint8_t>& values);
+
+	int getDampenedValue(const float raw);
 
 	/*
 	 *	Private Variables
 	 */
 	std::vector<uint8_t> lastLevels_;
-
-	float smoothedValue_ = -1.0f;
 };

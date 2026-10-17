@@ -25,16 +25,17 @@ private:
 	/*
 	 *	Private Functions
 	 */
-	void notifyAboutNewValue() override;
+	bool isEngineRunning(int64_t newestTriggerTime);
+
+	uint16_t calculateRpm(int64_t newestTriggerTime, int64_t previousTriggerTime);
+
+	uint16_t getMedianElement(std::list<uint16_t>& rpms);
 
 	/*
 	 *	Private Variables
 	 */
-	int64_t lastFallingEdgeTime_ = 0;
-	int64_t fallingEdgeTime_ = 0;
-	portMUX_TYPE mux_ = portMUX_INITIALIZER_UNLOCKED;
-
-	float hz_ = 0.0;
+	int64_t previousTriggerTime_ = 0;
+	int64_t newestTriggerTime_ = 0;
 
 	std::list<uint16_t> lastRpm_ = {0, 0, 0};
 };

@@ -16,13 +16,5 @@ public:
 	void cb() override;
 
 private:
-	/*
-	 *	Private Functions
-	 */
-	void notifyAboutNewValue() override;
-
-	/*
-	 *	Private Variables
-	 */
 	bool active_ = false;
 };
