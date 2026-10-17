@@ -1,0 +1,37 @@
+#pragma once
+
+// Project includes
+#include "Can.hpp"
+#include "Config.hpp"
+#include "State.hpp"
+
+// espidf includes
+#include "esp_adc/adc_oneshot.h"
+
+class Startup : public State
+{
+public:
+	Startup(Filesystem* p_fs, Config* p_config, Can* p_can, adc_oneshot_unit_handle_t p_adc1Handle);
+
+	void enter() override;
+
+private:
+	/*
+	 *   Private Functions
+	 */
+	void startEspEventLoop();
+
+	void setupAdc1();
+
+	bool loadConfig();
+
+	bool loadDefaultConfig();
+
+	/*
+	 *   Private Variables
+	 */
+	Filesystem* fs_ = nullptr;
+	Config* config_ = nullptr;
+	Can* can_ = nullptr;
+	adc_oneshot_unit_handle_t adc1Handle_ = nullptr;
+};

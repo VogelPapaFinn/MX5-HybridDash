@@ -17,7 +17,7 @@ const auto TAG = "Registration";
 /*
  *	Public Function Implementations
  */
-Registration::Registration(Can* p_can, std::vector<Display>* p_displays) : State(State::REGISTRATION)
+Registration::Registration(Can* p_can, std::vector<Display>* p_displays) : OldState(OldState::REGISTRATION)
 {
 	can_ = p_can;
 	displays_ = p_displays;

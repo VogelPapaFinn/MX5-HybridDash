@@ -95,7 +95,7 @@ static void staticBroadcastSensorData(void* p_sensorContext, esp_event_base_t, i
  *	Public Function implementations
  */
 Operation::Operation(Filesystem* p_fs, adc_oneshot_unit_handle_t p_adc1, KLine* p_kline, Wifi* p_wifi, Config* p_config,
-					 Can* p_can, std::vector<Display>* p_displays) : State(State::OPERATION)
+					 Can* p_can, std::vector<Display>* p_displays) : OldState(OldState::OPERATION)
 {
 	fs_ = p_fs;
 	adc1_ = p_adc1;
@@ -108,7 +108,7 @@ Operation::Operation(Filesystem* p_fs, adc_oneshot_unit_handle_t p_adc1, KLine* 
 	/*
 	 *	Get the current logging file index
 	 */
-	auto json = config_->getJson();
+	auto json = config_->getWriteAccess();
 	unsigned int sensorFileIndex = 0;
 
 	// Check if an entry in the config exists
@@ -346,7 +346,7 @@ void Operation::logSensorData() const
 void Operation::setupWifi()
 {
 	Wifi::WIFI_TYPE wifiType = Wifi::WIFI_TYPE::HOST;
-	const auto json = config_->getJson();
+	const auto json = config_->getWriteAccess();
 
 	/*
 	 *	Delete old Wifi

@@ -3,10 +3,10 @@
 // Project include
 #include "Can.hpp"
 #include "Driver/Display.hpp"
-#include "State/State.hpp"
+#include "State/OldState.hpp"
 
 
-class Registration : public State
+class Registration : public OldState
 {
 public:
 	Registration(Can* p_can, std::vector<Display>* p_displays);

@@ -8,13 +8,13 @@
 #include "Driver/Display.hpp"
 #include "Driver/KLine.hpp"
 #include "Sensor/PassiveSensor.hpp"
-#include "State/State.hpp"
+#include "State/OldState.hpp"
 #include "WebInterface/WebInterface.hpp"
 
 /*
  *	Class implementation
  */
-class Operation : public State
+class Operation : public OldState
 {
 public:
 	Operation(Filesystem* p_fs, adc_oneshot_unit_handle_t p_adc1, KLine* p_kline, Wifi* p_wifi, Config* p_config,

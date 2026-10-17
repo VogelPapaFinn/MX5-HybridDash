@@ -18,8 +18,7 @@ set(FILES
 
         # States
         "State/State.cpp"
-        "State/Registration.cpp"
-        "State/Operation.cpp"
+        "State/Startup.cpp"
 
         # Handlers
         "Handler/RegistrationHandler.cpp"
