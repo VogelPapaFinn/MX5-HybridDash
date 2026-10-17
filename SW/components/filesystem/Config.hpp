@@ -5,6 +5,7 @@
 
 // C++ includes
 #include <string>
+#include <vector>
 
 // espidf includes
 #include "ArduinoJson.hpp"
@@ -12,22 +13,45 @@
 class Config
 {
 public:
-	Config(SystemContext* p_sysCon);
+	Config(Filesystem* p_fs, const std::string& path);
 
 	~Config();
 
-	bool open(const std::string& path);
+	bool open();
 
-	ArduinoJson::JsonDocument* getJson();
+	ArduinoJson::JsonDocument getReadAccess();
+
+	ArduinoJson::JsonDocument* getWriteAccess();
+
+	void returnWriteAccess();
 
 	bool save();
 
 private:
-	SystemContext* sysCon_ = nullptr;
+	/*
+	 *   Private Functions
+	 */
+
+	bool isFileEmpty();
+
+	std::vector<char> readFileContent();
+
+	void extractJsonFromFile(std::vector<char>& fileContent);
+
+	void startSaveTask();
+
+	/*
+	 *   Private Variables
+	 */
+	Filesystem* fs_ = nullptr;
 
 	std::string path_;
 
 	FILE* file_ = nullptr;
 
 	ArduinoJson::JsonDocument json_;
+
+	bool configChanged_ = false;
+	SemaphoreHandle_t configMutex_ = nullptr;
+	TaskHandle_t saveTask_ = nullptr;
 };
