@@ -4,7 +4,7 @@ namespace CanFrameGroups
 {
 	enum GROUP
 	{
-		CONFIGURATION,
+		CONFIGURATION = 0,
 		SENSOR,
 		WIFI,
 	};
@@ -31,4 +31,4 @@ namespace CanFrameGroups
 		JOIN_WIFI,
 		EXECUTE_UPDATE,
 	};
-}
+} // namespace CanFrameGroups

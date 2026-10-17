@@ -1,8 +1,13 @@
 #pragma once
 
+// Component includes
+#include "CanGroupsAndFunctions.hpp"
+
 // C and C++ includes
 #include <memory>
+#include <unordered_map>
 #include <vector>
+
 
 // espidf includes
 #include "esp_twai_onchip.h"
@@ -14,6 +19,11 @@
  */
 constexpr uint8_t CAN_MASTER_ID = 1;
 constexpr uint8_t CAN_BROADCAST_ID = 0;
+
+/*
+ *	Prototypes
+ */
+class MessageReceiver;
 
 /*
  *	CAN Class
@@ -141,7 +151,7 @@ public:
 
 			return output;
 		}
-	} Frame;
+	} Frame_t;
 
 	/*
 	 *	Public Callback functions
@@ -159,11 +169,27 @@ public:
 
 	bool enable();
 
-	void queueFrame(Frame& canFrame);
+	void attach(MessageReceiver* p_observer, CanFrameGroups::GROUP group);
+
+	void detach(MessageReceiver* p_observer, CanFrameGroups::GROUP group);
+
+	void queueFrame(Frame_t& canFrame);
 
 	QueueHandle_t* getFrameTransmittedQueue();
 
 private:
+	/*
+	 *	Private Functions
+	 */
+	static bool staticReceivedFrameCb(twai_node_handle_t p_nodeHandle, const twai_rx_done_event_data_t* p_eventData,
+									  void* p_userCtx);
+
+	static bool staticTransmittedFrameCb(twai_node_handle_t p_nodeHandle, const twai_tx_done_event_data_t* p_eventData,
+										 void* p_userCtx);
+
+	static bool staticStateChangedCb(twai_node_handle_t p_nodeHandle, const twai_state_change_event_data_t* p_eventData,
+									 void* p_userCtx);
+
 	/*
 	 *	Private Member variables
 	 */
@@ -176,9 +202,11 @@ private:
 
 	bool enabled_ = false;
 
-	std::vector<std::shared_ptr<Frame>> pendingFrames_;
+	std::vector<std::shared_ptr<Frame_t>> pendingFrames_;
 	SemaphoreHandle_t pendingFramesMutex_ = nullptr;
 
 	TaskHandle_t frameTransmittedTaskHandle_ = nullptr;
 	QueueHandle_t frameTransmittedQueueHandle_ = nullptr;
+
+	std::unordered_map<CanFrameGroups::GROUP, MessageReceiver*> observers_;
 };
