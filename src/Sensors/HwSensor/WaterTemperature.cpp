@@ -1,7 +1,4 @@
-#include "Sensor/WaterTemperature.hpp"
-
-// Project includes
-#include "Events.hpp"
+#include "Sensors/HwSensor/WaterTemperature.hpp"
 
 // C++ includes
 #include <iterator>

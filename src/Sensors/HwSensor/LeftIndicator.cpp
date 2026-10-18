@@ -1,7 +1,4 @@
-#include "Sensor/LeftIndicator.hpp"
-
-// Project includes
-#include "Events.hpp"
+#include "Sensors/HwSensor/LeftIndicator.hpp"
 
 // espidf includes
 #include "esp_event.h"

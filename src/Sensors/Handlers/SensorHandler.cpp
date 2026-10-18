@@ -1,13 +1,14 @@
-#include "Sensor/SensorHandler.hpp"
+#include "Sensors/Handlers/SensorHandler.hpp"
 
 // Project includes
-#include "Sensor/FuelLevel.hpp"
-#include "Sensor/LeftIndicator.hpp"
-#include "Sensor/OilPressure.hpp"
-#include "Sensor/RightIndicator.hpp"
-#include "Sensor/Rpm.hpp"
-#include "Sensor/Speed.hpp"
-#include "Sensor/WaterTemperature.hpp"
+#include "Sensors/HwSensor/FuelLevel.hpp"
+#include "Sensors/HwSensor/LeftIndicator.hpp"
+#include "Sensors/HwSensor/OilPressure.hpp"
+#include "Sensors/HwSensor/RightIndicator.hpp"
+#include "Sensors/HwSensor/Rpm.hpp"
+#include "Sensors/HwSensor/Speed.hpp"
+#include "Sensors/HwSensor/WaterTemperature.hpp"
+#include "Sensors/Sensors.hpp"
 
 // espidf includes
 #include <esp_log.h>
@@ -24,9 +25,10 @@ constexpr auto SENSORS_WRITE_INTERVAL_MS = 100;
  */
 struct TaskStuff
 {
-	std::unordered_map<HW_SENSOR, int>* sensorData = nullptr;
+	std::unordered_map<SENSOR, int>* sensorData = nullptr;
 	SemaphoreHandle_t sensorDataMutex = nullptr;
 	adc_oneshot_unit_handle_t adc = nullptr;
+	SensorsData* sensorsData = nullptr;
 };
 
 /*
@@ -59,9 +61,12 @@ static void updatePassiveSensorsTask(void* p_param)
 		}
 
 		// Save new values
-		(*taskStuff->sensorData)[HW_SENSOR::FUEL_LEVEL] = fL.get();
-		(*taskStuff->sensorData)[HW_SENSOR::OIL_PRESSURE] = oP.get();
-		(*taskStuff->sensorData)[HW_SENSOR::WATER_TEMP] = wT.get();
+		(*taskStuff->sensorData)[SENSOR::FUEL_LEVEL_P] = fL.get();
+		(*taskStuff->sensorData)[SENSOR::FUEL_LEVEL_R] = fL.getResistance();
+		(*taskStuff->sensorData)[SENSOR::OIL_PRESSURE_B] = oP.get();
+		(*taskStuff->sensorData)[SENSOR::OIL_PRESSURE_R] = oP.getResistance();
+		(*taskStuff->sensorData)[SENSOR::WATER_TEMP_C] = wT.get();
+		(*taskStuff->sensorData)[SENSOR::WATER_TEMP_R] = wT.getResistance();
 
 		// Return mutex
 		xSemaphoreGive(taskStuff->sensorDataMutex);
@@ -75,7 +80,6 @@ static void writeSensorsTask(void* p_param)
 	}
 
 	auto taskStuff = static_cast<TaskStuff*>(p_param);
-	auto sensorsDataInstance = SensorsData::get();
 
 	// Create all isr sensors
 	Speed speed;
@@ -98,17 +102,17 @@ static void writeSensorsTask(void* p_param)
 		}
 
 		// Update sensor values of the ISR sensors
-		(*taskStuff->sensorData)[HW_SENSOR::SPEED] = speedVal;
-		(*taskStuff->sensorData)[HW_SENSOR::RPM] = rpmVal;
-		(*taskStuff->sensorData)[HW_SENSOR::LEFT_INDICATOR] = lIndicVal;
-		(*taskStuff->sensorData)[HW_SENSOR::RIGHT_INDICATOR] = rIndicVal;
+		(*taskStuff->sensorData)[SENSOR::SPEED] = speedVal;
+		(*taskStuff->sensorData)[SENSOR::RPM] = rpmVal;
+		(*taskStuff->sensorData)[SENSOR::LEFT_INDICATOR] = lIndicVal;
+		(*taskStuff->sensorData)[SENSOR::RIGHT_INDICATOR] = rIndicVal;
 
 		// Update values in the SensorsData object
-		auto currData = sensorsDataInstance->getWriteAccess();
+		auto currData = taskStuff->sensorsData->getWriteAccess();
 		if (currData != nullptr) {
 			*currData = *taskStuff->sensorData;
 
-			sensorsDataInstance->returnWriteAccess();
+			taskStuff->sensorsData->returnWriteAccess();
 		}
 
 		// Return mutex
@@ -119,20 +123,24 @@ static void writeSensorsTask(void* p_param)
 /*
  *   Public Function Implementations
  */
-SensorHandler::SensorHandler(adc_oneshot_unit_handle_t p_adc1)
+SensorHandler::SensorHandler(adc_oneshot_unit_handle_t p_adc1, SensorsData* p_sensorsData)
 {
 	adc1_ = p_adc1;
+	sensorsData_ = p_sensorsData;
 
 	sensorDataMutex_ = xSemaphoreCreateMutex();
 
 	// Fill the map with dummy data
-	newSensorData_[HW_SENSOR::FUEL_LEVEL] = 0;
-	newSensorData_[HW_SENSOR::OIL_PRESSURE] = 0;
-	newSensorData_[HW_SENSOR::WATER_TEMP] = 0;
-	newSensorData_[HW_SENSOR::LEFT_INDICATOR] = 0;
-	newSensorData_[HW_SENSOR::RIGHT_INDICATOR] = 0;
-	newSensorData_[HW_SENSOR::SPEED] = 0;
-	newSensorData_[HW_SENSOR::RPM] = 0;
+	newSensorData_[SENSOR::FUEL_LEVEL_R] = 0;
+	newSensorData_[SENSOR::FUEL_LEVEL_P] = 0;
+	newSensorData_[SENSOR::OIL_PRESSURE_R] = 0;
+	newSensorData_[SENSOR::OIL_PRESSURE_B] = 0;
+	newSensorData_[SENSOR::WATER_TEMP_R] = 0;
+	newSensorData_[SENSOR::WATER_TEMP_C] = 0;
+	newSensorData_[SENSOR::LEFT_INDICATOR] = 0;
+	newSensorData_[SENSOR::RIGHT_INDICATOR] = 0;
+	newSensorData_[SENSOR::SPEED] = 0;
+	newSensorData_[SENSOR::RPM] = 0;
 
 	// Install ISR Service, needed for Speed, Rpm and Indicators
 	if (gpio_install_isr_service(ESP_INTR_FLAG_IRAM) != ESP_OK) {
@@ -157,7 +165,8 @@ void SensorHandler::stop()
  */
 void SensorHandler::startReadThread()
 {
-	TaskStuff taskStuff = {.sensorData = &newSensorData_, .sensorDataMutex = sensorDataMutex_, .adc = adc1_};
+	TaskStuff taskStuff = {
+		.sensorData = &newSensorData_, .sensorDataMutex = sensorDataMutex_, .adc = adc1_, .sensorsData = sensorsData_};
 
 	if (xTaskCreate(updatePassiveSensorsTask, "UpdatePassiveSensors", 4096, &taskStuff, 2, &updateSensorReadTask_) ==
 		pdPASS) {
@@ -183,7 +192,8 @@ void SensorHandler::stopReadThread()
 
 void SensorHandler::startWriteThread()
 {
-	TaskStuff taskStuff = {.sensorData = &newSensorData_, .sensorDataMutex = sensorDataMutex_, .adc = adc1_};
+	TaskStuff taskStuff = {
+		.sensorData = &newSensorData_, .sensorDataMutex = sensorDataMutex_, .adc = adc1_, .sensorsData = sensorsData_};
 
 	if (xTaskCreate(writeSensorsTask, "WriteSensors", 4096, &taskStuff, 2, &sensorWriteTask_) == pdPASS) {
 		// Success

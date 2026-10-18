@@ -10,7 +10,7 @@
 class SensorHandler
 {
 public:
-	SensorHandler(adc_oneshot_unit_handle_t p_adc1);
+	SensorHandler(adc_oneshot_unit_handle_t p_adc1, SensorsData* p_sensorsData);
 
 	void start();
 
@@ -23,7 +23,7 @@ private:
 	void startWriteThread();
 	void stopWriteThread();
 
-	std::unordered_map<HW_SENSOR, int> newSensorData_;
+	std::unordered_map<SENSOR, int> newSensorData_;
 
 	SemaphoreHandle_t sensorDataMutex_ = nullptr;
 
@@ -32,4 +32,6 @@ private:
 	TaskHandle_t sensorWriteTask_ = nullptr;
 
 	adc_oneshot_unit_handle_t adc1_ = nullptr;
+
+	SensorsData* sensorsData_ = nullptr;
 };

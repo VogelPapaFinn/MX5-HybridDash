@@ -13,29 +13,27 @@ set(FILES
         # WebInterface
         "WebInterface/WebInterface.cpp"
 
-        # Events
-        "Events.cpp"
-
-        # States
+        # StateMachine
+        "State/StateMachine.cpp"
+        "State/StateEvents.cpp"
         "State/State.cpp"
         "State/Startup.cpp"
-
-        # Handlers
-        "Handler/RegistrationHandler.cpp"
+        "State/Operation.cpp"
 
         # Sensors
-        "Sensor/SensorHandler.cpp"
-        "Sensor/ActiveSensor.cpp"
-        "Sensor/PassiveSensor.cpp"
-
-        "Sensor/OilPressure.cpp"
-        "Sensor/WaterTemperature.cpp"
-        "Sensor/FuelLevel.cpp"
-
-        "Sensor/Speed.cpp"
-        "Sensor/Rpm.cpp"
-        "Sensor/LeftIndicator.cpp"
-        "Sensor/RightIndicator.cpp"
+        "Sensors/Handlers/SensorsData.cpp"
+        "Sensors/Handlers/SensorHandler.cpp"
+        "Sensors/Handlers/SensorLogger.cpp"
+        
+        "Sensors/HwSensor/ActiveSensor.cpp"
+        "Sensors/HwSensor/PassiveSensor.cpp"
+        "Sensors/HwSensor/OilPressure.cpp"
+        "Sensors/HwSensor/WaterTemperature.cpp"
+        "Sensors/HwSensor/FuelLevel.cpp"
+        "Sensors/HwSensor/Speed.cpp"
+        "Sensors/HwSensor/Rpm.cpp"
+        "Sensors/HwSensor/LeftIndicator.cpp"
+        "Sensors/HwSensor/RightIndicator.cpp"
 )
 
 idf_component_register(SRCS ${FILES}

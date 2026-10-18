@@ -14,6 +14,8 @@ public:
 
 	virtual int get() = 0;
 
+	int getResistance();
+
 protected:
 	/*
 	 *	Private Functions

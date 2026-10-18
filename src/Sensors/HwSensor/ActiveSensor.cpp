@@ -1,7 +1,4 @@
-#include "Sensor/ActiveSensor.hpp"
-
-// Project include
-#include "Events.hpp"
+#include "Sensors/HwSensor/ActiveSensor.hpp"
 
 // espidf includes
 #include "esp_event.h"

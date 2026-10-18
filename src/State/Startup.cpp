@@ -2,6 +2,7 @@
 
 // Project includes
 #include "../config/DefaultConfig.hpp"
+#include "State/StateEvents.hpp"
 
 // espidf includes
 #include "esp_event.h"
@@ -29,8 +30,6 @@ Startup::Startup(Filesystem* p_fs, Config* p_config, Can* p_can, adc_oneshot_uni
 
 void Startup::enter()
 {
-	startEspEventLoop();
-
 	// Activate CAN
 	can_->initialize();
 	can_->enable();
@@ -42,21 +41,28 @@ void Startup::enter()
 	if (!loadConfig()) {
 		loadDefaultConfig();
 	}
+
+	// Enter the ConfigureDisplays state?
+	if (isFirstStartup()) {
+		esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::FIRST_STARTUP, nullptr, 0, portMAX_DELAY);
+		return;
+	}
+
+	// Enter the UpdateDisplays state?
+	if (isUpdateAvailable()) {
+		esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::UPDATE_AVAILABLE, nullptr, 0, portMAX_DELAY);
+		return;
+	}
+
+	// Enter the operation state
+	esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::FINISHED, nullptr, 0, portMAX_DELAY);
 }
+
+void Startup::quit() {}
 
 /*
  *   Private Function Implementations
  */
-void Startup::startEspEventLoop()
-{
-	if (esp_event_loop_create_default() == ESP_OK) {
-		return;
-	}
-
-	ESP_LOGE(TAG, "Error creating default event loop. Rebooting...");
-	esp_restart();
-}
-
 void Startup::setupAdc1()
 {
 	if (adc_oneshot_new_unit(&ADC1_UNIT_CONFIG, &adc1Handle_) != ESP_OK) {
@@ -94,3 +100,19 @@ bool Startup::loadDefaultConfig()
 
 	return true;
 }
+
+bool Startup::isFirstStartup()
+{
+	const auto json = config_->getReadAccess();
+	if (!json["FirstStartup"]) {
+		return true;
+	}
+
+	if (json["FirstStartup"].as<bool>()) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Startup::isUpdateAvailable() { return fs_->doesFileExist("display_update.bin", Filesystem::DATA_PARTITION); }

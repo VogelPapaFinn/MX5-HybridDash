@@ -2,16 +2,18 @@
 #include "Can.hpp"
 #include "Driver/Display.hpp"
 #include "Driver/KLine.hpp"
-#include "Events.hpp"
 #include "Filesystem.hpp"
-#include "Sensor/SensorHandler.hpp"
+#include "Sensors/Handlers/SensorHandler.hpp"
+#include "State/Operation.hpp"
 #include "State/Startup.hpp"
+#include "State/StateEvents.hpp"
+#include "State/StateMachine.hpp"
 #include "WebInterface/WebInterface.hpp"
 #include "WifiHost.hpp"
 
 // espidf includes
+#include <esp_adc/adc_oneshot.h>
 #include <freertos/FreeRTOS.h>
-#include "esp_adc/adc_oneshot.h"
 
 //! \brief Main application tag.
 constexpr auto TAG = "main";
@@ -21,8 +23,6 @@ constexpr gpio_num_t GPIO_CAN_RX = GPIO_NUM_41;
 
 //! \brief GPIO pin number for CAN transmitter.
 constexpr gpio_num_t GPIO_CAN_TX = GPIO_NUM_40;
-
-//! \brief Configuration file name.
 
 constexpr gpio_num_t GPIO_DISPLAY1 = GPIO_NUM_13;
 constexpr gpio_num_t GPIO_DISPLAY2 = GPIO_NUM_14;
@@ -45,12 +45,16 @@ static WifiHost g_wifi;
 static WebInterface g_webinterface(&g_fs);
 
 /*
- *	Private Header Functions
+ *	Helper functions
  */
-static void printLogHeader()
+void startEspEventLoop()
 {
-	ESP_LOGI(TAG, "--- --- --- --- --- --- ---");
-	ESP_LOGI(TAG, "Startup");
+	if (esp_event_loop_create_default() == ESP_OK) {
+		return;
+	}
+
+	ESP_LOGE(TAG, "Error creating default event loop. Rebooting...");
+	esp_restart();
 }
 
 /*
@@ -61,15 +65,30 @@ extern "C" void app_main(void)
 	// NEEDED FOR DEBUGGING
 	vTaskDelay(pdMS_TO_TICKS(100));
 
-	printLogHeader();
+	// Print Log Headers
+	ESP_LOGI(TAG, "--- --- --- --- --- --- ---");
+	ESP_LOGI(TAG, "Startup");
+
+	startEspEventLoop();
 
 	// Handlers
-	SensorHandler sensorHandler(g_adc1);
+	SensorsData sensorsData(&g_can);
+	SensorHandler sensorHandler(g_adc1, &sensorsData);
 
 	// States
 	Startup startupState(&g_fs, g_config, &g_can, g_adc1);
+	Operation operationState(&g_fs, g_adc1, &g_kline, &g_wifi, g_config, &g_can, &g_displays);
+
+	// StateMachine
+	StateMachine stateMachine(&startupState,
+							  {
+								  {.from = nullptr, .signal = STATE_EVENT_ID::FIRST_STARTUP, .to = nullptr}, // TODO
+								  {.from = nullptr, .signal = STATE_EVENT_ID::UPDATE_AVAILABLE, .to = nullptr}, // TODO
+								  {.from = nullptr, .signal = STATE_EVENT_ID::FINISHED, .to = &operationState},
+							  });
+	stateMachine.start();
 
 	while (true) {
-		vTaskDelay(pdMS_TO_TICKS(1000));
+		vTaskDelay(portMAX_DELAY);
 	}
 }

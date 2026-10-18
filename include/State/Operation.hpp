@@ -7,20 +7,22 @@
 #include "Can.hpp"
 #include "Driver/Display.hpp"
 #include "Driver/KLine.hpp"
-#include "Sensor/PassiveSensor.hpp"
-#include "State/OldState.hpp"
+#include "Sensors/HwSensor/PassiveSensor.hpp"
+#include "State/State.hpp"
 #include "WebInterface/WebInterface.hpp"
 
 /*
  *	Class implementation
  */
-class Operation : public OldState
+class Operation : public State
 {
 public:
 	Operation(Filesystem* p_fs, adc_oneshot_unit_handle_t p_adc1, KLine* p_kline, Wifi* p_wifi, Config* p_config,
 			  Can* p_can, std::vector<Display>* p_displays);
 
 	void enter() override;
+
+	void quit() override;
 
 	void executeDisplayUpdate(const uint8_t displayId) const;
 
@@ -29,10 +31,6 @@ private:
 	 *	Private Functions
 	 */
 	void handleCanFrame(const Can::Frame_t* p_frame) const;
-
-	void setupSensorDataLogging();
-
-	void logSensorData() const;
 
 	void setupWifi();
 

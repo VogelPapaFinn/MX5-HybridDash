@@ -15,17 +15,21 @@ public:
 
 	void enter() override;
 
+	void quit() override;
+
 private:
 	/*
 	 *   Private Functions
 	 */
-	void startEspEventLoop();
-
 	void setupAdc1();
 
 	bool loadConfig();
 
 	bool loadDefaultConfig();
+
+	bool isFirstStartup();
+
+	bool isUpdateAvailable();
 
 	/*
 	 *   Private Variables

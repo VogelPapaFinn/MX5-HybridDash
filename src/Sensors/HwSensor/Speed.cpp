@@ -1,7 +1,4 @@
-#include "Sensor/Speed.hpp"
-
-// Project includes
-#include "Events.hpp"
+#include "Sensors/HwSensor/Speed.hpp"
 
 // C++ includes
 #include <math.h>

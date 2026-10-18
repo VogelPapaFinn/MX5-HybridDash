@@ -2,7 +2,6 @@
 
 // Project includes
 #include "Driver/EcuSensors.hpp"
-#include "Events.hpp"
 
 // C++ includes
 #include <sstream>
@@ -443,7 +442,7 @@ esp_err_t WebInterface::displayUpdateUploadHandler(httpd_req_t* p_reqst)
 	/*
 	 *	Notify backend that the update is ready
 	 */
-	esp_event_post(SYSTEM_EVENT_BASE, DISPLAY_UPDATE_DOWNLOADED, nullptr, 0, portMAX_DELAY);
+	// esp_event_post(SYSTEM_EVENT_BASE, DISPLAY_UPDATE_DOWNLOADED, nullptr, 0, portMAX_DELAY);
 
 	return ESP_OK;
 }

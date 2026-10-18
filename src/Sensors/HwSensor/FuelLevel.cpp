@@ -1,7 +1,4 @@
-#include "Sensor/FuelLevel.hpp"
-
-// Project includes
-#include "Events.hpp"
+#include "Sensors/HwSensor/FuelLevel.hpp"
 
 // C++ includes
 #include <algorithm>

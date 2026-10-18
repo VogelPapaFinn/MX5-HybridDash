@@ -1,7 +1,4 @@
-#include "Sensor/PassiveSensor.hpp"
-
-// Project includes
-#include "Events.hpp"
+#include "Sensors/HwSensor/PassiveSensor.hpp"
 
 // espidf includes
 #include "esp_event.h"
@@ -61,6 +58,8 @@ void PassiveSensor::read()
 	// Call the sensor specific read logic
 	specificRead();
 }
+
+int PassiveSensor::getResistance() { return resistance_; }
 
 /*
  *	Private Function Implementations
