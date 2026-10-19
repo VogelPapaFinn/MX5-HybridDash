@@ -15,7 +15,7 @@
 class WifiJoin : public Wifi
 {
 public:
-	WifiJoin(SystemContext* p_sysCon);
+	WifiJoin();
 
 	~WifiJoin() override;
 
@@ -31,12 +31,13 @@ public:
 	 *	Private ISR
 	 */
 	void ipEventHandler(esp_event_base_t p_eventBase, int32_t eventId, void* p_eventData);
+
 private:
 	/*
 	 *	Variables
 	 */
 	bool active_ = false;
-	
+
 	esp_netif_t* espNetif_ = nullptr;
 	wifi_init_config_t wifiInitConfig_ = WIFI_INIT_CONFIG_DEFAULT();
 	wifi_config_t wifiConfig_;

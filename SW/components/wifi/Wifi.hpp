@@ -1,12 +1,10 @@
 #pragma once
 
-// Project includes
-#include "SystemContext.hpp"
-
 // C++ includes
 #include <array>
-#include <string>
 #include <functional>
+#include <string>
+
 
 class Wifi
 {
@@ -23,15 +21,13 @@ public:
 	/*
 	 *	Public Functions
 	 */
-	Wifi(SystemContext* p_sysCon, WIFI_TYPE type);
+	Wifi(WIFI_TYPE type);
 
 	virtual ~Wifi() = default;
 
 	virtual bool start() { return false; }
 
-	virtual void stop()
-	{
-	}
+	virtual void stop() {}
 
 	void callOnSuccess(const std::function<void()>& cb);
 
@@ -49,8 +45,6 @@ protected:
 	/*
 	 *	Variables
 	 */
-	SystemContext* sysCon_ = nullptr;
-
 	WIFI_TYPE type_;
 
 	bool connected_ = false;

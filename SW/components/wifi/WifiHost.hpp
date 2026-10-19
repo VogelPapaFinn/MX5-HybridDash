@@ -10,7 +10,7 @@
 class WifiHost : public Wifi
 {
 public:
-	WifiHost(SystemContext* p_sysCon);
+	WifiHost();
 
 	~WifiHost() override;
 

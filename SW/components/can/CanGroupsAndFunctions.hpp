@@ -4,9 +4,22 @@ namespace CanFrameGroups
 {
 	enum GROUP
 	{
-		CONFIGURATION = 0,
+		DISPLAY_UPDATE = 0,
+		CONFIGURATION,
 		SENSOR,
-		WIFI,
+	};
+
+	enum DISPLAY_UPDATE
+	{
+		ENTER_UPDATE_MODE,
+		SET_SSID,
+		CONFIRM_SSID,
+		SET_PSSWD,
+		CONFIRM_PSSWD,
+		SET_HOST_IP,
+		CONFIRM_HOST_IP,
+		JOIN_WIFI,
+		EXECUTE_UPDATE,
 	};
 
 	enum CONFIGURATION
@@ -21,14 +34,5 @@ namespace CanFrameGroups
 	enum SENSOR
 	{
 		BROADCAST_DATA
-	};
-
-	enum WIFI
-	{
-		SET_MASTER_IP,
-		SET_SSID,
-		SET_PASSWORD,
-		JOIN_WIFI,
-		EXECUTE_UPDATE,
 	};
 } // namespace CanFrameGroups

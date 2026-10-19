@@ -3,9 +3,10 @@
 // espidf includes
 #include "esp_event.h"
 #include "esp_netif.h"
+#include "esp_netif_sntp.h"
 #include "esp_wifi.h"
 #include "nvs_flash.h"
-#include "esp_netif_sntp.h"
+
 
 /*
  *	constexpr
@@ -25,7 +26,7 @@ constexpr auto SNTP_TIMEOUT_MS = 10000;
  *	Private Static ISRs
  */
 static void staticWifiEventHandler(void* p_arg, const esp_event_base_t p_eventBase, const int32_t eventId,
-                                   void* p_eventData)
+								   void* p_eventData)
 {
 	if (p_eventBase != WIFI_EVENT) {
 		return;
@@ -55,7 +56,7 @@ static void staticWifiEventHandler(void* p_arg, const esp_event_base_t p_eventBa
 }
 
 static void staticIpEventHandler(void* p_arg, const esp_event_base_t p_eventBase, const int32_t eventId,
-                                 void* p_eventData)
+								 void* p_eventData)
 {
 	if (p_arg == nullptr) {
 		return;
@@ -96,16 +97,9 @@ static void staticSynchronizeTimeTask(void* p_param)
 /*
  *	Public Function Implementations
  */
-WifiJoin::WifiJoin(SystemContext* p_sysCon) :
-	Wifi(p_sysCon, WIFI_TYPE::JOIN),
-	wifiConfig_()
-{
-}
+WifiJoin::WifiJoin() : Wifi(WIFI_TYPE::JOIN), wifiConfig_() {}
 
-WifiJoin::~WifiJoin()
-{
-	WifiJoin::stop();
-}
+WifiJoin::~WifiJoin() { WifiJoin::stop(); }
 
 bool WifiJoin::start()
 {
@@ -158,15 +152,13 @@ bool WifiJoin::start()
 	strlcpy((char*)wifiConfig_.ap.password, password_.c_str(), sizeof(wifiConfig_.ap.password));
 
 	if (esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &staticWifiEventHandler, nullptr,
-	                                        &wifiEventHandlerInstance_) !=
-		ESP_OK) {
+											&wifiEventHandlerInstance_) != ESP_OK) {
 		ESP_LOGE(TAG, "Couldn't register wifi handler instance for wifi events");
 		return false;
 	}
 
 	if (esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &staticIpEventHandler, this,
-	                                        &ipEventHandlerInstance_) !=
-		ESP_OK) {
+											&ipEventHandlerInstance_) != ESP_OK) {
 		ESP_LOGE(TAG, "Couldn't register wifi handler instance for ip events.");
 		return false;
 	}
@@ -205,15 +197,9 @@ void WifiJoin::stop()
 	nvs_flash_deinit();
 }
 
-void WifiJoin::setMasterIp(const std::array<uint8_t, 4> ip)
-{
-	masterIp_ = ip;
-}
+void WifiJoin::setMasterIp(const std::array<uint8_t, 4> ip) { masterIp_ = ip; }
 
-std::array<uint8_t, 4>& WifiJoin::getMasterIp()
-{
-	return masterIp_;
-}
+std::array<uint8_t, 4>& WifiJoin::getMasterIp() { return masterIp_; }
 
 /*
  *	Private ISR Implementations
@@ -242,8 +228,7 @@ void WifiJoin::ipEventHandler(const esp_event_base_t p_eventBase, const int32_t 
 		}
 
 		// Initialize the SNTP for time synchronization
-		if (xTaskCreate(staticSynchronizeTimeTask, "synchronizeTimeTask", 2048 * 4, nullptr, 0,
-		                nullptr) != pdPASS) {
+		if (xTaskCreate(staticSynchronizeTimeTask, "synchronizeTimeTask", 2048 * 4, nullptr, 0, nullptr) != pdPASS) {
 			ESP_LOGE(TAG, "Couldn't start time synchronization task!");
 		}
 

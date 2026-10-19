@@ -141,6 +141,7 @@ bool Config::save()
 	}
 
 	fflush(file_);
+	fsync(fileno(file_));
 	fclose(file_);
 	file_ = nullptr;
 

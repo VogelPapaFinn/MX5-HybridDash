@@ -18,16 +18,9 @@ constexpr auto JSON_PASSWORD = "password";
 /*
  *	Public Function Implementations
  */
-WifiHost::WifiHost(SystemContext* p_sysCon) :
-	Wifi(p_sysCon, WIFI_TYPE::HOST),
-	wifiConfig_()
-{
-}
+WifiHost::WifiHost() : Wifi(WIFI_TYPE::HOST), wifiConfig_() {}
 
-WifiHost::~WifiHost()
-{
-	WifiHost::stop();
-}
+WifiHost::~WifiHost() { WifiHost::stop(); }
 
 bool WifiHost::start()
 {

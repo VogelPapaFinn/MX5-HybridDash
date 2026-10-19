@@ -1,15 +1,13 @@
 #pragma once
 
-// Project includes
-#include "SystemContext.hpp"
-
 // C++ includes
 #include <string>
 
 // espidf includes
+#include "driver/sdmmc_host.h"
 #include "esp_spiffs.h"
 #include "esp_vfs_fat.h"
-#include "driver/sdmmc_host.h"
+
 
 class Filesystem
 {
@@ -44,6 +42,7 @@ public:
 	bool deleteDirectory(const std::string& path, Location location) const;
 
 	void test();
+
 private:
 	/*
 	 *	Private Functions
