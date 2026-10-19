@@ -3,7 +3,7 @@
 // Project includes
 #include "Can.hpp"
 #include "Config.hpp"
-#include "State.hpp"
+#include "StateMachine/State.hpp"
 
 // espidf includes
 #include "esp_adc/adc_oneshot.h"

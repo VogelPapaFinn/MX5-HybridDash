@@ -1,8 +1,8 @@
-#include "State/Startup.hpp"
+#include "StateMachine/States/Startup.hpp"
 
 // Project includes
 #include "../config/DefaultConfig.hpp"
-#include "State/StateEvents.hpp"
+#include "StateMachine/StateEvents.hpp"
 
 // espidf includes
 #include "esp_event.h"

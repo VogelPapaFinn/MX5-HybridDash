@@ -14,11 +14,11 @@ set(FILES
         "WebInterface/WebInterface.cpp"
 
         # StateMachine
-        "State/StateMachine.cpp"
-        "State/StateEvents.cpp"
-        "State/State.cpp"
-        "State/Startup.cpp"
-        "State/Operation.cpp"
+        "StateMachine/StateMachine.cpp"
+        "StateMachine/StateEvents.cpp"
+        "StateMachine/States/Startup.cpp"
+        "StateMachine/States/Operation.cpp"
+        "StateMachine/States/UpdateDisplays.cpp"
 
         # Sensors
         "Sensors/Handlers/SensorsData.cpp"

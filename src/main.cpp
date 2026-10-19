@@ -4,12 +4,11 @@
 #include "Driver/KLine.hpp"
 #include "Filesystem.hpp"
 #include "Sensors/Handlers/SensorHandler.hpp"
-#include "State/Operation.hpp"
-#include "State/Startup.hpp"
-#include "State/StateEvents.hpp"
-#include "State/StateMachine.hpp"
-#include "WebInterface/WebInterface.hpp"
-#include "WifiHost.hpp"
+#include "StateMachine/StateEvents.hpp"
+#include "StateMachine/StateMachine.hpp"
+#include "StateMachine/States/Operation.hpp"
+#include "StateMachine/States/Startup.hpp"
+#include "StateMachine/States/UpdateDisplays.hpp"
 
 // espidf includes
 #include <esp_adc/adc_oneshot.h>
@@ -41,8 +40,6 @@ static Can g_can(GPIO_CAN_RX, GPIO_CAN_TX);
 static std::vector<Display> g_displays = {Display(&g_can, GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
 										  Display(&g_can, GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
 										  Display(&g_can, GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
-static WifiHost g_wifi;
-static WebInterface g_webinterface(&g_fs);
 
 /*
  *	Helper functions
@@ -77,13 +74,14 @@ extern "C" void app_main(void)
 
 	// States
 	Startup startupState(&g_fs, g_config, &g_can, g_adc1);
-	Operation operationState(&g_fs, g_adc1, &g_kline, &g_wifi, g_config, &g_can, &g_displays);
+	Operation operationState(&sensorHandler);
+	UpdateDisplays updateDisplays(g_config, &g_can);
 
 	// StateMachine
 	StateMachine stateMachine(&startupState,
 							  {
 								  {.from = nullptr, .signal = STATE_EVENT_ID::FIRST_STARTUP, .to = nullptr}, // TODO
-								  {.from = nullptr, .signal = STATE_EVENT_ID::UPDATE_AVAILABLE, .to = nullptr}, // TODO
+								  {.from = nullptr, .signal = STATE_EVENT_ID::UPDATE_AVAILABLE, .to = &updateDisplays},
 								  {.from = nullptr, .signal = STATE_EVENT_ID::FINISHED, .to = &operationState},
 							  });
 	stateMachine.start();
