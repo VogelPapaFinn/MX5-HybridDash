@@ -17,7 +17,7 @@ enum STATE_EVENT_ID
 	 */
 	FIRST_STARTUP,
 	UPDATE_AVAILABLE,
-	FINISHED,
+	STARTUP_FINISHED,
 
 	/*
 	 *	Operation
@@ -26,6 +26,7 @@ enum STATE_EVENT_ID
 	/*
 	 *	ConfigureDisplays
 	 */
+	CONFIGURATION_FINISHED,
 
 	/*
 	 *	UpdateDisplays

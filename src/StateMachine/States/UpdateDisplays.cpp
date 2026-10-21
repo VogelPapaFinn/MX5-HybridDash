@@ -152,7 +152,7 @@ void UpdateDisplays::enterNextState()
 void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 {
 	// Ignore irrelevant frames
-	if (frame.group != CanFrameGroups::GROUP::UPDATE_DISPLAY) {
+	if (frame.group != CanFrameGroups::GROUP::UPDATE_DISPLAY || frame.answer == 0) {
 		return;
 	}
 
@@ -168,7 +168,7 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 
 		case TRANSMITTING_SSID: {
 			// Ignore irrelevant frames
-			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::CONFIRM_SSID && frame.answer != true) {
+			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::CONFIRM_SSID) {
 				return;
 			}
 
@@ -177,7 +177,7 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 
 		case TRANSMITTING_PSSWD: {
 			// Ignore irrelevant frames
-			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::CONFIRM_PSSWD && frame.answer != true) {
+			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::CONFIRM_PSSWD) {
 				return;
 			}
 
@@ -186,19 +186,15 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 
 		case TRANSMITTING_HOST_IP: {
 			// Ignore irrelevant frames
-			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::CONFIRM_HOST_IP && frame.answer != true) {
+			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::CONFIRM_HOST_IP) {
 				return;
 			}
 
 			doAt3Call([this]() { enterNextState(); });
 		} break;
 
-		case JOIN_WIFI: {
-			return;
-		} break;
-
 		case EXECUTING_UPDATE: {
-			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::EXECUTE_UPDATE || frame.answer == false) {
+			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::EXECUTE_UPDATE) {
 				return;
 			}
 
@@ -374,6 +370,8 @@ void UpdateDisplays::transmitSsidPackages(const std::vector<std::vector<char>>& 
 		frame.function = CanFrameGroups::DISPLAY_UPDATE::CONFIRM_SSID;
 		frame.dataLengthCode = 0;
 		taskStuff->can->queueFrame(frame);
+
+		vTaskDelete(nullptr);
 	};
 
 	/*
@@ -433,6 +431,8 @@ void UpdateDisplays::transmitPsswdPackages(const std::vector<std::vector<char>>&
 		frame.function = CanFrameGroups::DISPLAY_UPDATE::CONFIRM_PSSWD;
 		frame.dataLengthCode = 0;
 		taskStuff->can->queueFrame(frame);
+
+		vTaskDelete(nullptr);
 	};
 
 	/*

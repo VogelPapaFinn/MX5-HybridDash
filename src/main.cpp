@@ -6,6 +6,7 @@
 #include "Sensors/Handlers/SensorHandler.hpp"
 #include "StateMachine/StateEvents.hpp"
 #include "StateMachine/StateMachine.hpp"
+#include "StateMachine/States/ConfigureDisplays.hpp"
 #include "StateMachine/States/Operation.hpp"
 #include "StateMachine/States/Startup.hpp"
 #include "StateMachine/States/UpdateDisplays.hpp"
@@ -76,18 +77,22 @@ extern "C" void app_main(void)
 	Startup startupState(&g_fs, g_config, &g_can, g_adc1);
 	Operation operationState(&sensorHandler);
 	UpdateDisplays updateDisplays(&g_fs, g_config, &g_can);
+	ConfigureDisplays configureDisplays(&g_can, g_config, &g_displays);
 
 	// StateMachine
 	StateMachine stateMachine(
 		&startupState,
 		{
 			// Source: Startup
-			{.from = &startupState, .signal = STATE_EVENT_ID::FIRST_STARTUP, .to = nullptr}, // TODO
+			{.from = &startupState, .signal = STATE_EVENT_ID::FIRST_STARTUP, .to = &configureDisplays},
 			{.from = &startupState, .signal = STATE_EVENT_ID::UPDATE_AVAILABLE, .to = &updateDisplays},
-			{.from = &startupState, .signal = STATE_EVENT_ID::FINISHED, .to = &operationState},
+			{.from = &startupState, .signal = STATE_EVENT_ID::STARTUP_FINISHED, .to = &operationState},
 
 			// Source: UpdateDisplays
 			{.from = &updateDisplays, .signal = STATE_EVENT_ID::UPDATE_FAILED, .to = &operationState},
+
+			// SourceL ConfigureDisplays
+			{.from = &configureDisplays, .signal = STATE_EVENT_ID::CONFIGURATION_FINISHED, .to = &operationState},
 		});
 	stateMachine.start();
 

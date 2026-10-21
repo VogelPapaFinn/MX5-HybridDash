@@ -55,7 +55,7 @@ void Startup::enter()
 	}
 
 	// Enter the operation state
-	esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::FINISHED, nullptr, 0, portMAX_DELAY);
+	esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::STARTUP_FINISHED, nullptr, 0, portMAX_DELAY);
 }
 
 void Startup::quit() {}
