@@ -19,6 +19,7 @@ set(FILES
         "StateMachine/States/Startup.cpp"
         "StateMachine/States/Operation.cpp"
         "StateMachine/States/UpdateDisplays.cpp"
+        "StateMachine/States/ConfigureDisplays.cpp"
 
         # Sensors
         "Sensors/Handlers/SensorsData.cpp"

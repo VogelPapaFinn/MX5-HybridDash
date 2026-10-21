@@ -7,13 +7,16 @@
 #include "StateMachine/State.hpp"
 #include "WifiHost.hpp"
 
+// espidf includes
+#include "esp_http_server.h"
+
 /*
  *	Class implementation
  */
 class UpdateDisplays : public State, public MessageReceiver
 {
 public:
-	UpdateDisplays(Config* p_config, Can* p_can);
+	UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can);
 
 	void enter() override;
 
@@ -23,6 +26,8 @@ private:
 	/*
 	 *   Private Functions
 	 */
+	void startTimeoutTimer();
+	void stopTimeoutTimer();
 	void startCanRxTask();
 	void stopCanRxTask();
 
@@ -31,6 +36,9 @@ private:
 
 	// STARTING_AP
 	void startWifiAP();
+
+	// STARTIN_WEBSERVER
+	bool startWebserver();
 
 	// ENTERING_UPDATE_MODE
 	void putDisplaysIntoUpdateMode();
@@ -66,6 +74,7 @@ private:
 	{
 		UNDEFINED = 0,
 		STARTING_AP,
+		STARTING_WEBSERVER,
 		ENTERING_UPDATE_MODE,
 		TRANSMITTING_SSID,
 		TRANSMITTING_PSSWD,
@@ -73,12 +82,18 @@ private:
 		JOIN_WIFI,
 		EXECUTING_UPDATE
 	};
-
 	uint8_t substate_ = UNDEFINED;
 
+	Filesystem* fs_ = nullptr;
 	Config* config_ = nullptr;
 	Can* can_ = nullptr;
 	WifiHost wifi_;
+
+	httpd_handle_t webserver_ = nullptr;
+	const httpd_config_t webserverConfig_ = HTTPD_DEFAULT_CONFIG();
+	httpd_uri_t updateUri_ = {};
+
+	TimerHandle_t timeoutTimer_ = nullptr;
 
 	TaskHandle_t canRxTask_ = nullptr;
 

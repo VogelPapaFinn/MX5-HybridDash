@@ -46,8 +46,8 @@ void Display::bakeConfiguration() const
 	Can::Frame_t frame;
 	frame.sender = CAN_MASTER_ID;
 	frame.target = canId_;
-	frame.group = CanFrameGroups::GROUP::CONFIGURATION;
-	frame.function = CanFrameGroups::CONFIGURATION::BAKE_CONFIGURATION;
+	// frame.group = CanFrameGroups::GROUP::CONFIGURATION;
+	// frame.function = CanFrameGroups::CONFIGURATION::BAKE_CONFIGURATION;
 	frame.dataLengthCode = 3;
 	frame.answer = false;
 
@@ -67,8 +67,8 @@ void Display::confirmConfiguration()
 	Can::Frame_t txFrame;
 	txFrame.sender = CAN_MASTER_ID;
 	txFrame.target = canId_;
-	txFrame.group = CanFrameGroups::GROUP::CONFIGURATION;
-	txFrame.function = CanFrameGroups::CONFIGURATION::CONFIRM_CONFIGURATION;
+	// txFrame.group = CanFrameGroups::GROUP::CONFIGURATION;
+	// txFrame.function = CanFrameGroups::CONFIGURATION::CONFIRM_CONFIGURATION;
 	txFrame.answer = false;
 
 	can_->queueFrame(txFrame);

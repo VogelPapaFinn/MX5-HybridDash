@@ -30,4 +30,5 @@ enum STATE_EVENT_ID
 	/*
 	 *	UpdateDisplays
 	 */
+	UPDATE_FAILED
 };

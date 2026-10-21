@@ -75,15 +75,20 @@ extern "C" void app_main(void)
 	// States
 	Startup startupState(&g_fs, g_config, &g_can, g_adc1);
 	Operation operationState(&sensorHandler);
-	UpdateDisplays updateDisplays(g_config, &g_can);
+	UpdateDisplays updateDisplays(&g_fs, g_config, &g_can);
 
 	// StateMachine
-	StateMachine stateMachine(&startupState,
-							  {
-								  {.from = nullptr, .signal = STATE_EVENT_ID::FIRST_STARTUP, .to = nullptr}, // TODO
-								  {.from = nullptr, .signal = STATE_EVENT_ID::UPDATE_AVAILABLE, .to = &updateDisplays},
-								  {.from = nullptr, .signal = STATE_EVENT_ID::FINISHED, .to = &operationState},
-							  });
+	StateMachine stateMachine(
+		&startupState,
+		{
+			// Source: Startup
+			{.from = &startupState, .signal = STATE_EVENT_ID::FIRST_STARTUP, .to = nullptr}, // TODO
+			{.from = &startupState, .signal = STATE_EVENT_ID::UPDATE_AVAILABLE, .to = &updateDisplays},
+			{.from = &startupState, .signal = STATE_EVENT_ID::FINISHED, .to = &operationState},
+
+			// Source: UpdateDisplays
+			{.from = &updateDisplays, .signal = STATE_EVENT_ID::UPDATE_FAILED, .to = &operationState},
+		});
 	stateMachine.start();
 
 	while (true) {
