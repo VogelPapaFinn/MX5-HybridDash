@@ -1,3 +1,5 @@
+#pragma once
+
 #include "freertos/FreeRTOS.h"
 
 // Component includes
@@ -9,18 +11,26 @@
 class MessageReceiver
 {
 public:
-	MessageReceiver()
-	{
-		// Create Queue
-		receivedFramesQueue_ = xQueueCreate(10, sizeof(Can::Frame_t));
-	}
+	MessageReceiver(Can* p_can, CanFrameGroups::GROUP group);
 
-	void receiveMessage(Can::Frame_t frame)
-	{
-		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-		xQueueSendFromISR(receivedFramesQueue_, &frame, &xHigherPriorityTaskWoken);
-	}
+	~MessageReceiver();
+
+	// Called by the CAN driver when a new frame was received
+	void receiveMessage(Can::Frame_t frame);
+
+	void startCanRxTask();
+
+	void stopCanRxTask();
+
+	virtual void handleCanFrame(const Can::Frame_t& frame) = 0;
 
 protected:
+	Can* can_ = nullptr;
+	CanFrameGroups::GROUP group_;
+
 	QueueHandle_t receivedFramesQueue_ = nullptr;
+	TaskHandle_t handleMessageTask_ = nullptr;
+
+private:
+	static void handleMessageTask(void* p_param);
 };
