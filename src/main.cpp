@@ -37,9 +37,9 @@ static KLine g_kline;
 static adc_oneshot_unit_handle_t g_adc1 = nullptr;
 static Config* g_config = nullptr;
 static Can g_can(GPIO_CAN_RX, GPIO_CAN_TX);
-static std::vector<Display> g_displays = {Display(&g_can, GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
-										  Display(&g_can, GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
-										  Display(&g_can, GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
+static std::vector<Display> g_displays = {Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
+										  Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
+										  Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
 
 /*
  *	Helper functions
