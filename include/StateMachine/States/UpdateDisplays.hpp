@@ -5,6 +5,7 @@
 #include "Config.hpp"
 #include "MessageReceiver.hpp"
 #include "StateMachine/State.hpp"
+#include "StateMachine/Utils/TimeoutTimer.hpp"
 #include "WifiHost.hpp"
 
 // espidf includes
@@ -26,13 +27,8 @@ private:
 	/*
 	 *   Private Functions
 	 */
-	void startTimeoutTimer();
-	void stopTimeoutTimer();
-	void startCanRxTask();
-	void stopCanRxTask();
-
 	void enterNextState();
-	void handleCanFrame(const Can::Frame_t& frame);
+	void handleCanFrame(const Can::Frame_t& frame) override;
 
 	// STARTING_AP
 	void startWifiAP();
@@ -86,16 +82,13 @@ private:
 
 	Filesystem* fs_ = nullptr;
 	Config* config_ = nullptr;
-	Can* can_ = nullptr;
 	WifiHost wifi_;
 
 	httpd_handle_t webserver_ = nullptr;
 	const httpd_config_t webserverConfig_ = HTTPD_DEFAULT_CONFIG();
 	httpd_uri_t updateUri_ = {};
 
-	TimerHandle_t timeoutTimer_ = nullptr;
-
-	TaskHandle_t canRxTask_ = nullptr;
+	TimeoutTimer* timeoutTimer_ = nullptr;
 
 	esp_event_handler_instance_t wifiEventHandler_ = nullptr;
 };

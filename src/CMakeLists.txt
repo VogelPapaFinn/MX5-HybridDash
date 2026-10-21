@@ -16,6 +16,7 @@ set(FILES
         # StateMachine
         "StateMachine/StateMachine.cpp"
         "StateMachine/StateEvents.cpp"
+        "StateMachine/Utils/TimeoutTimer.cpp"
         "StateMachine/States/Startup.cpp"
         "StateMachine/States/Operation.cpp"
         "StateMachine/States/UpdateDisplays.cpp"

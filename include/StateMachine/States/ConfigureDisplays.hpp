@@ -5,6 +5,7 @@
 #include "Driver/Display.hpp"
 #include "MessageReceiver.hpp"
 #include "StateMachine/State.hpp"
+#include "StateMachine/Utils/TimeoutTimer.hpp"
 
 // C++ includes
 #include <vector>
@@ -25,13 +26,8 @@ private:
 	/*
 	 *   Private Functions
 	 */
-	void startTimeoutTimer();
-	void stopTimeoutTimer();
-	void startCanRxTask();
-	void stopCanRxTask();
-
 	void enterNextState();
-	void handleCanFrame(const Can::Frame_t& frame);
+	void handleCanFrame(const Can::Frame_t& frame) override;
 
 	// START_DISPLAY
 	void waitForDisplay();
@@ -72,7 +68,7 @@ private:
 	Config* config_ = nullptr;
 	std::vector<Display>* displays_ = nullptr;
 
-	TimerHandle_t timeoutTimer_ = nullptr;
+	TimeoutTimer* timeoutTimer_ = nullptr;
 	TaskHandle_t canRxTask_ = nullptr;
 
 	std::vector<Display>::iterator currDisplay_ = displays_->begin();

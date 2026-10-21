@@ -27,7 +27,8 @@ void doAt3Call(const std::function<void()>& cb)
 /*
  *   Public Function Implementations
  */
-UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can) : MessageReceiver()
+UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can) :
+	MessageReceiver(p_can, CanFrameGroups::GROUP::UPDATE_DISPLAY)
 {
 	fs_ = p_fs;
 	config_ = p_config;
@@ -36,13 +37,18 @@ UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can) :
 
 void UpdateDisplays::enter()
 {
+	timeoutTimer_ = new TimeoutTimer(
+		60000, []() { esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::UPDATE_FAILED, nullptr, 0, portMAX_DELAY); });
+
 	startCanRxTask();
 	enterNextState();
 }
 
 void UpdateDisplays::quit()
 {
-	stopTimeoutTimer();
+	delete (timeoutTimer_);
+	timeoutTimer_ = nullptr;
+
 	unregisterWifiEventHandlers();
 	stopCanRxTask();
 }
@@ -50,59 +56,10 @@ void UpdateDisplays::quit()
 /*
  *   Private Function Implementations
  */
-void UpdateDisplays::startTimeoutTimer()
-{
-	if (timeoutTimer_ == nullptr) {
-		timeoutTimer_ = xTimerCreate(
-			"UpdateTimeoutTimer", pdMS_TO_TICKS(60000), pdFALSE, nullptr, [](TimerHandle_t)
-			{ esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::UPDATE_FAILED, nullptr, 0, portMAX_DELAY); });
-	}
-
-	xTimerStart(timeoutTimer_, 0);
-}
-
-void UpdateDisplays::stopTimeoutTimer()
-{
-	if (timeoutTimer_ == nullptr) {
-		return;
-	}
-
-	xTimerStop(timeoutTimer_, 0);
-	xTimerDelete(timeoutTimer_, 0);
-	timeoutTimer_ = nullptr;
-}
-
-void UpdateDisplays::startCanRxTask()
-{
-	if (xTaskCreate(canRxTask, "UpdateDisplaysCanRxTask", 4096, this, 2, &canRxTask_) == pdPASS) {
-		can_->attach(this, CanFrameGroups::GROUP::UPDATE_DISPLAY);
-
-		// Success
-		return;
-	}
-
-	// Fail
-	canRxTask_ = nullptr;
-	ESP_LOGW(TAG, "Failed to start task which receives CAN frames");
-}
-
-void UpdateDisplays::stopCanRxTask()
-{
-	if (canRxTask_ == nullptr) {
-		return;
-	}
-
-	can_->detach(this, CanFrameGroups::GROUP::UPDATE_DISPLAY);
-
-
-	vTaskDelete(canRxTask_);
-	canRxTask_ = nullptr;
-}
-
 void UpdateDisplays::enterNextState()
 {
 	substate_++;
-	startTimeoutTimer();
+	timeoutTimer_->start();
 
 	switch (substate_) {
 		case STARTING_AP: {

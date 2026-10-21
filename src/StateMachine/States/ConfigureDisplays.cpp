@@ -14,7 +14,8 @@ constexpr auto TAG = "ConfigureDisplays";
 /*
  *   Public Function Implementations
  */
-ConfigureDisplays::ConfigureDisplays(Can* p_can, Config* p_config, std::vector<Display>* p_displays)
+ConfigureDisplays::ConfigureDisplays(Can* p_can, Config* p_config, std::vector<Display>* p_displays) :
+	MessageReceiver(p_can, CanFrameGroups::GROUP::CONFIGURE_DISPLAY)
 {
 	can_ = p_can;
 	config_ = p_config;
@@ -29,13 +30,18 @@ void ConfigureDisplays::enter()
 		d.turnOff();
 	}
 
+	timeoutTimer_ = new TimeoutTimer(
+		60000, []() { esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::UPDATE_FAILED, nullptr, 0, portMAX_DELAY); });
+
 	startCanRxTask();
 	enterNextState();
 }
 
 void ConfigureDisplays::quit()
 {
-	stopTimeoutTimer();
+	delete (timeoutTimer_);
+	timeoutTimer_ = nullptr;
+
 	stopCanRxTask();
 
 	// Update config
@@ -53,59 +59,10 @@ void ConfigureDisplays::quit()
 /*
  *   Private Function Implementations
  */
-void ConfigureDisplays::startTimeoutTimer()
-{
-	if (timeoutTimer_ == nullptr) {
-		timeoutTimer_ = xTimerCreate(
-			"UpdateTimeoutTimer", pdMS_TO_TICKS(60000), pdFALSE, nullptr, [](TimerHandle_t)
-			{ esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::UPDATE_FAILED, nullptr, 0, portMAX_DELAY); });
-	}
-
-	xTimerStart(timeoutTimer_, 0);
-}
-
-void ConfigureDisplays::stopTimeoutTimer()
-{
-	if (timeoutTimer_ == nullptr) {
-		return;
-	}
-
-	xTimerStop(timeoutTimer_, 0);
-	xTimerDelete(timeoutTimer_, 0);
-	timeoutTimer_ = nullptr;
-}
-
-void ConfigureDisplays::startCanRxTask()
-{
-	if (xTaskCreate(canRxTask, "UpdateDisplaysCanRxTask", 4096, this, 2, &canRxTask_) == pdPASS) {
-		can_->attach(this, CanFrameGroups::GROUP::UPDATE_DISPLAY);
-
-		// Success
-		return;
-	}
-
-	// Fail
-	canRxTask_ = nullptr;
-	ESP_LOGW(TAG, "Failed to start task which receives CAN frames");
-}
-
-void ConfigureDisplays::stopCanRxTask()
-{
-	if (canRxTask_ == nullptr) {
-		return;
-	}
-
-	can_->detach(this, CanFrameGroups::GROUP::CONFIGURE_DISPLAY);
-
-
-	vTaskDelete(canRxTask_);
-	canRxTask_ = nullptr;
-}
-
 void ConfigureDisplays::enterNextState()
 {
 	substate_++;
-	startTimeoutTimer();
+	timeoutTimer_->start();
 
 	switch (substate_) {
 		case START_DISPLAY: {
