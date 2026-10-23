@@ -3,7 +3,7 @@
 // espidf includes
 #include "esp_lcd_st77916.h"
 
-static const st77916_lcd_init_cmd_t st77916InitSequence[] = {
+constexpr st77916_lcd_init_cmd_t ST77916_INIT_SEQUENCE[] = {
 	{0xF0, (uint8_t[]){0x28}, 1, 0},
 	{0xF2, (uint8_t[]){0x28}, 1, 0},
 	{0x73, (uint8_t[]){0xF0}, 1, 0},

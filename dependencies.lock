@@ -33,7 +33,7 @@ dependencies:
   idf:
     source:
       type: idf
-    version: 5.5.1
+    version: 5.5.0
 direct_dependencies:
 - bblanchon/ArduinoJson
 - espressif/esp_lcd_st77916

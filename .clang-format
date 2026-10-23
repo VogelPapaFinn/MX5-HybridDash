@@ -8,7 +8,7 @@ AlignOperands: false
 AlignTrailingComments: false
 AlwaysBreakTemplateDeclarations: Yes
 BraceWrapping: 
-  AfterCaseLabel: true
+  AfterCaseLabel: false
   AfterClass: true
   AfterControlStatement: false
   AfterEnum: true
@@ -37,7 +37,7 @@ IncludeCategories:
   - Regex: '.*'
     Priority: 3
 IncludeIsMainRegex: '([-_](test|unittest))?$'
-IndentCaseBlocks: true
+IndentCaseBlocks: false
 IndentCaseLabels: true
 IndentWidth: 4
 InsertNewlineAtEOF: true

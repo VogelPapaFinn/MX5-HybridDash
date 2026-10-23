@@ -9,17 +9,17 @@ set(FILES
         # Drivers
         "Driver/ST77916.cpp"
 
-        # States
-        "State/State.cpp"
-        "State/Registration.cpp"
-        "State/Operation.cpp"
+        # StateMachine
+        "StateMachine/StateMachine.cpp"
+        "StateMachine/StateEvents.cpp"
 
-        # Handlers
-        "Handler/WifiHandler.cpp"
+        "StateMachine/States/Startup.cpp"
+        "StateMachine/States/WaitingForConfiguration.cpp"
+        "StateMachine/States/Configuration.cpp"
+        "StateMachine/States/Operation.cpp"
 
         # Everything else
-        "Gui.cpp"
-        "Events.cpp"
+        "Handler/GuiHandler.cpp"
 )
 
 file(GLOB UI
