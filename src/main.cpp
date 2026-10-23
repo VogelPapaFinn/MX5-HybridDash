@@ -74,7 +74,7 @@ extern "C" void app_main(void)
 	// States
 	Startup startupState(&g_fs, &g_config, &g_can, g_adc1);
 	Operation operationState(&sensorHandler);
-	UpdateDisplays updateDisplays(&g_fs, g_config, &g_can);
+	UpdateDisplays updateDisplays(&g_fs, g_config, &g_can, &g_displays);
 	ConfigureDisplays configureDisplays(&g_can, g_config, &g_displays);
 
 	// StateMachine

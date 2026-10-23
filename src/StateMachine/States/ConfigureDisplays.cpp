@@ -15,7 +15,7 @@ constexpr auto TAG = "ConfigureDisplays";
  *   Public Function Implementations
  */
 ConfigureDisplays::ConfigureDisplays(Can* p_can, Config* p_config, std::vector<Display>* p_displays) :
-	MessageReceiver(p_can, CanFrameGroups::GROUP::CONFIGURE_DISPLAY)
+	MessageReceiver(p_can)
 {
 	can_ = p_can;
 	config_ = p_config;
@@ -181,7 +181,7 @@ void ConfigureDisplays::waitForDisplay()
 		frame.sender = CAN_MASTER_ID;
 		frame.target = CAN_BROADCAST_ID;
 		frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-		frame.function = CanFrameGroups::CONFIGURE_DISPLAY::ENTER_CONFIGURATION_MODE;
+		frame.function = CanFrameGroups::FUNC::ENTER_CONFIGURATION_MODE;
 		frame.dataLengthCode = 0;
 
 		while (true) {
@@ -222,7 +222,7 @@ void ConfigureDisplays::setCanId()
 	frame.sender = CAN_MASTER_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-	frame.function = CanFrameGroups::CONFIGURE_DISPLAY::SET_CAN_ID;
+	frame.function = CanFrameGroups::FUNC::SET_CAN_ID;
 	frame.dataLengthCode = 1;
 	frame.data[0] = currDisplay_->getCanId();
 
@@ -238,7 +238,7 @@ void ConfigureDisplays::setScreen()
 	frame.sender = CAN_MASTER_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-	frame.function = CanFrameGroups::CONFIGURE_DISPLAY::SET_SCREEN;
+	frame.function = CanFrameGroups::FUNC::SET_SCREEN;
 	frame.dataLengthCode = 1;
 	frame.data[0] = currDisplay_->getScreen();
 
@@ -254,7 +254,7 @@ void ConfigureDisplays::setRotation()
 	frame.sender = CAN_MASTER_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-	frame.function = CanFrameGroups::CONFIGURE_DISPLAY::SET_ROTATION;
+	frame.function = CanFrameGroups::FUNC::SET_ROTATION;
 	frame.dataLengthCode = 1;
 	frame.data[0] = currDisplay_->isRotated();
 
@@ -270,7 +270,7 @@ void ConfigureDisplays::saveConfiguration()
 	frame.sender = CAN_MASTER_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-	frame.function = CanFrameGroups::CONFIGURE_DISPLAY::SAVE_CONFIGURATION;
+	frame.function = CanFrameGroups::FUNC::SAVE_CONFIGURATION;
 	frame.dataLengthCode = 0;
 
 	can_->queueFrame(frame);

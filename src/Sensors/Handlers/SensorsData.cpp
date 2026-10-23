@@ -39,7 +39,7 @@ static void broadcastTask(void* p_param)
 		frame.sender = CAN_MASTER_ID;
 		frame.target = CAN_BROADCAST_ID;
 		frame.group = CanFrameGroups::GROUP::SENSOR;
-		frame.function = CanFrameGroups::SENSOR::BROADCAST_DATA;
+		frame.function = CanFrameGroups::FUNC::BROADCAST_DATA;
 		frame.dataLengthCode = 8;
 		frame.answer = false;
 

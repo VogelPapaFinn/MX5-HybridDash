@@ -27,12 +27,13 @@ void doAt3Call(const std::function<void()>& cb)
 /*
  *   Public Function Implementations
  */
-UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can) :
-	MessageReceiver(p_can, CanFrameGroups::GROUP::UPDATE_DISPLAY)
+UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, std::vector<Display>* p_displays) :
+	MessageReceiver(p_can)
 {
 	fs_ = p_fs;
 	config_ = p_config;
 	can_ = p_can;
+	displays_ = p_displays;
 }
 
 void UpdateDisplays::enter()
@@ -51,6 +52,8 @@ void UpdateDisplays::quit()
 
 	unregisterWifiEventHandlers();
 	stopCanRxTask();
+
+	restartDisplays();
 }
 
 /*
@@ -116,7 +119,7 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 	switch (substate_) {
 		case ENTERING_UPDATE_MODE: {
 			// Ignore irrelevant frames
-			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::ENTER_UPDATE_MODE) {
+			if (frame.function != CanFrameGroups::FUNC::ENTER_UPDATE_MODE) {
 				return;
 			}
 
@@ -125,7 +128,7 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 
 		case TRANSMITTING_SSID: {
 			// Ignore irrelevant frames
-			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::CONFIRM_SSID) {
+			if (frame.function != CanFrameGroups::FUNC::CONFIRM_SSID) {
 				return;
 			}
 
@@ -134,7 +137,7 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 
 		case TRANSMITTING_PSSWD: {
 			// Ignore irrelevant frames
-			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::CONFIRM_PSSWD) {
+			if (frame.function != CanFrameGroups::FUNC::CONFIRM_PSSWD) {
 				return;
 			}
 
@@ -143,7 +146,7 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 
 		case TRANSMITTING_HOST_IP: {
 			// Ignore irrelevant frames
-			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::CONFIRM_HOST_IP) {
+			if (frame.function != CanFrameGroups::FUNC::CONFIRM_HOST_IP) {
 				return;
 			}
 
@@ -151,7 +154,7 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 		} break;
 
 		case EXECUTING_UPDATE: {
-			if (frame.function != CanFrameGroups::DISPLAY_UPDATE::EXECUTE_UPDATE) {
+			if (frame.function != CanFrameGroups::FUNC::EXECUTE_UPDATE) {
 				return;
 			}
 
@@ -161,6 +164,26 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 		default: {
 		}
 	}
+}
+
+void UpdateDisplays::restartDisplays()
+{
+	for (auto& d : *displays_) {
+		d.turnOff();
+	}
+
+	// Restart them after a short delay
+	xTimerCreate("RestartDisplays", pdMS_TO_TICKS(100), false, displays_,
+				 [](TimerHandle_t p_timer)
+				 {
+					 auto displays = static_cast<std::vector<Display>*>(pvTimerGetTimerID(p_timer));
+
+					 for (auto& d : *displays) {
+						 d.turnOn();
+					 }
+
+					 xTimerDelete(p_timer, 0);
+				 });
 }
 
 /*
@@ -250,7 +273,7 @@ void UpdateDisplays::putDisplaysIntoUpdateMode()
 	frame.sender = CAN_MASTER_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-	frame.function = CanFrameGroups::DISPLAY_UPDATE::ENTER_UPDATE_MODE;
+	frame.function = CanFrameGroups::FUNC::ENTER_UPDATE_MODE;
 	frame.dataLengthCode = 0;
 	frame.answer = false;
 
@@ -309,7 +332,7 @@ void UpdateDisplays::transmitSsidPackages(const std::vector<std::vector<char>>& 
 			frame.sender = CAN_MASTER_ID;
 			frame.target = CAN_BROADCAST_ID;
 			frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-			frame.function = CanFrameGroups::DISPLAY_UPDATE::SET_SSID;
+			frame.function = CanFrameGroups::FUNC::SET_SSID;
 			frame.dataLengthCode = package.size();
 
 			// Fill in the SSID package
@@ -324,7 +347,7 @@ void UpdateDisplays::transmitSsidPackages(const std::vector<std::vector<char>>& 
 		frame.sender = CAN_MASTER_ID;
 		frame.target = CAN_BROADCAST_ID;
 		frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-		frame.function = CanFrameGroups::DISPLAY_UPDATE::CONFIRM_SSID;
+		frame.function = CanFrameGroups::FUNC::CONFIRM_SSID;
 		frame.dataLengthCode = 0;
 		taskStuff->can->queueFrame(frame);
 
@@ -370,7 +393,7 @@ void UpdateDisplays::transmitPsswdPackages(const std::vector<std::vector<char>>&
 			frame.sender = CAN_MASTER_ID;
 			frame.target = CAN_BROADCAST_ID;
 			frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-			frame.function = CanFrameGroups::DISPLAY_UPDATE::SET_PSSWD;
+			frame.function = CanFrameGroups::FUNC::SET_PSSWD;
 			frame.dataLengthCode = package.size();
 
 			// Fill in the PSSWD package
@@ -385,7 +408,7 @@ void UpdateDisplays::transmitPsswdPackages(const std::vector<std::vector<char>>&
 		frame.sender = CAN_MASTER_ID;
 		frame.target = CAN_BROADCAST_ID;
 		frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-		frame.function = CanFrameGroups::DISPLAY_UPDATE::CONFIRM_PSSWD;
+		frame.function = CanFrameGroups::FUNC::CONFIRM_PSSWD;
 		frame.dataLengthCode = 0;
 		taskStuff->can->queueFrame(frame);
 
@@ -415,7 +438,7 @@ void UpdateDisplays::transmitHostIp()
 	ipFrame.sender = CAN_MASTER_ID;
 	ipFrame.target = CAN_BROADCAST_ID;
 	ipFrame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-	ipFrame.function = CanFrameGroups::DISPLAY_UPDATE::SET_HOST_IP;
+	ipFrame.function = CanFrameGroups::FUNC::SET_HOST_IP;
 	ipFrame.dataLengthCode = ip.size();
 
 	// Fill in the Ip package
@@ -431,7 +454,7 @@ void UpdateDisplays::transmitHostIp()
 	okFrame.sender = CAN_MASTER_ID;
 	okFrame.target = CAN_BROADCAST_ID;
 	okFrame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-	okFrame.function = CanFrameGroups::DISPLAY_UPDATE::CONFIRM_PSSWD;
+	okFrame.function = CanFrameGroups::FUNC::CONFIRM_PSSWD;
 	okFrame.dataLengthCode = 0;
 	can_->queueFrame(okFrame);
 }
@@ -463,7 +486,7 @@ void UpdateDisplays::orderDisplaysToJoinWifi()
 	frame.sender = CAN_MASTER_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-	frame.function = CanFrameGroups::DISPLAY_UPDATE::JOIN_WIFI;
+	frame.function = CanFrameGroups::FUNC::JOIN_WIFI;
 	frame.dataLengthCode = 0;
 	can_->queueFrame(frame);
 }
@@ -487,7 +510,7 @@ void UpdateDisplays::orderDisplaysToExecuteUpdate()
 	frame.sender = CAN_MASTER_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-	frame.function = CanFrameGroups::DISPLAY_UPDATE::EXECUTE_UPDATE;
+	frame.function = CanFrameGroups::FUNC::EXECUTE_UPDATE;
 	frame.dataLengthCode = 0;
 	can_->queueFrame(frame);
 }

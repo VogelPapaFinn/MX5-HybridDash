@@ -3,6 +3,7 @@
 // Project includes
 #include "Can.hpp"
 #include "Config.hpp"
+#include "Driver/Display.hpp"
 #include "MessageReceiver.hpp"
 #include "StateMachine/State.hpp"
 #include "StateMachine/Utils/TimeoutTimer.hpp"
@@ -17,7 +18,7 @@
 class UpdateDisplays : public State, public MessageReceiver
 {
 public:
-	UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can);
+	UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, std::vector<Display>* p_displays);
 
 	void enter() override;
 
@@ -29,6 +30,8 @@ private:
 	 */
 	void enterNextState();
 	void handleCanFrame(const Can::Frame_t& frame) override;
+
+	void restartDisplays();
 
 	// STARTING_AP
 	void startWifiAP();
@@ -82,6 +85,7 @@ private:
 
 	Filesystem* fs_ = nullptr;
 	Config* config_ = nullptr;
+	std::vector<Display>* displays_ = nullptr;
 	WifiHost wifi_;
 
 	httpd_handle_t webserver_ = nullptr;
