@@ -22,4 +22,14 @@ enum STATE_EVENT_ID
 	 *	WaitingForConfiguration
 	 */
 	ENTER_CONFIGURATION_MODE,
+
+	/*
+	 *	Operation & WaitingForConfiguration
+	 */
+	ENTER_UPDATE_MODE,
+
+	/*
+	 *	UPDATE
+	 */
+	UPDATE_FAILED,
 };

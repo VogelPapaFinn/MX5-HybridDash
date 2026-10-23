@@ -17,6 +17,7 @@ set(FILES
         "StateMachine/States/WaitingForConfiguration.cpp"
         "StateMachine/States/Configuration.cpp"
         "StateMachine/States/Operation.cpp"
+        "StateMachine/States/Update.cpp"
 
         # Everything else
         "Handler/GuiHandler.cpp"

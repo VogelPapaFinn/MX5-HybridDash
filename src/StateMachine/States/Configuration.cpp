@@ -3,8 +3,7 @@
 /*
  *   Public Function Implementations
  */
-Configuration::Configuration(Filesystem* p_fs, Config* p_config, Can* p_can) :
-	MessageReceiver(p_can, CanFrameGroups::GROUP::CONFIGURE_DISPLAY)
+Configuration::Configuration(Filesystem* p_fs, Config* p_config, Can* p_can) : MessageReceiver(p_can)
 {
 	fs_ = p_fs;
 	config_ = p_config;
@@ -33,7 +32,7 @@ void Configuration::handleCanFrame(const Can::Frame_t& frame)
 
 	switch (substate_) {
 		case SET_CAN_ID: {
-			if (frame.function != CanFrameGroups::CONFIGURE_DISPLAY::SET_CAN_ID) {
+			if (frame.function != CanFrameGroups::FUNC::SET_CAN_ID) {
 				return;
 			}
 
@@ -42,7 +41,7 @@ void Configuration::handleCanFrame(const Can::Frame_t& frame)
 		} break;
 
 		case SET_SCREEN: {
-			if (frame.function != CanFrameGroups::CONFIGURE_DISPLAY::SET_SCREEN) {
+			if (frame.function != CanFrameGroups::FUNC::SET_SCREEN) {
 				return;
 			}
 
@@ -51,7 +50,7 @@ void Configuration::handleCanFrame(const Can::Frame_t& frame)
 		} break;
 
 		case SET_ROTATION: {
-			if (frame.function != CanFrameGroups::CONFIGURE_DISPLAY::SET_ROTATION) {
+			if (frame.function != CanFrameGroups::FUNC::SET_ROTATION) {
 				return;
 			}
 
@@ -75,8 +74,9 @@ void Configuration::broadcastStateEntering()
 	frame.sender = CAN_CONFIGURATION_ID;
 	frame.target = CAN_MASTER_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-	frame.function = CanFrameGroups::CONFIGURE_DISPLAY::ENTER_CONFIGURATION_MODE;
+	frame.function = CanFrameGroups::FUNC::ENTER_CONFIGURATION_MODE;
 	frame.answer = true;
+	can_->queueFrame(frame);
 
 	substate_ = SET_CAN_ID;
 }
@@ -87,7 +87,7 @@ void Configuration::ackCanId()
 	frame.sender = CAN_CONFIGURATION_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-	frame.function = CanFrameGroups::CONFIGURE_DISPLAY::SET_CAN_ID;
+	frame.function = CanFrameGroups::FUNC::SET_CAN_ID;
 	frame.answer = true;
 	can_->queueFrame(frame);
 
@@ -100,7 +100,7 @@ void Configuration::ackScreen()
 	frame.sender = CAN_CONFIGURATION_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-	frame.function = CanFrameGroups::CONFIGURE_DISPLAY::SET_SCREEN;
+	frame.function = CanFrameGroups::FUNC::SET_SCREEN;
 	frame.answer = true;
 	can_->queueFrame(frame);
 
@@ -113,7 +113,7 @@ void Configuration::ackRotation()
 	frame.sender = CAN_CONFIGURATION_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-	frame.function = CanFrameGroups::CONFIGURE_DISPLAY::SET_ROTATION;
+	frame.function = CanFrameGroups::FUNC::SET_ROTATION;
 	frame.answer = true;
 	can_->queueFrame(frame);
 
@@ -133,7 +133,7 @@ void Configuration::saveConfiguration()
 	frame.sender = CAN_CONFIGURATION_ID;
 	frame.target = CAN_BROADCAST_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-	frame.function = CanFrameGroups::CONFIGURE_DISPLAY::SAVE_CONFIGURATION;
+	frame.function = CanFrameGroups::FUNC::SAVE_CONFIGURATION;
 	frame.answer = true;
 	can_->queueFrame(frame);
 }

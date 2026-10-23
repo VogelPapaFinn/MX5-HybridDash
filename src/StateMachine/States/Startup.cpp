@@ -13,11 +13,12 @@ constexpr auto CONFIG_NAME = "config.json";
 /*
  *   Public Function Implementations
  */
-Startup::Startup(Filesystem* p_fs, Config** p_config, Can* p_can)
+Startup::Startup(Filesystem* p_fs, Config** p_config, Can* p_can, GuiHandler* p_guiHandler)
 {
 	fs_ = p_fs;
 	configPtr_ = p_config;
 	can_ = p_can;
+	guiHandler_ = p_guiHandler;
 }
 
 void Startup::enter()
@@ -36,6 +37,8 @@ void Startup::enter()
 		esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::CONFIG_INVALID, nullptr, 0, portMAX_DELAY);
 		return;
 	}
+
+	loadScreen();
 
 	forceCanId();
 
@@ -77,6 +80,15 @@ bool Startup::loadDefaultConfig()
 	fclose(file);
 
 	return true;
+}
+
+void Startup::loadScreen()
+{
+	auto json = (*configPtr_)->getReadAccess();
+
+	if (json["screen"] && json["screen"].as<int>() >= 0) {
+		guiHandler_->loadScreen(json["screen"].as<GuiHandler::SCREEN>());
+	}
 }
 
 bool Startup::isConfigValid()
