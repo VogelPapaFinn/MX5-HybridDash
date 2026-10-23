@@ -11,7 +11,7 @@
 class Startup : public State
 {
 public:
-	Startup(Filesystem* p_fs, Config* p_config, Can* p_can, adc_oneshot_unit_handle_t p_adc1Handle);
+	Startup(Filesystem* p_fs, Config** p_config, Can* p_can, adc_oneshot_unit_handle_t p_adc1Handle);
 
 	void enter() override;
 
@@ -35,7 +35,7 @@ private:
 	 *   Private Variables
 	 */
 	Filesystem* fs_ = nullptr;
-	Config* config_ = nullptr;
+	Config** configPtr_ = nullptr;
 	Can* can_ = nullptr;
 	adc_oneshot_unit_handle_t adc1Handle_ = nullptr;
 };

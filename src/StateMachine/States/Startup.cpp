@@ -20,10 +20,10 @@ constexpr auto CONFIG_NAME = "config.json";
 /*
  *   Public Function Implementations
  */
-Startup::Startup(Filesystem* p_fs, Config* p_config, Can* p_can, adc_oneshot_unit_handle_t p_adc1Handle)
+Startup::Startup(Filesystem* p_fs, Config** p_config, Can* p_can, adc_oneshot_unit_handle_t p_adc1Handle)
 {
 	fs_ = p_fs;
-	config_ = p_config;
+	configPtr_ = p_config;
 	can_ = p_can;
 	adc1Handle_ = p_adc1Handle;
 }
@@ -72,11 +72,11 @@ void Startup::setupAdc1()
 
 bool Startup::loadConfig()
 {
-	if (config_ == nullptr) {
-		config_ = new Config(fs_, CONFIG_NAME);
+	if (*configPtr_ == nullptr) {
+		*configPtr_ = new Config(fs_, CONFIG_NAME);
 	}
 
-	return config_->open();
+	return (*configPtr_)->open();
 }
 
 bool Startup::loadDefaultConfig()
@@ -103,7 +103,7 @@ bool Startup::loadDefaultConfig()
 
 bool Startup::isFirstStartup()
 {
-	const auto json = config_->getReadAccess();
+	const auto json = (*configPtr_)->getReadAccess();
 	if (!json["FirstStartup"]) {
 		return true;
 	}

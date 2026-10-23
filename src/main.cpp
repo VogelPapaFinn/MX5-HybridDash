@@ -31,8 +31,6 @@ constexpr gpio_num_t GPIO_DISPLAY3 = GPIO_NUM_21;
 /*
  *	Private Static Variables
  */
-//! \brief Current application state.
-static std::shared_ptr<State> g_currentState;
 static Filesystem g_fs;
 static KLine g_kline;
 static adc_oneshot_unit_handle_t g_adc1 = nullptr;
@@ -74,7 +72,7 @@ extern "C" void app_main(void)
 	SensorHandler sensorHandler(g_adc1, &sensorsData);
 
 	// States
-	Startup startupState(&g_fs, g_config, &g_can, g_adc1);
+	Startup startupState(&g_fs, &g_config, &g_can, g_adc1);
 	Operation operationState(&sensorHandler);
 	UpdateDisplays updateDisplays(&g_fs, g_config, &g_can);
 	ConfigureDisplays configureDisplays(&g_can, g_config, &g_displays);
