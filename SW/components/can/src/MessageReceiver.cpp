@@ -1,5 +1,7 @@
 #include "MessageReceiver.hpp"
 
+#include <utility>
+
 // espidf includes
 #include "esp_log.h"
 
@@ -14,7 +16,15 @@ constexpr auto TAG = "MessageReceiver";
 MessageReceiver::MessageReceiver(Can* p_can, CanFrameGroups::GROUP group)
 {
 	can_ = p_can;
-	group_ = group;
+	groups_ = {group};
+
+	receivedFramesQueue_ = xQueueCreate(10, sizeof(Can::Frame_t));
+}
+
+MessageReceiver::MessageReceiver(Can* p_can, std::vector<CanFrameGroups::GROUP> groups)
+{
+	can_ = p_can;
+	groups_ = std::move(groups);
 
 	receivedFramesQueue_ = xQueueCreate(10, sizeof(Can::Frame_t));
 }
@@ -35,7 +45,9 @@ void MessageReceiver::receiveMessage(Can::Frame_t frame)
 void MessageReceiver::startCanRxTask()
 {
 	if (xTaskCreate(handleMessageTask, "CanRxTask", 4096, this, 2, &handleMessageTask_) == pdPASS) {
-		can_->attach(this, group_);
+		for (auto& g : groups_) {
+			can_->attach(this, g);
+		}
 
 		// Success
 		return;
@@ -52,7 +64,9 @@ void MessageReceiver::stopCanRxTask()
 		return;
 	}
 
-	can_->detach(this, group_);
+	for (auto& g : groups_) {
+		can_->detach(this, g);
+	}
 
 
 	vTaskDelete(handleMessageTask_);

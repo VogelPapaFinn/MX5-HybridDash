@@ -13,6 +13,8 @@ class MessageReceiver
 public:
 	MessageReceiver(Can* p_can, CanFrameGroups::GROUP group);
 
+	MessageReceiver(Can* p_can, std::vector<CanFrameGroups::GROUP> groups);
+
 	~MessageReceiver();
 
 	// Called by the CAN driver when a new frame was received
@@ -26,7 +28,7 @@ public:
 
 protected:
 	Can* can_ = nullptr;
-	CanFrameGroups::GROUP group_;
+	std::vector<CanFrameGroups::GROUP> groups_;
 
 	QueueHandle_t receivedFramesQueue_ = nullptr;
 	TaskHandle_t handleMessageTask_ = nullptr;

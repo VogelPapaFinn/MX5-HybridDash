@@ -208,6 +208,10 @@ void Can::queueFrame(Frame_t& canFrame)
 		return;
 	}
 
+	if (forcedSenderId_ != -1) {
+		canFrame.sender = forcedSenderId_;
+	}
+
 	canFrame.transmitting = true;
 
 	// ESP_LOGI(TAG, "Transmitting Frame %s", canFrame.toString().c_str());
@@ -231,6 +235,9 @@ void Can::queueFrame(Frame_t& canFrame)
 }
 
 QueueHandle_t* Can::getFrameTransmittedQueue() { return &frameTransmittedQueueHandle_; }
+
+
+void Can::forceSenderId(const unsigned int id) { forcedSenderId_ = id; }
 
 /*
  *	Private Function Implementations

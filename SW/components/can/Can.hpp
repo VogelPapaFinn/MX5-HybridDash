@@ -19,6 +19,7 @@
  */
 constexpr uint8_t CAN_MASTER_ID = 1;
 constexpr uint8_t CAN_BROADCAST_ID = 0;
+constexpr uint8_t CAN_CONFIGURATION_ID = 0b111;
 
 /*
  *	Prototypes
@@ -177,6 +178,8 @@ public:
 
 	QueueHandle_t* getFrameTransmittedQueue();
 
+	void forceSenderId(const unsigned int id);
+
 private:
 	/*
 	 *	Private Functions
@@ -207,6 +210,8 @@ private:
 
 	TaskHandle_t frameTransmittedTaskHandle_ = nullptr;
 	QueueHandle_t frameTransmittedQueueHandle_ = nullptr;
+
+	int forcedSenderId_ = -1;
 
 	std::unordered_map<CanFrameGroups::GROUP, MessageReceiver*> observers_;
 };
