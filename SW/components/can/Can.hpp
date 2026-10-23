@@ -170,9 +170,9 @@ public:
 
 	bool enable();
 
-	void attach(MessageReceiver* p_observer, CanFrameGroups::GROUP group);
+	void attach(MessageReceiver* p_observer);
 
-	void detach(MessageReceiver* p_observer, CanFrameGroups::GROUP group);
+	void detach(MessageReceiver* p_observer);
 
 	void queueFrame(Frame_t& canFrame);
 
@@ -213,5 +213,5 @@ private:
 
 	int forcedSenderId_ = -1;
 
-	std::unordered_map<CanFrameGroups::GROUP, MessageReceiver*> observers_;
+	MessageReceiver* observer_ = nullptr;
 };

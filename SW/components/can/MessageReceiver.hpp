@@ -11,9 +11,7 @@
 class MessageReceiver
 {
 public:
-	MessageReceiver(Can* p_can, CanFrameGroups::GROUP group);
-
-	MessageReceiver(Can* p_can, std::vector<CanFrameGroups::GROUP> groups);
+	MessageReceiver(Can* p_can);
 
 	~MessageReceiver();
 
@@ -28,7 +26,6 @@ public:
 
 protected:
 	Can* can_ = nullptr;
-	std::vector<CanFrameGroups::GROUP> groups_;
 
 	QueueHandle_t receivedFramesQueue_ = nullptr;
 	TaskHandle_t handleMessageTask_ = nullptr;

@@ -13,18 +13,9 @@ constexpr auto TAG = "MessageReceiver";
 /*
  *   Public Function Implementations
  */
-MessageReceiver::MessageReceiver(Can* p_can, CanFrameGroups::GROUP group)
+MessageReceiver::MessageReceiver(Can* p_can)
 {
 	can_ = p_can;
-	groups_ = {group};
-
-	receivedFramesQueue_ = xQueueCreate(10, sizeof(Can::Frame_t));
-}
-
-MessageReceiver::MessageReceiver(Can* p_can, std::vector<CanFrameGroups::GROUP> groups)
-{
-	can_ = p_can;
-	groups_ = std::move(groups);
 
 	receivedFramesQueue_ = xQueueCreate(10, sizeof(Can::Frame_t));
 }
@@ -45,9 +36,7 @@ void MessageReceiver::receiveMessage(Can::Frame_t frame)
 void MessageReceiver::startCanRxTask()
 {
 	if (xTaskCreate(handleMessageTask, "CanRxTask", 4096, this, 2, &handleMessageTask_) == pdPASS) {
-		for (auto& g : groups_) {
-			can_->attach(this, g);
-		}
+		can_->attach(this);
 
 		// Success
 		return;
@@ -64,10 +53,7 @@ void MessageReceiver::stopCanRxTask()
 		return;
 	}
 
-	for (auto& g : groups_) {
-		can_->detach(this, g);
-	}
-
+	can_->detach(this);
 
 	vTaskDelete(handleMessageTask_);
 	handleMessageTask_ = nullptr;

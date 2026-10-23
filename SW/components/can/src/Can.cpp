@@ -187,19 +187,15 @@ bool Can::enable()
 	return enabled_;
 }
 
-void Can::attach(MessageReceiver* p_observer, CanFrameGroups::GROUP group) { observers_[group] = p_observer; }
+void Can::attach(MessageReceiver* p_observer) { observer_ = p_observer; }
 
-void Can::detach(MessageReceiver* p_observer, CanFrameGroups::GROUP group)
+void Can::detach(MessageReceiver* p_observer)
 {
-	if (!observers_.contains(group)) {
+	if (observer_ != p_observer) {
 		return;
 	}
 
-	if (observers_[group] != p_observer) {
-		return;
-	}
-
-	observers_.erase(group);
+	observer_ = nullptr;
 }
 
 void Can::queueFrame(Frame_t& canFrame)
@@ -257,12 +253,11 @@ bool Can::staticReceivedFrameCb(twai_node_handle_t p_nodeHandle, const twai_rx_d
 	canFrame.fromTwaiFrame();
 
 	// Check if somebody is attached to the received CAN Group
-	const auto& group = static_cast<CanFrameGroups::GROUP>(canFrame.group);
-	if (!can->observers_.contains(group)) {
+	if (can->observer_ == nullptr) {
 		return false;
 	}
 
-	can->observers_[group]->receiveMessage(canFrame);
+	can->observer_->receiveMessage(canFrame);
 
 	return false;
 }
