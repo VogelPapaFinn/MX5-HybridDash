@@ -13,11 +13,15 @@
 class Config
 {
 public:
+	Config() = default;
+
 	Config(Filesystem* p_fs, const std::string& path);
 
 	~Config();
 
 	bool open();
+
+	void close();
 
 	ArduinoJson::JsonDocument getReadAccess();
 
@@ -27,18 +31,22 @@ public:
 
 	bool save();
 
+	void print();
+
 private:
 	/*
 	 *   Private Functions
 	 */
+	long getFileSize();
 
 	bool isFileEmpty();
 
 	std::vector<char> readFileContent();
 
-	void extractJsonFromFile(std::vector<char>& fileContent);
+	bool extractJsonFromFile(std::vector<char>& fileContent);
 
 	void startSaveTask();
+	void stopSaveTask();
 
 	/*
 	 *   Private Variables

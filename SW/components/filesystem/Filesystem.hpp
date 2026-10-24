@@ -25,7 +25,7 @@ public:
 	/*
 	 *	Public Functions
 	 */
-	Filesystem(bool mountSdCard = true, bool mountConfigPart = true, bool mountDataPart = true);
+	Filesystem(bool mountSdCard = true, bool mountDataPart = true, bool mountConfigPart = true);
 
 	bool doesFileExist(const std::string& path, Location location) const;
 

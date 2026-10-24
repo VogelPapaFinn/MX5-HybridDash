@@ -33,7 +33,7 @@ constexpr uint8_t MAX_OPEN_FILES = 5;
 /*
  *	Public Function Implementations
  */
-Filesystem::Filesystem(bool mountSdCard, bool mountConfigPart, bool mountDataPart)
+Filesystem::Filesystem(bool mountSdCard, bool mountDataPart, bool mountConfigPart)
 {
 	bool warningOccured = false;
 	bool errorOccured = false;

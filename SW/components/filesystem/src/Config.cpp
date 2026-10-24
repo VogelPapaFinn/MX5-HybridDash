@@ -47,17 +47,19 @@ Config::Config(Filesystem* p_fs, const std::string& path)
 
 Config::~Config()
 {
+	close();
+
 	if (file_ == nullptr) {
 		return;
-
-		if (!json_.isNull()) {
-			save();
-			json_.clear();
-		}
-
-		fclose(file_);
-		file_ = nullptr;
 	}
+
+	if (!json_.isNull()) {
+		save();
+		json_.clear();
+	}
+
+	fclose(file_);
+	file_ = nullptr;
 }
 
 bool Config::open()
@@ -88,7 +90,9 @@ bool Config::open()
 	fclose(file_);
 	file_ = nullptr;
 
-	extractJsonFromFile(fileContent);
+	if (!extractJsonFromFile(fileContent)) {
+		return false;
+	}
 
 	// Create mutex for read/write access to the config
 	configMutex_ = xSemaphoreCreateMutex();
@@ -96,6 +100,17 @@ bool Config::open()
 	startSaveTask();
 
 	return true;
+}
+
+void Config::close()
+{
+	save();
+
+	stopSaveTask();
+
+	if (configMutex_ != nullptr) {
+		vSemaphoreDelete(configMutex_);
+	}
 }
 
 ArduinoJson::JsonDocument Config::getReadAccess() { return json_; }
@@ -137,6 +152,9 @@ bool Config::save()
 	// Print json to the file
 	if (fprintf(file_, "%s", output.c_str()) <= 0) {
 		ESP_LOGW(TAG, "Failed to write updated config %s", path_.c_str());
+
+		fclose(file_);
+
 		return false;
 	}
 
@@ -150,31 +168,42 @@ bool Config::save()
 	return true;
 }
 
+void Config::print()
+{
+	std::string json;
+	ArduinoJson::serializeJsonPretty(json_, json);
+	ESP_LOGI(TAG, "%s", json.c_str());
+}
+
 /*
  *	Private Function Implementations
  */
+long Config::getFileSize()
+{
+	fseek(file_, 0, SEEK_END);
+	const long fileSize = ftell(file_);
+	fseek(file_, 0, SEEK_SET);
+
+	return fileSize;
+}
+
 bool Config::isFileEmpty()
 {
 	if (file_ == nullptr) {
 		return true;
 	}
 
-	fseek(file_, 0, SEEK_END);
-	const long fileSize = ftell(file_);
-	fseek(file_, 0, SEEK_SET);
-
-	if (fileSize <= 0) {
+	if (getFileSize() <= 0) {
 		ESP_LOGW(TAG, "Configuration file %s is empty!", path_.c_str());
-		return false;
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 std::vector<char> Config::readFileContent()
 {
-	// Get file size
-	const auto fileSize = ftell(file_);
+	const auto fileSize = getFileSize();
 	std::vector<char> fileContent(fileSize);
 
 	// Read data
@@ -183,12 +212,15 @@ std::vector<char> Config::readFileContent()
 	return fileContent;
 }
 
-void Config::extractJsonFromFile(std::vector<char>& fileContent)
+bool Config::extractJsonFromFile(std::vector<char>& fileContent)
 {
 	if (ArduinoJson::deserializeJson(json_, fileContent.data(), fileContent.size()) !=
 		ArduinoJson::DeserializationError::Ok) {
 		ESP_LOGW(TAG, "Failed to parse config file %s", path_.c_str());
+		return false;
 	}
+
+	return true;
 }
 
 void Config::startSaveTask()
@@ -201,4 +233,14 @@ void Config::startSaveTask()
 	// Fail
 	saveTask_ = nullptr;
 	ESP_LOGW(TAG, "Failed to start task which saves the Config file regularily");
+}
+
+void Config::stopSaveTask()
+{
+	if (saveTask_ == nullptr) {
+		return;
+	}
+
+	vTaskDelete(saveTask_);
+	saveTask_ = nullptr;
 }
