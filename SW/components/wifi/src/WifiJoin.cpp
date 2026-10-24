@@ -148,8 +148,8 @@ bool WifiJoin::start()
 	}
 
 	wifiConfig_.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
-	strlcpy((char*)wifiConfig_.ap.ssid, ssid_.c_str(), sizeof(wifiConfig_.ap.ssid));
-	strlcpy((char*)wifiConfig_.ap.password, password_.c_str(), sizeof(wifiConfig_.ap.password));
+	strlcpy((char*)wifiConfig_.sta.ssid, ssid_.c_str(), sizeof(wifiConfig_.sta.ssid));
+	strlcpy((char*)wifiConfig_.sta.password, password_.c_str(), sizeof(wifiConfig_.sta.password));
 
 	if (esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &staticWifiEventHandler, nullptr,
 											&wifiEventHandlerInstance_) != ESP_OK) {

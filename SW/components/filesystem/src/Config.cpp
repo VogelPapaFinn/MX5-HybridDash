@@ -29,7 +29,10 @@ static void saveConfigTask(void* p_param)
 	auto config = static_cast<Config*>(p_param);
 
 	while (true) {
-		vTaskDelay(pdMS_TO_TICKS(60000));
+		// Stop if ordered to
+		if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(60000)) != 0) {
+			vTaskDelete(nullptr);
+		}
 
 		config->save();
 	}
@@ -38,10 +41,21 @@ static void saveConfigTask(void* p_param)
 /*
  *	Public Function Implementations
  */
+Config::Config(Filesystem* p_fs)
+{
+	fs_ = p_fs;
+
+	// Create mutex for read/write access to the config
+	configMutex_ = xSemaphoreCreateMutex();
+}
+
 Config::Config(Filesystem* p_fs, const std::string& path)
 {
 	fs_ = p_fs;
 	path_ = path;
+
+	// Create mutex for read/write access to the config
+	configMutex_ = xSemaphoreCreateMutex();
 }
 
 
@@ -60,6 +74,13 @@ Config::~Config()
 
 	fclose(file_);
 	file_ = nullptr;
+}
+
+bool Config::open(const std::string& path)
+{
+	path_ = path;
+
+	return open();
 }
 
 bool Config::open()
@@ -94,9 +115,6 @@ bool Config::open()
 		return false;
 	}
 
-	// Create mutex for read/write access to the config
-	configMutex_ = xSemaphoreCreateMutex();
-
 	startSaveTask();
 
 	return true;
@@ -110,6 +128,7 @@ void Config::close()
 
 	if (configMutex_ != nullptr) {
 		vSemaphoreDelete(configMutex_);
+		configMutex_ = nullptr;
 	}
 }
 
@@ -241,6 +260,6 @@ void Config::stopSaveTask()
 		return;
 	}
 
-	vTaskDelete(saveTask_);
+	xTaskNotifyGive(saveTask_);
 	saveTask_ = nullptr;
 }

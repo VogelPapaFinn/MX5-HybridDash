@@ -226,6 +226,8 @@ void Can::queueFrame(Frame_t& canFrame)
 	xSemaphoreGive(pendingFramesMutex_);
 
 	if (twai_node_transmit(nodeHandle_, &trackedFrame->twaiFrame, CAN_SEND_TIMEOUT_MS) != ESP_OK) {
+		pendingFrames_.pop_back();
+
 		ESP_LOGW(TAG, "Failed to queue CAN frame");
 	}
 }

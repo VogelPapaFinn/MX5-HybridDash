@@ -15,9 +15,13 @@ class Config
 public:
 	Config() = default;
 
+	Config(Filesystem* p_fs);
+
 	Config(Filesystem* p_fs, const std::string& path);
 
 	~Config();
+
+	bool open(const std::string& path);
 
 	bool open();
 
