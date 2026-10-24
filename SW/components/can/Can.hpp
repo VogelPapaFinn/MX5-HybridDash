@@ -135,16 +135,15 @@ public:
 		{
 			std::string output = "";
 
-			output += "ID: ";
-			output += std::to_string(sender);
-			output += std::to_string(target);
-			output += std::to_string(group);
-			output += std::to_string(function);
-			output += std::to_string(answer);
+			output += "Sender: " + std::to_string(sender);
+			output += " - Target: " + std::to_string(target);
+			output += " - Group: " + std::to_string(group);
+			output += " - Function: " + std::to_string(function);
+			output += " - Answer: " + std::to_string(answer);
 
-			output += " DLC: ";
+			output += "; DLC: ";
 			output += std::to_string(dataLengthCode);
-			output += " BUFFER: ";
+			output += "; BUFFER: ";
 			for (uint16_t i = 0; i < dataLengthCode; i++) {
 				output += std::to_string(data[i]);
 				output += ", ";
