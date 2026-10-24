@@ -2,7 +2,7 @@
 
 // Project includes
 #include "Config.hpp"
-#include "SensorsData.hpp"
+#include "SensorValues.hpp"
 
 // C++ includes
 #include <string>
@@ -10,7 +10,13 @@
 class SensorLogger
 {
 public:
-	SensorLogger(Filesystem* p_fs, Config* p_config, SensorsData* p_sensorsData);
+	SensorLogger(Filesystem* p_fs, Config* p_config, SensorValues* p_sensorValues);
+
+	~SensorLogger();
+
+	void start();
+
+	void stop();
 
 private:
 	/*
@@ -18,16 +24,21 @@ private:
 	 */
 	int getFileIndex();
 
+	void increaseFileIndex();
+
 	void printHeader();
 
-	void startLogTask();
+	/*
+	 *	Private Task Functions
+	 */
+	static void logTask(void* p_param);
 
 	/*
 	 *   Private Variables
 	 */
 	Filesystem* fs_ = nullptr;
 	Config* config_ = nullptr;
-	SensorsData* sensorsData_ = nullptr;
+	SensorValues* sensorValues_ = nullptr;
 
 	std::string csvPath_;
 	FILE* csvFile_ = nullptr;

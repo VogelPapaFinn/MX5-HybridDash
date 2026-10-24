@@ -11,16 +11,26 @@ constexpr auto TAG = "Operation";
 /*
  *	Public Function implementations
  */
-Operation::Operation(SensorHandler* p_sensorHandler) { sensorHandler_ = p_sensorHandler; }
+Operation::Operation(HwSensorReader* p_hwSensorReader, SensorLogger* p_sensorLogger,
+					 SensorBroadcaster* p_sensorBroadcast)
+{
+	hwSensorReader_ = p_hwSensorReader;
+	sensorLogger_ = p_sensorLogger;
+	sensorBroadcaster_ = p_sensorBroadcast;
+}
 
 void Operation::enter()
 {
 	ESP_LOGI(TAG, "Entering Operation state");
-	sensorHandler_->start();
+	hwSensorReader_->start();
+	sensorLogger_->start();
+	sensorBroadcaster_->start();
 }
 
 void Operation::quit()
 {
 	ESP_LOGI(TAG, "Quitting Operation state");
-	sensorHandler_->stop();
+	hwSensorReader_->stop();
+	sensorLogger_->stop();
+	sensorBroadcaster_->stop();
 }

@@ -10,9 +10,6 @@ set(FILES
         "Driver/Display.cpp"
         "Driver/KLine.cpp"
 
-        # WebInterface
-        "WebInterface/WebInterface.cpp"
-
         # StateMachine
         "StateMachine/StateMachine.cpp"
         "StateMachine/StateEvents.cpp"
@@ -23,9 +20,10 @@ set(FILES
         "StateMachine/States/ConfigureDisplays.cpp"
 
         # Sensors
-        "Sensors/Handlers/SensorsData.cpp"
-        "Sensors/Handlers/SensorHandler.cpp"
-        "Sensors/Handlers/SensorLogger.cpp"
+        "Sensors/HwSensorReader.cpp"
+        "Sensors/SensorValues.cpp"
+        "Sensors/SensorLogger.cpp"
+        "Sensors/SensorBroadcaster.cpp"
         
         "Sensors/HwSensor/ActiveSensor.cpp"
         "Sensors/HwSensor/PassiveSensor.cpp"

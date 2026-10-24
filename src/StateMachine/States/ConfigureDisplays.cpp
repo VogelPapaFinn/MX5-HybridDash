@@ -187,7 +187,10 @@ void ConfigureDisplays::waitForDisplay()
 		frame.dataLengthCode = 0;
 
 		while (true) {
-			vTaskDelay(pdMS_TO_TICKS(100));
+			// Stop if ordered to
+			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100)) != 0) {
+				vTaskDelete(nullptr);
+			}
 
 			can->queueFrame(frame);
 		}
@@ -211,7 +214,7 @@ void ConfigureDisplays::stopWaitingForDisplay()
 		return;
 	}
 
-	vTaskDelete(waitingForDisplayTask_);
+	xTaskNotifyGive(waitingForDisplayTask_);
 	waitingForDisplayTask_ = nullptr;
 }
 

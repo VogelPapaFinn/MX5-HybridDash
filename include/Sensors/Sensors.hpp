@@ -10,7 +10,7 @@
 enum class SENSOR
 {
 	// Hardware Sensors
-	FUEL_LEVEL_R,
+	FUEL_LEVEL_R = 0,
 	FUEL_LEVEL_P,
 	OIL_PRESSURE_R,
 	OIL_PRESSURE_B,
@@ -22,6 +22,8 @@ enum class SENSOR
 	RPM,
 
 	// Software Sensors
+
+	END
 };
 
 const std::unordered_map<SENSOR, std::string> g_SENSOR_NAME = {

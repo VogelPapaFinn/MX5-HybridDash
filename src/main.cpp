@@ -3,7 +3,7 @@
 #include "Driver/Display.hpp"
 #include "Driver/KLine.hpp"
 #include "Filesystem.hpp"
-#include "Sensors/Handlers/SensorHandler.hpp"
+#include "Sensors/HwSensorReader.hpp"
 #include "StateMachine/StateEvents.hpp"
 #include "StateMachine/StateMachine.hpp"
 #include "StateMachine/States/ConfigureDisplays.hpp"
@@ -78,13 +78,15 @@ extern "C" void app_main(void)
 
 	initAdc1(&adc1);
 
-	// Handlers
-	SensorsData sensorsData(&can);
-	SensorHandler sensorHandler(adc1, &sensorsData);
+	// Object which holds all sensor values
+	SensorValues sensorValues;
+	HwSensorReader hwSensorReader(adc1, &sensorValues);
+	SensorLogger sensorLogger(&fs, &config, &sensorValues);
+	SensorBroadcaster sensorBroadcaster(&can, &sensorValues);
 
 	// States
 	Startup startupState(&fs, &config, &can);
-	Operation operationState(&sensorHandler);
+	Operation operationState(&hwSensorReader, &sensorLogger, &sensorBroadcaster);
 	UpdateDisplays updateDisplays(&fs, &config, &can, &displays);
 	ConfigureDisplays configureDisplays(&can, &config, &displays);
 

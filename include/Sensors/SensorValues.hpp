@@ -1,7 +1,6 @@
 #pragma once
 
 // Project includes
-#include "Can.hpp"
 #include "Sensors/Sensors.hpp"
 
 // C++ includes
@@ -11,17 +10,12 @@
 #include "freertos/FreeRTOS.h"
 
 /*
- *  constexpr
- */
-constexpr auto MAX_WAITING_TIME_FOR_WRITE_ACCESS_MS = 50;
-
-/*
  *   Class Implementations
  */
-class SensorsData
+class SensorValues
 {
 public:
-	SensorsData(Can* p_can);
+	SensorValues();
 
 	std::unordered_map<SENSOR, int> getSnapshot();
 
@@ -29,19 +23,11 @@ public:
 
 	void returnWriteAccess();
 
-	void startBroadcasting();
-
-	void stopBroadcasting();
-
 private:
 	/*
 	 *	Private Variables
 	 */
-	Can* can_ = nullptr;
+	std::unordered_map<SENSOR, int> sensorValues_;
 
-	std::unordered_map<SENSOR, int> sensorsData_;
-
-	SemaphoreHandle_t writeMutex_ = nullptr;
-
-	TaskHandle_t broadcastTaskHandle_ = nullptr;
+	SemaphoreHandle_t valuesMutex_ = nullptr;
 };
