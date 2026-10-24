@@ -47,7 +47,7 @@ void ConfigureDisplays::quit()
 
 	// Update config
 	auto json = config_->getWriteAccess();
-	(*json)["FirstStartup"] = true;
+	(*json)["FirstStartup"] = false;
 	config_->returnWriteAccess();
 	config_->save();
 
@@ -94,6 +94,8 @@ void ConfigureDisplays::enterNextState()
 
 void ConfigureDisplays::handleCanFrame(const Can::Frame_t& frame)
 {
+	ESP_LOGI(TAG, "Received CAN frame: %s", frame.toString().c_str());
+
 	// Ignore irrelevant frames
 	if (frame.group != CanFrameGroups::GROUP::CONFIGURE_DISPLAY || frame.answer == false) {
 		return;
@@ -144,8 +146,7 @@ void ConfigureDisplays::handleCanFrame(const Can::Frame_t& frame)
 
 			currDisplay_->turnOff();
 
-			if (currDisplay_ != displays_->end()) {
-				currDisplay_++;
+			if (++currDisplay_ != displays_->end()) {
 				substate_ = 0; // Start from the beginning
 				enterNextState();
 				return;
