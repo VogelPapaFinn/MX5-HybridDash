@@ -31,6 +31,8 @@ public:
 
 	void loadScreen(SCREEN screen);
 
+	void setRotation(bool rotation);
+
 	void setLeftIndicatorActive(const bool& active) const;
 
 	void setRightIndicatorActive(const bool& active) const;

@@ -58,6 +58,8 @@ bool GuiHandler::init()
 		return false;
 	}
 
+	st77916_.setBacklightLevel(100);
+
 	return true;
 }
 
@@ -88,6 +90,8 @@ void GuiHandler::loadScreen(const SCREEN screen)
 		} break;
 	}
 }
+
+void GuiHandler::setRotation(bool rotation) { st77916_.setRotated(rotation); }
 
 void GuiHandler::setLeftIndicatorActive(const bool& active) const
 {
@@ -261,6 +265,8 @@ void GuiHandler::flushToDisplay(lv_display_t* p_display, const lv_area_t* p_area
 {
 	if (p_display == nullptr || lv_display_get_user_data(p_display) == nullptr || p_area == nullptr ||
 		p_pxMap == nullptr) {
+		lv_display_flush_ready(p_display);
+
 		return;
 	}
 

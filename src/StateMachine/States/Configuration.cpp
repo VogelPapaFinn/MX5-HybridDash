@@ -3,7 +3,7 @@
 /*
  *	constexpr
  */
-constexpr auto TAG = "Confugration";
+constexpr auto TAG = "Configuration";
 
 /*
  *   Public Function Implementations
@@ -31,6 +31,8 @@ void Configuration::quit() { stopCanRxTask(); }
 
 void Configuration::handleCanFrame(const Can::Frame_t& frame)
 {
+	ESP_LOGI(TAG, "Received CAN frame: %s", frame.toString().c_str());
+
 	// Ignore irrelevant frames
 	if (frame.group != CanFrameGroups::GROUP::CONFIGURE_DISPLAY) {
 		return;
@@ -43,6 +45,8 @@ void Configuration::handleCanFrame(const Can::Frame_t& frame)
 			}
 
 			canId_ = frame.data[0];
+
+			ackCanId();
 			return;
 		} break;
 
@@ -52,6 +56,8 @@ void Configuration::handleCanFrame(const Can::Frame_t& frame)
 			}
 
 			screen_ = frame.data[0];
+
+			ackScreen();
 			return;
 		} break;
 
@@ -61,10 +67,16 @@ void Configuration::handleCanFrame(const Can::Frame_t& frame)
 			}
 
 			rotation_ = frame.data[0];
+
+			ackRotation();
 			return;
 		} break;
 
 		case SAVE_CONFIGURATION: {
+			if (frame.function != CanFrameGroups::FUNC::SAVE_CONFIGURATION) {
+				return;
+			}
+
 			saveConfiguration();
 			return;
 		} break;
@@ -91,7 +103,7 @@ void Configuration::ackCanId()
 {
 	Can::Frame_t frame;
 	frame.sender = CAN_CONFIGURATION_ID;
-	frame.target = CAN_BROADCAST_ID;
+	frame.target = CAN_MASTER_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
 	frame.function = CanFrameGroups::FUNC::SET_CAN_ID;
 	frame.answer = true;
@@ -104,7 +116,7 @@ void Configuration::ackScreen()
 {
 	Can::Frame_t frame;
 	frame.sender = CAN_CONFIGURATION_ID;
-	frame.target = CAN_BROADCAST_ID;
+	frame.target = CAN_MASTER_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
 	frame.function = CanFrameGroups::FUNC::SET_SCREEN;
 	frame.answer = true;
@@ -117,7 +129,7 @@ void Configuration::ackRotation()
 {
 	Can::Frame_t frame;
 	frame.sender = CAN_CONFIGURATION_ID;
-	frame.target = CAN_BROADCAST_ID;
+	frame.target = CAN_MASTER_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
 	frame.function = CanFrameGroups::FUNC::SET_ROTATION;
 	frame.answer = true;
@@ -137,7 +149,7 @@ void Configuration::saveConfiguration()
 
 	Can::Frame_t frame;
 	frame.sender = CAN_CONFIGURATION_ID;
-	frame.target = CAN_BROADCAST_ID;
+	frame.target = CAN_MASTER_ID;
 	frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
 	frame.function = CanFrameGroups::FUNC::SAVE_CONFIGURATION;
 	frame.answer = true;

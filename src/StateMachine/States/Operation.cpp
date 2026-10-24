@@ -30,11 +30,18 @@ void Operation::quit() { stopCanRxTask(); }
  */
 void Operation::handleCanFrame(const Can::Frame_t& frame)
 {
+	ESP_LOGI(TAG, "Received CAN frame: %s", frame.toString().c_str());
+
 	switch (frame.function) {
 		case CanFrameGroups::FUNC::ENTER_UPDATE_MODE: {
 			esp_event_post(STATE_EVENT_BASE, ENTER_UPDATE_MODE, nullptr, 0, portMAX_DELAY);
 			return;
 		} break;
+
+		case CanFrameGroups::FUNC::ENTER_CONFIGURATION_MODE: {
+			esp_event_post(STATE_EVENT_BASE, ENTER_CONFIGURATION_MODE, nullptr, 0, portMAX_DELAY);
+			return;
+		}
 
 		case CanFrameGroups::FUNC::BROADCAST_DATA: {
 			// Get data

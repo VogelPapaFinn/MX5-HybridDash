@@ -52,6 +52,8 @@ void Startup::enter()
 
 	loadScreen();
 
+	setRotation();
+
 	forceCanId();
 
 	// Enter the Operation state
@@ -100,28 +102,37 @@ void Startup::loadScreen()
 {
 	auto json = config_->getReadAccess();
 
-	if (json["screen"] && json["screen"].as<int>() >= 0) {
+	if (json["screen"].is<int>() && json["screen"].as<int>() >= 0) {
 		guiHandler_->loadScreen(json["screen"].as<GuiHandler::SCREEN>());
+	}
+}
+
+void Startup::setRotation()
+{
+	auto json = config_->getReadAccess();
+
+	if (json["rotation"].is<int>() && json["rotation"].as<int>()) {
+		guiHandler_->setRotation(json["rotation"].as<bool>());
 	}
 }
 
 bool Startup::isConfigValid()
 {
 	const auto json = config_->getReadAccess();
-	if (!json["canID"] || !json["screen"] || !json["rotation"]) {
+	if (!json["canID"].is<int>() || !json["screen"].is<int>() || !json["rotation"].is<int>()) {
 		return false;
 	}
 
-	if (json["canID"].as<unsigned int>() == 0) {
+	if (json["canID"].as<int>() <= 0) {
 		return false;
 	}
 
-	const auto& screen = json["screen"].as<unsigned int>();
+	const auto& screen = json["screen"].as<int>();
 	if (screen < 0 || screen > 2) {
 		return false;
 	}
 
-	const auto& rotation = json["rotation"].as<unsigned int>();
+	const auto& rotation = json["rotation"].as<int>();
 	if (rotation != 0 && rotation != 1) {
 		return false;
 	}

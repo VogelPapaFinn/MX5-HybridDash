@@ -73,6 +73,7 @@ extern "C" void app_main(void)
 
 			// Source: Operation
 			{.from = &operationState, .signal = STATE_EVENT_ID::ENTER_UPDATE_MODE, .to = &updateState},
+			{.from = &operationState, .signal = STATE_EVENT_ID::ENTER_CONFIGURATION_MODE, .to = &configurationState},
 
 			// Source: Update
 			{.from = &updateState, .signal = STATE_EVENT_ID::UPDATE_FAILED, .to = &operationState},

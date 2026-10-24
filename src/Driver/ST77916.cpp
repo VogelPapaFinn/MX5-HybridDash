@@ -94,15 +94,15 @@ ST77916::ST77916()
 		return;
 	}
 
-	if (!setupTeGpio()) {
-		ESP_LOGE(TAG, "Failed to setup TE GPIO");
-		return;
-	}
-
 	// Start flush task
 	if (xTaskCreate(flushToDisplayTask, "FlushToDisplay", 4096, this, 4, &drawToDisplayTaskHandle_) != pdPASS) {
 		ESP_LOGE(TAG, "Failed to create draw to display task");
 		esp_restart();
+	}
+
+	if (!setupTeGpio()) {
+		ESP_LOGE(TAG, "Failed to setup TE GPIO");
+		return;
 	}
 
 	initialized_ = true;
@@ -216,7 +216,7 @@ bool ST77916::setupTeGpio()
 		return false;
 	}
 
-	if (gpio_isr_handler_add(GPIO_TE, teGpioIsr, this->drawToDisplayTaskHandle_) != ESP_OK) {
+	if (gpio_isr_handler_add(GPIO_TE, teGpioIsr, drawToDisplayTaskHandle_) != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to enable the ISR");
 		return false;
 	}
@@ -227,7 +227,7 @@ bool ST77916::setupTeGpio()
 /*
  *	Private Static Function Implementations
  */
-void ST77916::teGpioIsr(void* p_arg)
+IRAM_ATTR void ST77916::teGpioIsr(void* p_arg)
 {
 	if (p_arg == nullptr) {
 		return;
@@ -240,7 +240,7 @@ void ST77916::teGpioIsr(void* p_arg)
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-void ST77916::flushToDisplayTask(void* p_param)
+IRAM_ATTR void ST77916::flushToDisplayTask(void* p_param)
 {
 	if (p_param == nullptr) {
 		return;
@@ -271,7 +271,8 @@ void ST77916::flushToDisplayTask(void* p_param)
 	}
 }
 
-bool ST77916::onFrameDrawn(esp_lcd_panel_io_handle_t p_panelIo, esp_lcd_panel_io_event_data_t* p_edata, void* p_userCtx)
+IRAM_ATTR bool ST77916::onFrameDrawn(esp_lcd_panel_io_handle_t p_panelIo, esp_lcd_panel_io_event_data_t* p_edata,
+									 void* p_userCtx)
 {
 	const auto st77916 = static_cast<ST77916*>(p_userCtx);
 	if (st77916 == nullptr) {

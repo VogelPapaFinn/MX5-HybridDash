@@ -19,14 +19,10 @@ enum STATE_EVENT_ID
 	CONFIG_VALID,
 
 	/*
-	 *	WaitingForConfiguration
-	 */
-	ENTER_CONFIGURATION_MODE,
-
-	/*
 	 *	Operation & WaitingForConfiguration
 	 */
 	ENTER_UPDATE_MODE,
+	ENTER_CONFIGURATION_MODE,
 
 	/*
 	 *	UPDATE

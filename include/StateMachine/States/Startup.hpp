@@ -26,6 +26,8 @@ private:
 
 	void loadScreen();
 
+	void setRotation();
+
 	bool isConfigValid();
 
 	void forceCanId();
