@@ -4,9 +4,16 @@
     "editor.lineHeight": 1.6,
     "editor.fontLigatures": true,
     "idf.currentSetup": "/opt/esp/idf",
-    "idf.flashType": "JTAG",
+    "idf.flashType": "UART",
     "idf.port": "/dev/ttyACM1",
     "idf.openOcdConfigs": [
+        "board/esp32s3-builtin.cfg"
+    ],
+    // Ersetzt idf.openOcdConfigs komplett -> Board-Config hier mit angeben
+    "idf.openOcdLaunchArgs": [
+        "-c",
+        "adapter serial FC:01:2C:C2:7A:B8",
+        "-f",
         "board/esp32s3-builtin.cfg"
     ],
     // IntelliSense, clang-format und clang-tidy über clangd

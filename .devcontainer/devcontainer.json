@@ -5,6 +5,8 @@
   "workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspace,type=bind",
   "workspaceFolder": "/workspace/DisplayBoard_FW",
   "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  // Extensions (clangd) erst starten, wenn postCreate.sh den clangd-Symlink angelegt hat
+  "waitFor": "postCreateCommand",
   "runArgs": [
     "--privileged",
     "--security-opt",

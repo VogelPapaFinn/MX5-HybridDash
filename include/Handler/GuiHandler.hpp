@@ -27,6 +27,8 @@ public:
 	 */
 	GuiHandler();
 
+	bool init();
+
 	void loadScreen(SCREEN screen);
 
 	void setLeftIndicatorActive(const bool& active) const;
@@ -48,10 +50,10 @@ private:
 	 *	Private Functions
 	 */
 	// LVGL
-	void initLvgl();
-	void initFrameBuffers();
+	bool initLvgl();
+	bool initFrameBuffers();
 	void registerCallbacks();
-	void startLvglUpdateTask();
+	bool startLvglUpdateTask();
 
 	/*
 	 *	Private Static Functions

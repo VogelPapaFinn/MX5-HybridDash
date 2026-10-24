@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Flash Config Partition",
+            "type": "shell",
+            "command": ". $IDF_PATH/export.sh > /dev/null && ESPPORT=${config:idf.port} python3 $IDF_PATH/tools/idf.py -p ${config:idf.port} config-flash",
+            "problemMatcher": []
+        }
+    ]
+}

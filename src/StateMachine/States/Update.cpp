@@ -19,6 +19,8 @@ Update::Update(Can* p_can) : MessageReceiver(p_can) {}
 
 void Update::enter()
 {
+	ESP_LOGI(TAG, "Entered Operation State");
+
 	startCanRxTask();
 	broadcastEnteredUpdateMode();
 }

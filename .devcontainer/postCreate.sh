@@ -3,6 +3,10 @@
 # und legt versionsunabhängige Symlinks in /usr/local/bin an.
 set -e
 
+# udevadm wird von der ESP-IDF-Extension zum Auflisten der Ports gebraucht,
+# libpython3.12 vom GDB für die libstdc++-Pretty-Printer (std::string etc.)
+apt-get update && apt-get install -y --no-install-recommends udev libpython3.12
+
 . "$IDF_PATH/export.sh"
 idf_tools.py install esp-clang
 

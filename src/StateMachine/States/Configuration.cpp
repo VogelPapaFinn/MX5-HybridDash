@@ -1,17 +1,23 @@
 #include "StateMachine/States/Configuration.hpp"
 
 /*
+ *	constexpr
+ */
+constexpr auto TAG = "Confugration";
+
+/*
  *   Public Function Implementations
  */
 Configuration::Configuration(Filesystem* p_fs, Config* p_config, Can* p_can) : MessageReceiver(p_can)
 {
 	fs_ = p_fs;
 	config_ = p_config;
-	can_ = p_can;
 }
 
 void Configuration::enter()
 {
+	ESP_LOGI(TAG, "Entered Configuration State");
+
 	startCanRxTask();
 
 	broadcastStateEntering();

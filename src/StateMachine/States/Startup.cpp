@@ -1,7 +1,7 @@
 #include "StateMachine/States/Startup.hpp"
 
 // Project includes
-#include "../config/DefaultConfig.hpp"
+#include "DefaultConfig.hpp"
 #include "StateMachine/StateEvents.hpp"
 
 /*
@@ -13,30 +13,42 @@ constexpr auto CONFIG_NAME = "config.json";
 /*
  *   Public Function Implementations
  */
-Startup::Startup(Filesystem* p_fs, Config** p_config, Can* p_can, GuiHandler* p_guiHandler)
+Startup::Startup(Filesystem* p_fs, Config* p_config, Can* p_can, GuiHandler* p_guiHandler)
 {
 	fs_ = p_fs;
-	configPtr_ = p_config;
+	config_ = p_config;
 	can_ = p_can;
 	guiHandler_ = p_guiHandler;
 }
 
 void Startup::enter()
 {
+	ESP_LOGI(TAG, "Entered Startup State");
+
 	// Activate CAN
 	can_->initialize();
 	can_->enable();
 
 	// Load config
 	if (!loadConfig()) {
-		loadDefaultConfig();
+		ESP_LOGW(TAG, "Failed to load config. Loading default config");
+
+		if (!loadDefaultConfig()) {
+			ESP_LOGE(TAG, "Failed to load default config. Behavior undefined");
+		}
+		else {
+			ESP_LOGI(TAG, "Loaded default config");
+		}
 	}
+	config_->print();
 
 	// Enter the WaitingForConfiguration state?
 	if (!isConfigValid()) {
 		esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::CONFIG_INVALID, nullptr, 0, portMAX_DELAY);
 		return;
 	}
+
+	guiHandler_->init();
 
 	loadScreen();
 
@@ -53,11 +65,9 @@ void Startup::quit() {}
  */
 bool Startup::loadConfig()
 {
-	if (*configPtr_ == nullptr) {
-		*configPtr_ = new Config(fs_, CONFIG_NAME);
-	}
+	*config_ = Config(fs_, CONFIG_NAME);
 
-	return (*configPtr_)->open();
+	return config_->open();
 }
 
 bool Startup::loadDefaultConfig()
@@ -70,21 +80,25 @@ bool Startup::loadDefaultConfig()
 	// Open file for writing
 	FILE* file = fs_->openFile(CONFIG_NAME, "w", Filesystem::CONFIG_PARTITION);
 
-	// Print default config to it
+	// Print default config to it`
 	if (fprintf(file, "%s", DEFAULT_CONFIG) <= 0) {
 		ESP_LOGW(TAG, "Failed to create default config");
+
+		fclose(file);
+
 		return false;
 	}
 
 	fflush(file);
+	fsync(fileno(file));
 	fclose(file);
 
-	return true;
+	return loadConfig();
 }
 
 void Startup::loadScreen()
 {
-	auto json = (*configPtr_)->getReadAccess();
+	auto json = config_->getReadAccess();
 
 	if (json["screen"] && json["screen"].as<int>() >= 0) {
 		guiHandler_->loadScreen(json["screen"].as<GuiHandler::SCREEN>());
@@ -93,7 +107,7 @@ void Startup::loadScreen()
 
 bool Startup::isConfigValid()
 {
-	const auto json = (*configPtr_)->getReadAccess();
+	const auto json = config_->getReadAccess();
 	if (!json["canID"] || !json["screen"] || !json["rotation"]) {
 		return false;
 	}
@@ -117,7 +131,7 @@ bool Startup::isConfigValid()
 
 void Startup::forceCanId()
 {
-	const auto json = (*configPtr_)->getReadAccess();
+	const auto json = config_->getReadAccess();
 	if (!json["canID"]) {
 		return;
 	}

@@ -47,7 +47,6 @@ private:
 
 	Filesystem* fs_ = nullptr;
 	Config* config_ = nullptr;
-	Can* can_ = nullptr;
 
 	int canId_ = -1;
 	int screen_ = -1;

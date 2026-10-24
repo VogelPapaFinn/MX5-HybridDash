@@ -21,14 +21,6 @@ constexpr gpio_num_t GPIO_CAN_RX = GPIO_NUM_39;
 constexpr gpio_num_t GPIO_CAN_TX = GPIO_NUM_40;
 
 /*
- *	Private Static Variables
- */
-static Filesystem g_fs;
-static Config* g_config = nullptr;
-static Can g_can(GPIO_CAN_RX, GPIO_CAN_TX);
-static GuiHandler g_guiHandler;
-
-/*
  *	Helper functions
  */
 void startEspEventLoop()
@@ -55,14 +47,18 @@ extern "C" void app_main(void)
 
 	startEspEventLoop();
 
-	// Handlers
+	// Drivers
+	Filesystem fs(false, false);
+	Config config;
+	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
+	GuiHandler guiHandler;
 
 	// States
-	Startup startupState(&g_fs, &g_config, &g_can, &g_guiHandler);
-	WaitingForConfiguration waitingState(&g_can);
-	Operation operationState(&g_can, &g_guiHandler);
-	Configuration configurationState(&g_fs, g_config, &g_can);
-	Update updateState(&g_can);
+	Startup startupState(&fs, &config, &can, &guiHandler);
+	WaitingForConfiguration waitingState(&can);
+	Operation operationState(&can, &guiHandler);
+	Configuration configurationState(&fs, &config, &can);
+	Update updateState(&can);
 
 	// StateMachine
 	StateMachine stateMachine(
@@ -83,11 +79,5 @@ extern "C" void app_main(void)
 		});
 	stateMachine.start();
 
-	while (true) {
-		vTaskDelay(portMAX_DELAY);
-	}
+	vTaskSuspend(nullptr);
 }
-
-
-TODO:
-	// - Both firmwares compile. FLASH and test! C:

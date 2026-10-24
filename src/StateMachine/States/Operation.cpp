@@ -3,16 +3,25 @@
 // Project includes
 #include "StateMachine/StateEvents.hpp"
 
+// espidf includes
+#include "esp_log.h"
+
+/*
+ *	constexpr
+ */
+constexpr auto TAG = "Operation";
+
 /*
  *   Public Function Implementations
  */
-Operation::Operation(Can* p_can, GuiHandler* p_guiHandler) : MessageReceiver(p_can)
-{
-	can_ = p_can;
-	guiHandler_ = p_guiHandler;
-}
+Operation::Operation(Can* p_can, GuiHandler* p_guiHandler) : MessageReceiver(p_can) { guiHandler_ = p_guiHandler; }
 
-void Operation::enter() { startCanRxTask(); }
+void Operation::enter()
+{
+	ESP_LOGI(TAG, "Entered Operation State");
+
+	startCanRxTask();
+}
 
 void Operation::quit() { stopCanRxTask(); }
 

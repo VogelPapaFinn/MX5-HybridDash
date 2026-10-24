@@ -10,7 +10,7 @@
 class Startup : public State
 {
 public:
-	Startup(Filesystem* p_fs, Config** p_config, Can* p_can, GuiHandler* p_guiHandler);
+	Startup(Filesystem* p_fs, Config* p_config, Can* p_can, GuiHandler* p_guiHandler);
 
 	void enter() override;
 
@@ -34,7 +34,7 @@ private:
 	 *   Public Variables
 	 */
 	Filesystem* fs_ = nullptr;
-	Config** configPtr_ = nullptr;
+	Config* config_ = nullptr;
 	Can* can_ = nullptr;
 	GuiHandler* guiHandler_ = nullptr;
 };

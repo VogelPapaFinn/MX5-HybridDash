@@ -41,8 +41,6 @@ private:
 	};
 	uint8_t substate_ = UNDEFINED;
 
-	Can* can_ = nullptr;
-
 	WifiJoin wifi_;
 	std::string ssid_;
 	std::string psswd_;

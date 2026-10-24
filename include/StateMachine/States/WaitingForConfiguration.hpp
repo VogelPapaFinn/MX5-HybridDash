@@ -19,9 +19,4 @@ private:
 	 *   Private Functions
 	 */
 	void handleCanFrame(const Can::Frame_t& frame) override;
-
-	/*
-	 *   Private Variables
-	 */
-	Can* can_ = nullptr;
 };

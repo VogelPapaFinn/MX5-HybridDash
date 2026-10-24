@@ -40,17 +40,25 @@ private:
 /*
  *	Public Function Implementations
  */
-GuiHandler::GuiHandler()
+GuiHandler::GuiHandler() { guiMutex_ = xSemaphoreCreateRecursiveMutex(); }
+
+bool GuiHandler::init()
 {
-	initLvgl();
+	if (!initLvgl()) {
+		return false;
+	}
 
-	initFrameBuffers();
-
-	guiMutex_ = xSemaphoreCreateRecursiveMutex();
+	if (!initFrameBuffers()) {
+		return false;
+	}
 
 	registerCallbacks();
 
-	startLvglUpdateTask();
+	if (!startLvglUpdateTask()) {
+		return false;
+	}
+
+	return true;
 }
 
 void GuiHandler::loadScreen(const SCREEN screen)
@@ -195,7 +203,7 @@ void GuiHandler::setWaterTemperature(const uint8_t& temperature) const
 /*
  *	Private Function Implementations
  */
-void GuiHandler::initLvgl()
+bool GuiHandler::initLvgl()
 {
 	lv_init();
 
@@ -203,16 +211,18 @@ void GuiHandler::initLvgl()
 	display_ = lv_display_create(RESOLUTION, RESOLUTION);
 	lv_display_set_user_data(display_, this);
 	st77916_.setLvglDisplay(display_);
+
+	return display_ != nullptr;
 }
 
-void GuiHandler::initFrameBuffers()
+bool GuiHandler::initFrameBuffers()
 {
 	// Create frame buffers
 	frameBuffer1_ = static_cast<uint16_t*>(malloc(FRAME_BUFFER_SIZE_B));
 	frameBuffer2_ = static_cast<uint16_t*>(malloc(FRAME_BUFFER_SIZE_B));
 	if (frameBuffer1_ == nullptr || frameBuffer2_ == nullptr) {
 		ESP_LOGE(TAG, "Failed to allocate memory for the frame buffers");
-		return;
+		return false;
 	}
 
 	// Clear buffers
@@ -224,6 +234,8 @@ void GuiHandler::initFrameBuffers()
 	lv_display_set_color_format(display_, LV_COLOR_FORMAT_RGB565);
 	lv_obj_set_style_bg_color(lv_display_get_screen_active(display_), lv_color_hex(0x000000), // Black
 							  LV_PART_MAIN);
+
+	return true;
 }
 
 void GuiHandler::registerCallbacks()
@@ -232,11 +244,14 @@ void GuiHandler::registerCallbacks()
 	lv_tick_set_cb(xTaskGetTickCount);
 }
 
-void GuiHandler::startLvglUpdateTask()
+bool GuiHandler::startLvglUpdateTask()
 {
 	if (xTaskCreate(updateLvgl, "UpdateLvgl", 10240, this, 3, &lvglUpdateTask_) != pdPASS) {
 		ESP_LOGE(TAG, "Failed to create LVGL update task");
+		return false;
 	}
+
+	return true;
 }
 
 /*

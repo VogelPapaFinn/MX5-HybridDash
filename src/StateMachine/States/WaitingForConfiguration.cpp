@@ -3,12 +3,25 @@
 // Project includes
 #include "StateMachine/StateEvents.hpp"
 
+// espidf includes
+#include "esp_log.h"
+
+/*
+ *	constexpr
+ */
+constexpr auto TAG = "WaitingForConfiguration";
+
 /*
  *   Public Function Implementations
  */
-WaitingForConfiguration::WaitingForConfiguration(Can* p_can) : MessageReceiver(p_can) { can_ = p_can; }
+WaitingForConfiguration::WaitingForConfiguration(Can* p_can) : MessageReceiver(p_can) {}
 
-void WaitingForConfiguration::enter() { startCanRxTask(); }
+void WaitingForConfiguration::enter()
+{
+	ESP_LOGI(TAG, "Entered Operation State");
+
+	startCanRxTask();
+}
 
 void WaitingForConfiguration::quit() { stopCanRxTask(); }
 

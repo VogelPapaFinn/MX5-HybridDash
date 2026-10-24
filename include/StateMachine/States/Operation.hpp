@@ -24,6 +24,5 @@ private:
 	/*
 	 *   Private Variables
 	 */
-	Can* can_ = nullptr;
 	GuiHandler* guiHandler_ = nullptr;
 };
