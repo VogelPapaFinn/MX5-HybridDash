@@ -6,6 +6,10 @@
 // espidf includes
 #include "esp_event.h"
 
+// Logging
+#define LOG_LOCAL_LEVEL ESP_LOG_DEBUG
+#include "esp_log.h"
+
 /*
  *   constexpr
  */
@@ -17,7 +21,7 @@ constexpr auto TAG = "UpdateDisplays";
 void doAt3Call(const std::function<void()>& cb)
 {
 	static uint8_t s_counter = 0;
-	if (++s_counter >= 3) {
+	if (++s_counter >= 1) {
 		s_counter = 0;
 		cb();
 		return;
@@ -33,14 +37,21 @@ UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, s
 	fs_ = p_fs;
 	config_ = p_config;
 	displays_ = p_displays;
+
+	esp_log_level_set(TAG, ESP_LOG_DEBUG);
 }
 
 void UpdateDisplays::enter()
 {
 	ESP_LOGI(TAG, "Entered UpdateDisplays State");
 
-	timeoutTimer_ = new TimeoutTimer(
-		60000, []() { esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::UPDATE_FAILED, nullptr, 0, portMAX_DELAY); });
+	timeoutTimer_ =
+		new TimeoutTimer(60000,
+						 []()
+						 {
+							 ESP_LOGE(TAG, "Timeout: Failed to update displays. Aborting.");
+							 esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::UPDATE_FAILED, nullptr, 0, portMAX_DELAY);
+						 });
 
 	startCanRxTask();
 	enterNextState();
@@ -48,8 +59,12 @@ void UpdateDisplays::enter()
 
 void UpdateDisplays::quit()
 {
+	enteredUpdateMode();
+
 	delete (timeoutTimer_);
 	timeoutTimer_ = nullptr;
+
+	substate_ = UNDEFINED;
 
 	unregisterWifiEventHandlers();
 	stopCanRxTask();
@@ -67,10 +82,14 @@ void UpdateDisplays::enterNextState()
 
 	switch (substate_) {
 		case STARTING_AP: {
+			ESP_LOGD(TAG, "Entering STARTING_AP");
+
 			startWifiAP();
 		} break;
 
 		case STARTING_WEBSERVER: {
+			ESP_LOGD(TAG, "Entering STARTING_WEBSERVER");
+
 			if (startWebserver()) {
 				enterNextState();
 				return;
@@ -78,29 +97,40 @@ void UpdateDisplays::enterNextState()
 		} break;
 
 		case ENTERING_UPDATE_MODE: {
-			putDisplaysIntoUpdateMode();
+			ESP_LOGD(TAG, "Entering ENTERING_UPDATE_MODE");
+
+			enterUpdateMode();
 		} break;
 
 		case TRANSMITTING_SSID: {
-			const auto packages = getAsPackages(wifi_.getSsid());
-			transmitSsidPackages(packages);
+			ESP_LOGD(TAG, "Entering TRANSMITTING_SSID");
+
+			ssidPackages_ = getAsPackages(wifi_.getSsid());
+			transmitSsidPackages();
 		} break;
 
 		case TRANSMITTING_PSSWD: {
-			const auto packages = getAsPackages(wifi_.getPassword());
-			transmitPsswdPackages(packages);
+			ESP_LOGD(TAG, "Entering TRANSMITTING_PSSWD");
+
+			psswdPackages_ = getAsPackages(wifi_.getPassword());
+			transmitPsswdPackages();
 		} break;
 
 		case TRANSMITTING_HOST_IP: {
+			ESP_LOGD(TAG, "Entering TRANSMITTING_HOST_IP");
+
 			transmitHostIp();
 		} break;
 
 		case JOIN_WIFI: {
-			registerWifiEventHandlers();
+			ESP_LOGD(TAG, "Entering JOIN_WIFI");
+
 			orderDisplaysToJoinWifi();
 		} break;
 
 		case EXECUTING_UPDATE: {
+			ESP_LOGD(TAG, "Entering EXECUTING_UPDATE");
+
 			unregisterWifiEventHandlers();
 			orderDisplaysToExecuteUpdate();
 		} break;
@@ -112,6 +142,8 @@ void UpdateDisplays::enterNextState()
 
 void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 {
+	ESP_LOGI(TAG, "Received CAN frame: %s", frame.toString().c_str());
+
 	// Ignore irrelevant frames
 	if (frame.group != CanFrameGroups::GROUP::UPDATE_DISPLAY || frame.answer == 0) {
 		return;
@@ -124,7 +156,12 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 				return;
 			}
 
-			doAt3Call([this]() { enterNextState(); });
+			doAt3Call(
+				[this]()
+				{
+					enteredUpdateMode();
+					enterNextState();
+				});
 		} break;
 
 		case TRANSMITTING_SSID: {
@@ -148,6 +185,15 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 		case TRANSMITTING_HOST_IP: {
 			// Ignore irrelevant frames
 			if (frame.function != CanFrameGroups::FUNC::CONFIRM_HOST_IP) {
+				return;
+			}
+
+			doAt3Call([this]() { enterNextState(); });
+		} break;
+
+		case JOIN_WIFI: {
+			// Ignore irrelevant frames
+			if (frame.function != CanFrameGroups::FUNC::JOIN_WIFI) {
 				return;
 			}
 
@@ -213,7 +259,7 @@ bool UpdateDisplays::startWebserver()
 		return false;
 	}
 
-	// The handler that transmits the update.bin file
+	// The handler that transmits the display_update.bin file
 	auto updateHandler = [](httpd_req_t* p_req) -> esp_err_t
 	{
 		if (p_req == nullptr || p_req->user_ctx == nullptr) {
@@ -222,10 +268,10 @@ bool UpdateDisplays::startWebserver()
 
 		auto fs = static_cast<Filesystem*>(p_req->user_ctx);
 
-		// Open the update.bin file
-		FILE* updateFile = fs->openFile("update.bin", "r", Filesystem::DATA_PARTITION);
+		// Open the display_update.bin file
+		FILE* updateFile = fs->openFile("display_update.bin", "r", Filesystem::DATA_PARTITION);
 		if (updateFile == nullptr) {
-			httpd_resp_send_err(p_req, HTTPD_404_NOT_FOUND, "update.bin not found");
+			httpd_resp_send_err(p_req, HTTPD_404_NOT_FOUND, "display_update.bin not found");
 			return ESP_FAIL;
 		}
 
@@ -258,8 +304,11 @@ bool UpdateDisplays::startWebserver()
 	};
 
 	// Register URI
-	updateUri_ = {
-		.uri = "/update.bin", .method = HTTP_GET, .handler = updateHandler, .user_ctx = fs_, .is_websocket = false};
+	updateUri_ = {.uri = "/display_update.bin",
+				  .method = HTTP_GET,
+				  .handler = updateHandler,
+				  .user_ctx = fs_,
+				  .is_websocket = false};
 
 	return httpd_register_uri_handler(webserver_, &updateUri_) == ESP_OK;
 }
@@ -267,19 +316,55 @@ bool UpdateDisplays::startWebserver()
 /*
  *	ENTERING_UPDATE_MODE
  */
-void UpdateDisplays::putDisplaysIntoUpdateMode()
+void UpdateDisplays::enterUpdateMode()
 {
-	// Build header
-	Can::Frame_t frame;
-	frame.sender = CAN_MASTER_ID;
-	frame.target = CAN_BROADCAST_ID;
-	frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-	frame.function = CanFrameGroups::FUNC::ENTER_UPDATE_MODE;
-	frame.dataLengthCode = 0;
-	frame.answer = false;
+	/*
+	 *	Build Task function
+	 */
+	auto enterUpdateMode = [](void* p_param)
+	{
+		if (p_param == nullptr) {
+			vTaskDelete(nullptr);
+		}
 
-	// Transmit frame
-	can_->queueFrame(frame);
+		auto can = static_cast<Can*>(p_param);
+
+		// Build request frame
+		Can::Frame_t frame;
+		frame.sender = CAN_MASTER_ID;
+		frame.target = CAN_BROADCAST_ID;
+		frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
+		frame.function = CanFrameGroups::FUNC::ENTER_UPDATE_MODE;
+		frame.dataLengthCode = 0;
+		frame.answer = false;
+
+		while (true) {
+			// Stop if ordered to
+			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(1000)) != 0) {
+				vTaskDelete(nullptr);
+			}
+
+			can->queueFrame(frame);
+		}
+	};
+
+	/*
+	 *	Start Task
+	 */
+	if (xTaskCreate(enterUpdateMode, "EnterUpdateMode", 4096, can_, 2, &enterUpdateModeTask_) == pdFALSE) {
+		ESP_LOGE(TAG, "Failed to start Task \'EnterUpdateMode\'");
+		return;
+	}
+}
+
+void UpdateDisplays::enteredUpdateMode()
+{
+	if (enterUpdateModeTask_ == nullptr) {
+		return;
+	}
+
+	xTaskNotifyGive(enterUpdateModeTask_);
+	enterUpdateModeTask_ = nullptr;
 }
 
 std::vector<std::vector<char>> UpdateDisplays::getAsPackages(const std::string& src)
@@ -306,29 +391,21 @@ std::vector<std::vector<char>> UpdateDisplays::getAsPackages(const std::string& 
 /*
  *	TRANSMITTING_SSID
  */
-void UpdateDisplays::transmitSsidPackages(const std::vector<std::vector<char>>& ssidPackages)
+void UpdateDisplays::transmitSsidPackages()
 {
 	/*
 	 *	Build Task function
 	 */
-	struct TaskStuff
-	{
-		Can* can = nullptr;
-		std::vector<std::vector<char>> ssidPackages;
-	};
-
-	TaskStuff taskStuff = {.can = can_, .ssidPackages = ssidPackages};
-
 	auto transmitSsidLambda = [](void* p_param)
 	{
 		if (p_param == nullptr) {
 			vTaskDelete(nullptr);
 		}
 
-		auto taskStuff = static_cast<TaskStuff*>(p_param);
+		auto state = static_cast<UpdateDisplays*>(p_param);
 
 		// Send SSID Packages
-		for (const auto& package : taskStuff->ssidPackages) {
+		for (const auto& package : state->ssidPackages_) {
 			Can::Frame_t frame;
 			frame.sender = CAN_MASTER_ID;
 			frame.target = CAN_BROADCAST_ID;
@@ -340,7 +417,7 @@ void UpdateDisplays::transmitSsidPackages(const std::vector<std::vector<char>>& 
 			std::copy(package.begin(), package.end(), frame.data);
 
 			// Send the frame
-			taskStuff->can->queueFrame(frame);
+			state->can_->queueFrame(frame);
 		}
 
 		// Request Ok from Displays
@@ -350,7 +427,7 @@ void UpdateDisplays::transmitSsidPackages(const std::vector<std::vector<char>>& 
 		frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
 		frame.function = CanFrameGroups::FUNC::CONFIRM_SSID;
 		frame.dataLengthCode = 0;
-		taskStuff->can->queueFrame(frame);
+		state->can_->queueFrame(frame);
 
 		vTaskDelete(nullptr);
 	};
@@ -358,7 +435,7 @@ void UpdateDisplays::transmitSsidPackages(const std::vector<std::vector<char>>& 
 	/*
 	 *	Start Task
 	 */
-	if (xTaskCreate(transmitSsidLambda, "TransmitSsidTask", 4096, &taskStuff, 2, nullptr) == pdFALSE) {
+	if (xTaskCreate(transmitSsidLambda, "TransmitSsidTask", 4096, this, 2, nullptr) == pdFALSE) {
 		ESP_LOGE(TAG, "Failed to start Task \'TransmitSsidTask\'");
 		return;
 	}
@@ -367,29 +444,21 @@ void UpdateDisplays::transmitSsidPackages(const std::vector<std::vector<char>>& 
 /*
  *	TRANSMITTING_PSSWD
  */
-void UpdateDisplays::transmitPsswdPackages(const std::vector<std::vector<char>>& psswdPackages)
+void UpdateDisplays::transmitPsswdPackages()
 {
 	/*
 	 *	Build Task function
 	 */
-	struct TaskStuff
-	{
-		Can* can = nullptr;
-		std::vector<std::vector<char>> psswdPackages;
-	};
-
-	TaskStuff taskStuff = {.can = can_, .psswdPackages = psswdPackages};
-
 	auto transmitPsswdLambda = [](void* p_param)
 	{
 		if (p_param == nullptr) {
 			vTaskDelete(nullptr);
 		}
 
-		auto taskStuff = static_cast<TaskStuff*>(p_param);
+		auto state = static_cast<UpdateDisplays*>(p_param);
 
 		// Send PSSWD Packages
-		for (const auto& package : taskStuff->psswdPackages) {
+		for (const auto& package : state->psswdPackages_) {
 			Can::Frame_t frame;
 			frame.sender = CAN_MASTER_ID;
 			frame.target = CAN_BROADCAST_ID;
@@ -401,7 +470,7 @@ void UpdateDisplays::transmitPsswdPackages(const std::vector<std::vector<char>>&
 			std::copy(package.begin(), package.end(), frame.data);
 
 			// Send the frame
-			taskStuff->can->queueFrame(frame);
+			state->can_->queueFrame(frame);
 		}
 
 		// Request Ok from Displays
@@ -411,7 +480,7 @@ void UpdateDisplays::transmitPsswdPackages(const std::vector<std::vector<char>>&
 		frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
 		frame.function = CanFrameGroups::FUNC::CONFIRM_PSSWD;
 		frame.dataLengthCode = 0;
-		taskStuff->can->queueFrame(frame);
+		state->can_->queueFrame(frame);
 
 		vTaskDelete(nullptr);
 	};
@@ -419,7 +488,7 @@ void UpdateDisplays::transmitPsswdPackages(const std::vector<std::vector<char>>&
 	/*
 	 *	Start Task
 	 */
-	if (xTaskCreate(transmitPsswdLambda, "TransmitPsswdTask", 4096, &taskStuff, 2, nullptr) == pdFALSE) {
+	if (xTaskCreate(transmitPsswdLambda, "TransmitPsswdTask", 4096, this, 2, nullptr) == pdFALSE) {
 		ESP_LOGE(TAG, "Failed to start Task \'TransmitPsswdTask\'");
 		return;
 	}
@@ -455,7 +524,7 @@ void UpdateDisplays::transmitHostIp()
 	okFrame.sender = CAN_MASTER_ID;
 	okFrame.target = CAN_BROADCAST_ID;
 	okFrame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-	okFrame.function = CanFrameGroups::FUNC::CONFIRM_PSSWD;
+	okFrame.function = CanFrameGroups::FUNC::CONFIRM_HOST_IP;
 	okFrame.dataLengthCode = 0;
 	can_->queueFrame(okFrame);
 }
@@ -463,24 +532,6 @@ void UpdateDisplays::transmitHostIp()
 /*
  *	JOIN_WIFI
  */
-void UpdateDisplays::registerWifiEventHandlers()
-{
-	auto eventHandler = [](void* p_arg, esp_event_base_t, int32_t, void*)
-	{
-		doAt3Call(
-			[p_arg]()
-			{
-				if (p_arg == nullptr) {
-					return;
-				}
-
-				static_cast<UpdateDisplays*>(p_arg)->enterNextState();
-			});
-	};
-
-	esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_AP_STACONNECTED, eventHandler, this, &wifiEventHandler_);
-}
-
 void UpdateDisplays::orderDisplaysToJoinWifi()
 {
 	Can::Frame_t frame;

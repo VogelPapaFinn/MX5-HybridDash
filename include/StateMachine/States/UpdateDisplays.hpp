@@ -40,15 +40,16 @@ private:
 	bool startWebserver();
 
 	// ENTERING_UPDATE_MODE
-	void putDisplaysIntoUpdateMode();
+	void enterUpdateMode();
+	void enteredUpdateMode();
 
 	std::vector<std::vector<char>> getAsPackages(const std::string& src);
 
 	// TRANSMITTING_SSID
-	void transmitSsidPackages(const std::vector<std::vector<char>>& ssidPackages);
+	void transmitSsidPackages();
 
 	// TRANSMITTING_PSSWD
-	void transmitPsswdPackages(const std::vector<std::vector<char>>& psswdPackages);
+	void transmitPsswdPackages();
 
 	// TRANSMITTING_HOST_IP
 	void transmitHostIp();
@@ -88,6 +89,11 @@ private:
 	std::vector<Display>* displays_ = nullptr;
 	WifiHost wifi_;
 
+	std::vector<std::vector<char>> ssidPackages_;
+	std::vector<std::vector<char>> psswdPackages_;
+
+	TaskHandle_t enterUpdateModeTask_ = nullptr;
+
 	httpd_handle_t webserver_ = nullptr;
 	const httpd_config_t webserverConfig_ = HTTPD_DEFAULT_CONFIG();
 	httpd_uri_t updateUri_ = {};
@@ -95,4 +101,6 @@ private:
 	TimeoutTimer* timeoutTimer_ = nullptr;
 
 	esp_event_handler_instance_t wifiEventHandler_ = nullptr;
+
+	TaskHandle_t putDisplaysIntoUpdateModeTask_ = nullptr;
 };

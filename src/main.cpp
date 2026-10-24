@@ -56,7 +56,7 @@ void initAdc1(adc_oneshot_unit_handle_t* p_adc1)
 extern "C" void app_main(void)
 {
 	// NEEDED FOR DEBUGGING
-	vTaskDelay(pdMS_TO_TICKS(100));
+	vTaskDelay(pdMS_TO_TICKS(250));
 
 	// Print Log Headers
 	ESP_LOGI(TAG, "--- --- --- --- --- --- ---");
