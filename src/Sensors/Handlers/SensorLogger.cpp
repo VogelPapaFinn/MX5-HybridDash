@@ -86,12 +86,12 @@ SensorLogger::SensorLogger(Filesystem* p_fs, Config* p_config, SensorsData* p_se
 /*
  *	Private Function Implementations
  */
-unsigned int SensorLogger::getFileIndex()
+int SensorLogger::getFileIndex()
 {
 	auto json = config_->getReadAccess();
 
-	if (json["SensorDataFileIndex"]) {
-		return json["SensorDataFileIndex"].as<unsigned int>();
+	if (json["SensorDataFileIndex"].is<int>()) {
+		return json["SensorDataFileIndex"].as<int>();
 	}
 
 	return 0;

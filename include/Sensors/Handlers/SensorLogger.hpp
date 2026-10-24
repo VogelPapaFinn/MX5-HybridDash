@@ -16,7 +16,7 @@ private:
 	/*
 	 *   Private Functions
 	 */
-	unsigned int getFileIndex();
+	int getFileIndex();
 
 	void printHeader();
 

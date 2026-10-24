@@ -13,19 +13,16 @@
  */
 constexpr auto TAG = "Startup";
 
-constexpr adc_oneshot_unit_init_cfg_t ADC1_UNIT_CONFIG = {.unit_id = ADC_UNIT_1, .ulp_mode = ADC_ULP_MODE_DISABLE};
-
 constexpr auto CONFIG_NAME = "config.json";
 
 /*
  *   Public Function Implementations
  */
-Startup::Startup(Filesystem* p_fs, Config* p_config, Can* p_can, adc_oneshot_unit_handle_t p_adc1Handle)
+Startup::Startup(Filesystem* p_fs, Config* p_config, Can* p_can)
 {
 	fs_ = p_fs;
 	config_ = p_config;
 	can_ = p_can;
-	adc1Handle_ = p_adc1Handle;
 }
 
 void Startup::enter()
@@ -35,9 +32,6 @@ void Startup::enter()
 	// Activate CAN
 	can_->initialize();
 	can_->enable();
-
-	// Setup ADC
-	setupAdc1();
 
 	// Load config
 	if (!loadConfig()) {
@@ -73,13 +67,6 @@ void Startup::quit() {}
 /*
  *   Private Function Implementations
  */
-void Startup::setupAdc1()
-{
-	if (adc_oneshot_new_unit(&ADC1_UNIT_CONFIG, &adc1Handle_) != ESP_OK) {
-		ESP_LOGE(TAG, "Failed to initialize ADC1");
-	}
-}
-
 bool Startup::loadConfig()
 {
 	*config_ = Config(fs_, CONFIG_NAME);
@@ -116,7 +103,7 @@ bool Startup::loadDefaultConfig()
 bool Startup::isFirstStartup()
 {
 	const auto json = config_->getReadAccess();
-	if (!json["FirstStartup"]) {
+	if (!json["FirstStartup"].is<bool>()) {
 		return true;
 	}
 

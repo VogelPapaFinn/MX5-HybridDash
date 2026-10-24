@@ -28,6 +28,8 @@ constexpr gpio_num_t GPIO_DISPLAY1 = GPIO_NUM_13;
 constexpr gpio_num_t GPIO_DISPLAY2 = GPIO_NUM_14;
 constexpr gpio_num_t GPIO_DISPLAY3 = GPIO_NUM_21;
 
+constexpr adc_oneshot_unit_init_cfg_t ADC1_UNIT_CONFIG = {.unit_id = ADC_UNIT_1, .ulp_mode = ADC_ULP_MODE_DISABLE};
+
 /*
  *	Helper functions
  */
@@ -39,6 +41,13 @@ void startEspEventLoop()
 
 	ESP_LOGE(TAG, "Error creating default event loop. Rebooting...");
 	esp_restart();
+}
+
+void initAdc1(adc_oneshot_unit_handle_t* p_adc1)
+{
+	if (adc_oneshot_new_unit(&ADC1_UNIT_CONFIG, p_adc1) != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to initialize ADC1");
+	}
 }
 
 /*
@@ -61,16 +70,20 @@ extern "C" void app_main(void)
 	adc_oneshot_unit_handle_t adc1 = nullptr;
 	Config config;
 	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
-	std::vector<Display> displays = {Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
-									 Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
-									 Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
+	std::vector<Display> displays = {
+		// Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
+		Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
+		// Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)
+	};
+
+	initAdc1(&adc1);
 
 	// Handlers
 	SensorsData sensorsData(&can);
 	SensorHandler sensorHandler(adc1, &sensorsData);
 
 	// States
-	Startup startupState(&fs, &config, &can, adc1);
+	Startup startupState(&fs, &config, &can);
 	Operation operationState(&sensorHandler);
 	UpdateDisplays updateDisplays(&fs, &config, &can, &displays);
 	ConfigureDisplays configureDisplays(&can, &config, &displays);

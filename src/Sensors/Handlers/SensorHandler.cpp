@@ -21,17 +21,6 @@ constexpr auto PASSIVE_SENSOR_READ_INTERVAL_MS = 1000;
 constexpr auto SENSORS_WRITE_INTERVAL_MS = 100;
 
 /*
- *   Private struct
- */
-struct TaskStuff
-{
-	std::unordered_map<SENSOR, int>* sensorData = nullptr;
-	SemaphoreHandle_t sensorDataMutex = nullptr;
-	adc_oneshot_unit_handle_t adc = nullptr;
-	SensorsData* sensorsData = nullptr;
-};
-
-/*
  *   Task Functions
  */
 static void updatePassiveSensorsTask(void* p_param)
@@ -40,7 +29,7 @@ static void updatePassiveSensorsTask(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	auto taskStuff = static_cast<TaskStuff*>(p_param);
+	auto taskStuff = static_cast<SensorHandler::TaskStuff*>(p_param);
 
 	// Create all sensors
 	FuelLevel fL(taskStuff->adc);
@@ -79,7 +68,7 @@ static void writeSensorsTask(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	auto taskStuff = static_cast<TaskStuff*>(p_param);
+	auto taskStuff = static_cast<SensorHandler::TaskStuff*>(p_param);
 
 	// Create all isr sensors
 	Speed speed;
@@ -142,6 +131,10 @@ SensorHandler::SensorHandler(adc_oneshot_unit_handle_t p_adc1, SensorsData* p_se
 	newSensorData_[SENSOR::SPEED] = 0;
 	newSensorData_[SENSOR::RPM] = 0;
 
+	// Fill TaskStuff
+	taskStuff_ = {
+		.sensorData = &newSensorData_, .sensorDataMutex = sensorDataMutex_, .adc = adc1_, .sensorsData = sensorsData_};
+
 	// Install ISR Service, needed for Speed, Rpm and Indicators
 	if (gpio_install_isr_service(ESP_INTR_FLAG_IRAM) != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to install the ISR service");
@@ -165,10 +158,7 @@ void SensorHandler::stop()
  */
 void SensorHandler::startReadThread()
 {
-	TaskStuff taskStuff = {
-		.sensorData = &newSensorData_, .sensorDataMutex = sensorDataMutex_, .adc = adc1_, .sensorsData = sensorsData_};
-
-	if (xTaskCreate(updatePassiveSensorsTask, "UpdatePassiveSensors", 4096, &taskStuff, 2, &updateSensorReadTask_) ==
+	if (xTaskCreate(updatePassiveSensorsTask, "UpdatePassiveSensors", 4096, &taskStuff_, 2, &updateSensorReadTask_) ==
 		pdPASS) {
 		// Success
 		return;
@@ -192,10 +182,7 @@ void SensorHandler::stopReadThread()
 
 void SensorHandler::startWriteThread()
 {
-	TaskStuff taskStuff = {
-		.sensorData = &newSensorData_, .sensorDataMutex = sensorDataMutex_, .adc = adc1_, .sensorsData = sensorsData_};
-
-	if (xTaskCreate(writeSensorsTask, "WriteSensors", 4096, &taskStuff, 2, &sensorWriteTask_) == pdPASS) {
+	if (xTaskCreate(writeSensorsTask, "WriteSensors", 4096, &taskStuff_, 2, &sensorWriteTask_) == pdPASS) {
 		// Success
 		return;
 	}
