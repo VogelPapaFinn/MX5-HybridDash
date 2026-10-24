@@ -21,18 +21,6 @@ SensorLogger::SensorLogger(Filesystem* p_fs, Config* p_config, SensorValues* p_s
 	fs_ = p_fs;
 	config_ = p_config;
 	sensorValues_ = p_sensorValues;
-
-	// Build file name
-	csvPath_ = "SensorData_x.csv";
-	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(getFileIndex()));
-
-	increaseFileIndex();
-
-	// Create file
-	fs_->createFile(csvPath_, Filesystem::SD_CARD);
-
-	// Open the file
-	csvFile_ = fs_->openFile(csvPath_, "w", Filesystem::SD_CARD);
 }
 
 SensorLogger::~SensorLogger()
@@ -48,6 +36,23 @@ SensorLogger::~SensorLogger()
 /*
  *	Private Function Implementations
  */
+void SensorLogger::createAndOpenFile()
+{
+	// Build file name
+	csvPath_ = "SensorData_x.csv";
+	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(getFileIndex()));
+
+	increaseFileIndex();
+
+	// Create file
+	fs_->createFile(csvPath_, Filesystem::SD_CARD);
+
+	// Open the file
+	csvFile_ = fs_->openFile(csvPath_, "w", Filesystem::SD_CARD);
+
+	printHeader();
+}
+
 int SensorLogger::getFileIndex()
 {
 	auto json = config_->getReadAccess();
@@ -84,7 +89,7 @@ void SensorLogger::printHeader()
 
 void SensorLogger::start()
 {
-	printHeader();
+	createAndOpenFile();
 
 	if (xTaskCreate(logTask, "LogTask", 4096, this, 2, &taskHandle_) == pdPASS) {
 		// Success

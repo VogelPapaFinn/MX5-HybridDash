@@ -68,7 +68,7 @@ extern "C" void app_main(void)
 	Filesystem fs;
 	KLine kline;
 	adc_oneshot_unit_handle_t adc1 = nullptr;
-	Config config;
+	Config config(&fs);
 	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
 	std::vector<Display> displays = {
 		// Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),

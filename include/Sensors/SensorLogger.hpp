@@ -22,6 +22,8 @@ private:
 	/*
 	 *   Private Functions
 	 */
+	void createAndOpenFile();
+
 	int getFileIndex();
 
 	void increaseFileIndex();

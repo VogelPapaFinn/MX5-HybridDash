@@ -67,12 +67,7 @@ void Startup::quit() {}
 /*
  *   Private Function Implementations
  */
-bool Startup::loadConfig()
-{
-	*config_ = Config(fs_, CONFIG_NAME);
-
-	return config_->open();
-}
+bool Startup::loadConfig() { return config_->open(CONFIG_NAME); }
 
 bool Startup::loadDefaultConfig()
 {
