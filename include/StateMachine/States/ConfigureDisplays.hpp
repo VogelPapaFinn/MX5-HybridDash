@@ -64,14 +64,13 @@ private:
 	};
 	uint8_t substate_ = UNDEFINED;
 
-	Can* can_ = nullptr;
 	Config* config_ = nullptr;
 	std::vector<Display>* displays_ = nullptr;
 
 	TimeoutTimer* timeoutTimer_ = nullptr;
 	TaskHandle_t canRxTask_ = nullptr;
 
-	std::vector<Display>::iterator currDisplay_ = displays_->begin();
+	std::vector<Display>::iterator currDisplay_;
 
 	// START_DISPLAY
 	TaskHandle_t waitingForDisplayTask_ = nullptr;

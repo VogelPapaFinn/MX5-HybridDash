@@ -17,7 +17,6 @@ constexpr auto TAG = "ConfigureDisplays";
 ConfigureDisplays::ConfigureDisplays(Can* p_can, Config* p_config, std::vector<Display>* p_displays) :
 	MessageReceiver(p_can)
 {
-	can_ = p_can;
 	config_ = p_config;
 	displays_ = p_displays;
 
@@ -26,6 +25,8 @@ ConfigureDisplays::ConfigureDisplays(Can* p_can, Config* p_config, std::vector<D
 
 void ConfigureDisplays::enter()
 {
+	ESP_LOGI(TAG, "Entered ConfigureDisplays State");
+
 	for (auto& d : *displays_) {
 		d.turnOff();
 	}

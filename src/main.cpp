@@ -29,18 +29,6 @@ constexpr gpio_num_t GPIO_DISPLAY2 = GPIO_NUM_14;
 constexpr gpio_num_t GPIO_DISPLAY3 = GPIO_NUM_21;
 
 /*
- *	Private Static Variables
- */
-static Filesystem g_fs;
-static KLine g_kline;
-static adc_oneshot_unit_handle_t g_adc1 = nullptr;
-static Config* g_config = nullptr;
-static Can g_can(GPIO_CAN_RX, GPIO_CAN_TX);
-static std::vector<Display> g_displays = {Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
-										  Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
-										  Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
-
-/*
  *	Helper functions
  */
 void startEspEventLoop()
@@ -67,15 +55,25 @@ extern "C" void app_main(void)
 
 	startEspEventLoop();
 
+	// Drivers
+	Filesystem fs;
+	KLine kline;
+	adc_oneshot_unit_handle_t adc1 = nullptr;
+	Config config;
+	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
+	std::vector<Display> displays = {Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
+									 Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
+									 Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
+
 	// Handlers
-	SensorsData sensorsData(&g_can);
-	SensorHandler sensorHandler(g_adc1, &sensorsData);
+	SensorsData sensorsData(&can);
+	SensorHandler sensorHandler(adc1, &sensorsData);
 
 	// States
-	Startup startupState(&g_fs, &g_config, &g_can, g_adc1);
+	Startup startupState(&fs, &config, &can, adc1);
 	Operation operationState(&sensorHandler);
-	UpdateDisplays updateDisplays(&g_fs, g_config, &g_can, &g_displays);
-	ConfigureDisplays configureDisplays(&g_can, g_config, &g_displays);
+	UpdateDisplays updateDisplays(&fs, &config, &can, &displays);
+	ConfigureDisplays configureDisplays(&can, &config, &displays);
 
 	// StateMachine
 	StateMachine stateMachine(
@@ -94,7 +92,5 @@ extern "C" void app_main(void)
 		});
 	stateMachine.start();
 
-	while (true) {
-		vTaskDelay(portMAX_DELAY);
-	}
+	vTaskSuspend(nullptr);
 }

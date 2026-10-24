@@ -44,9 +44,9 @@ idf_component_register(SRCS ${FILES}
         EMBED_TXTFILES "" # For Files
         EMBED_FILES "") # For images
 
-spiffs_create_partition_image(data "../data/" FLASH_INTO_PROJECT)
+spiffs_create_partition_image(data "../data/")
 
-spiffs_create_partition_image(config "../config/" FLASH_INTO_PROJECT)
+spiffs_create_partition_image(config "../config/")
 
 add_custom_target(app-flash-monitor)
 add_dependencies(app-flash-monitor

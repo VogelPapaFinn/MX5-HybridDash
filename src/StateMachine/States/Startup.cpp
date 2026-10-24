@@ -1,7 +1,7 @@
 #include "StateMachine/States/Startup.hpp"
 
 // Project includes
-#include "../config/DefaultConfig.hpp"
+#include "DefaultConfig.hpp"
 #include "StateMachine/StateEvents.hpp"
 
 // espidf includes
@@ -20,16 +20,18 @@ constexpr auto CONFIG_NAME = "config.json";
 /*
  *   Public Function Implementations
  */
-Startup::Startup(Filesystem* p_fs, Config** p_config, Can* p_can, adc_oneshot_unit_handle_t p_adc1Handle)
+Startup::Startup(Filesystem* p_fs, Config* p_config, Can* p_can, adc_oneshot_unit_handle_t p_adc1Handle)
 {
 	fs_ = p_fs;
-	configPtr_ = p_config;
+	config_ = p_config;
 	can_ = p_can;
 	adc1Handle_ = p_adc1Handle;
 }
 
 void Startup::enter()
 {
+	ESP_LOGI(TAG, "Entered Startup State");
+
 	// Activate CAN
 	can_->initialize();
 	can_->enable();
@@ -39,8 +41,16 @@ void Startup::enter()
 
 	// Load config
 	if (!loadConfig()) {
-		loadDefaultConfig();
+		ESP_LOGW(TAG, "Failed to load config. Loading default config");
+
+		if (!loadDefaultConfig()) {
+			ESP_LOGE(TAG, "Failed to load default config. Behavior undefined");
+		}
+		else {
+			ESP_LOGI(TAG, "Loaded default config");
+		}
 	}
+	config_->print();
 
 	// Enter the ConfigureDisplays state?
 	if (isFirstStartup()) {
@@ -72,11 +82,9 @@ void Startup::setupAdc1()
 
 bool Startup::loadConfig()
 {
-	if (*configPtr_ == nullptr) {
-		*configPtr_ = new Config(fs_, CONFIG_NAME);
-	}
+	*config_ = Config(fs_, CONFIG_NAME);
 
-	return (*configPtr_)->open();
+	return config_->open();
 }
 
 bool Startup::loadDefaultConfig()
@@ -92,18 +100,22 @@ bool Startup::loadDefaultConfig()
 	// Print default config to it
 	if (fprintf(file, "%s", DEFAULT_CONFIG) <= 0) {
 		ESP_LOGW(TAG, "Failed to create default config");
+
+		fclose(file);
+
 		return false;
 	}
 
 	fflush(file);
+	fsync(fileno(file));
 	fclose(file);
 
-	return true;
+	return loadConfig();
 }
 
 bool Startup::isFirstStartup()
 {
-	const auto json = (*configPtr_)->getReadAccess();
+	const auto json = config_->getReadAccess();
 	if (!json["FirstStartup"]) {
 		return true;
 	}

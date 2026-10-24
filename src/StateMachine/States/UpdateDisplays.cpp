@@ -32,12 +32,13 @@ UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, s
 {
 	fs_ = p_fs;
 	config_ = p_config;
-	can_ = p_can;
 	displays_ = p_displays;
 }
 
 void UpdateDisplays::enter()
 {
+	ESP_LOGI(TAG, "Entered UpdateDisplays State");
+
 	timeoutTimer_ = new TimeoutTimer(
 		60000, []() { esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::UPDATE_FAILED, nullptr, 0, portMAX_DELAY); });
 

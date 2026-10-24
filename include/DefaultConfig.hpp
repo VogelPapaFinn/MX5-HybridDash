@@ -2,13 +2,13 @@
 
 constexpr auto DEFAULT_CONFIG = R"(
 {
-  "OverwriteWifiMode": "WifiHost",
+  "FirstStartup": true,
 
   "WifiHost": {
     "ssid": "MX5-HybridDash Sensorboard",
     "password": "MX5-HybridDashV2"
   },
-
+  
   "WifiJoin": {
     "ssid": "",
     "password": ""
