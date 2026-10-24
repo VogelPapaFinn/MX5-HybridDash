@@ -19,19 +19,25 @@ Update::Update(Can* p_can) : MessageReceiver(p_can) {}
 
 void Update::enter()
 {
-	ESP_LOGI(TAG, "Entered Operation State");
+	ESP_LOGI(TAG, "Entered Update State");
 
 	startCanRxTask();
 	broadcastEnteredUpdateMode();
 }
 
-void Update::quit() { stopCanRxTask(); }
+void Update::quit()
+{
+	wifi_.stop();
+	stopCanRxTask();
+}
 
 /*
  *   Private Function Implementations
  */
 void Update::handleCanFrame(const Can::Frame_t& frame)
 {
+	ESP_LOGI(TAG, "Received CAN frame: %s", frame.toString().c_str());
+
 	switch (substate_) {
 		case RECEIVING_SSID: {
 			if (frame.function == CanFrameGroups::SET_SSID) {
@@ -46,7 +52,7 @@ void Update::handleCanFrame(const Can::Frame_t& frame)
 				Can::Frame_t frame;
 				frame.target = CAN_MASTER_ID;
 				frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-				frame.function = CanFrameGroups::FUNC::SET_SSID;
+				frame.function = CanFrameGroups::FUNC::CONFIRM_SSID;
 				frame.answer = true;
 				can_->queueFrame(frame);
 
@@ -67,7 +73,7 @@ void Update::handleCanFrame(const Can::Frame_t& frame)
 				Can::Frame_t frame;
 				frame.target = CAN_MASTER_ID;
 				frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-				frame.function = CanFrameGroups::FUNC::SET_PSSWD;
+				frame.function = CanFrameGroups::FUNC::CONFIRM_PSSWD;
 				frame.answer = true;
 				can_->queueFrame(frame);
 
@@ -99,11 +105,9 @@ void Update::handleCanFrame(const Can::Frame_t& frame)
 
 		case JOIN_WIFI: {
 			if (frame.function == CanFrameGroups::JOIN_WIFI) {
-				wifi_.setSsid(ssid_);
-				wifi_.setPassword(psswd_);
-				wifi_.setMasterIp(masterIp_);
+				substate_ = EXECUTING_UPDATE;
 
-				wifi_.start();
+				joinWifi();
 
 				return;
 			}
@@ -134,13 +138,34 @@ void Update::broadcastEnteredUpdateMode()
 	substate_ = RECEIVING_SSID;
 }
 
+void Update::joinWifi()
+{
+	wifi_.setSsid(ssid_);
+	wifi_.setPassword(psswd_);
+	wifi_.setMasterIp(masterIp_);
+
+	const auto cb = [this]()
+	{
+		Can::Frame_t frame;
+		frame.target = CAN_MASTER_ID;
+		frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
+		frame.function = CanFrameGroups::FUNC::JOIN_WIFI;
+		frame.answer = true;
+		can_->queueFrame(frame);
+	};
+
+	wifi_.callOnSuccess(cb);
+
+	wifi_.start();
+}
+
 void Update::executeUpdate()
 {
 	ESP_LOGI(TAG, "Starting OTA update");
 
 	// Build webaddress
 	std::string downloadPath =
-		std::format("http://{}.{}.{}.{}/display-update.bin", masterIp_[0], masterIp_[1], masterIp_[2], masterIp_[3]);
+		std::format("http://{}.{}.{}.{}/display_update.bin", masterIp_[0], masterIp_[1], masterIp_[2], masterIp_[3]);
 
 	// Build configurations
 	const esp_http_client_config_t config = {

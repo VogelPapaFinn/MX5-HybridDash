@@ -44,6 +44,7 @@ extern "C" void app_main(void)
 	// Print Log Headers
 	ESP_LOGI(TAG, "--- --- --- --- --- --- ---");
 	ESP_LOGI(TAG, "Startup");
+	ESP_LOGI(TAG, "UPDATE");
 
 	startEspEventLoop();
 

@@ -23,6 +23,8 @@ private:
 
 	void broadcastEnteredUpdateMode();
 
+	void joinWifi();
+
 	void executeUpdate();
 
 	void reportUpdateSuccess();
