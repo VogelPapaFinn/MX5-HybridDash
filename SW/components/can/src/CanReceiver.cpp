@@ -1,4 +1,4 @@
-#include "MessageReceiver.hpp"
+#include "CanReceiver.hpp"
 
 #include <utility>
 
@@ -8,32 +8,32 @@
 /*
  *   constexpr
  */
-constexpr auto TAG = "MessageReceiver";
+constexpr auto TAG = "CanReceiver";
 
 /*
  *   Public Function Implementations
  */
-MessageReceiver::MessageReceiver(Can* p_can)
+CanReceiver::CanReceiver(Can* p_can)
 {
 	can_ = p_can;
 
 	receivedFramesQueue_ = xQueueCreate(10, sizeof(Can::Frame_t));
 }
 
-MessageReceiver::~MessageReceiver()
+CanReceiver::~CanReceiver()
 {
 	stopCanRxTask();
 	vQueueDelete(receivedFramesQueue_);
 	receivedFramesQueue_ = nullptr;
 }
 
-void MessageReceiver::receiveMessage(Can::Frame_t frame)
+void CanReceiver::receiveMessage(Can::Frame_t frame)
 {
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	xQueueSendFromISR(receivedFramesQueue_, &frame, &xHigherPriorityTaskWoken);
 }
 
-void MessageReceiver::startCanRxTask()
+void CanReceiver::startCanRxTask()
 {
 	if (xTaskCreate(handleMessageTask, "CanRxTask", 4096, this, 2, &handleMessageTask_) == pdPASS) {
 		can_->attach(this);
@@ -47,7 +47,7 @@ void MessageReceiver::startCanRxTask()
 	ESP_LOGW(TAG, "Failed to start task which receives CAN frames");
 }
 
-void MessageReceiver::stopCanRxTask()
+void CanReceiver::stopCanRxTask()
 {
 	if (handleMessageTask_ == nullptr) {
 		return;
@@ -62,20 +62,20 @@ void MessageReceiver::stopCanRxTask()
 /*
  *   Private Function Implementations
  */
-void MessageReceiver::handleMessageTask(void* p_param)
+void CanReceiver::handleMessageTask(void* p_param)
 {
 	if (p_param == nullptr) {
 		vTaskDelete(nullptr);
 	}
 
-	auto messageReceiver = static_cast<MessageReceiver*>(p_param);
+	auto canReceiver = static_cast<CanReceiver*>(p_param);
 
 	Can::Frame_t frame;
 	while (true) {
-		if (xQueueReceive(messageReceiver->receivedFramesQueue_, &frame, portMAX_DELAY) != pdTRUE) {
+		if (xQueueReceive(canReceiver->receivedFramesQueue_, &frame, portMAX_DELAY) != pdTRUE) {
 			continue;
 		}
 
-		messageReceiver->handleCanFrame(frame);
+		canReceiver->handleCanFrame(frame);
 	}
 }

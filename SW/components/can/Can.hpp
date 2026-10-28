@@ -24,7 +24,7 @@ constexpr uint8_t CAN_CONFIGURATION_ID = 0b111;
 /*
  *	Prototypes
  */
-class MessageReceiver;
+class CanReceiver;
 
 /*
  *	CAN Class
@@ -169,9 +169,9 @@ public:
 
 	bool enable();
 
-	void attach(MessageReceiver* p_observer);
+	void attach(CanReceiver* p_observer);
 
-	void detach(MessageReceiver* p_observer);
+	void detach(CanReceiver* p_observer);
 
 	void queueFrame(Frame_t& canFrame);
 
@@ -212,5 +212,5 @@ private:
 
 	int forcedSenderId_ = -1;
 
-	MessageReceiver* observer_ = nullptr;
+	CanReceiver* observer_ = nullptr;
 };

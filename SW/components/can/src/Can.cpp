@@ -1,7 +1,7 @@
 #include "Can.hpp"
 
 // Component includes
-#include "MessageReceiver.hpp"
+#include "CanReceiver.hpp"
 
 // espidf includes
 #include "esp_event.h"
@@ -187,9 +187,9 @@ bool Can::enable()
 	return enabled_;
 }
 
-void Can::attach(MessageReceiver* p_observer) { observer_ = p_observer; }
+void Can::attach(CanReceiver* p_observer) { observer_ = p_observer; }
 
-void Can::detach(MessageReceiver* p_observer)
+void Can::detach(CanReceiver* p_observer)
 {
 	if (observer_ != p_observer) {
 		return;

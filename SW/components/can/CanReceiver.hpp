@@ -8,12 +8,12 @@
 /*
  *	Class to receive CAN Messages
  */
-class MessageReceiver
+class CanReceiver
 {
 public:
-	MessageReceiver(Can* p_can);
+	CanReceiver(Can* p_can);
 
-	~MessageReceiver();
+	~CanReceiver();
 
 	// Called by the CAN driver when a new frame was received
 	void receiveMessage(Can::Frame_t frame);
