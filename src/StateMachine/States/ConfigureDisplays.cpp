@@ -15,7 +15,7 @@ constexpr auto TAG = "ConfigureDisplays";
  *   Public Function Implementations
  */
 ConfigureDisplays::ConfigureDisplays(Can* p_can, Config* p_config, std::vector<Display>* p_displays) :
-	MessageReceiver(p_can)
+	CanReceiver(p_can)
 {
 	config_ = p_config;
 	displays_ = p_displays;

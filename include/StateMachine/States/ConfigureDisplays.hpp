@@ -1,9 +1,9 @@
 #pragma once
 
 // Project includes
+#include "CanReceiver.hpp"
 #include "Config.hpp"
 #include "Driver/Display.hpp"
-#include "MessageReceiver.hpp"
 #include "StateMachine/State.hpp"
 #include "StateMachine/Utils/TimeoutTimer.hpp"
 
@@ -13,7 +13,7 @@
 /*
  *	Class implementation
  */
-class ConfigureDisplays : public State, public MessageReceiver
+class ConfigureDisplays : public State, public CanReceiver
 {
 public:
 	ConfigureDisplays(Can* p_can, Config* p_config, std::vector<Display>* p_displays);

@@ -32,7 +32,7 @@ void doAt3Call(const std::function<void()>& cb)
  *   Public Function Implementations
  */
 UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, std::vector<Display>* p_displays) :
-	MessageReceiver(p_can)
+	CanReceiver(p_can)
 {
 	fs_ = p_fs;
 	config_ = p_config;
@@ -205,7 +205,12 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 				return;
 			}
 
-			doAt3Call([]() { esp_restart(); });
+			doAt3Call(
+				[this]()
+				{
+					fs_->deleteFile("display_update.bin", Filesystem::DATA_PARTITION);
+					esp_restart();
+				});
 		} break;
 
 		default: {

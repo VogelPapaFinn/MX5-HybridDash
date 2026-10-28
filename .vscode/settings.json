@@ -5,7 +5,7 @@
     "editor.fontLigatures": true,
     "idf.currentSetup": "/opt/esp/idf",
     "idf.flashType": "UART",
-    "idf.port": "/dev/ttyACM0",
+    "idf.port": "/dev/ttyACM1",
     "idf.openOcdLaunchArgs": [
         "-c",
         "adapter serial 58:8C:81:F3:42:04",

@@ -2,9 +2,9 @@
 
 // Project includes
 #include "Can.hpp"
+#include "CanReceiver.hpp"
 #include "Config.hpp"
 #include "Driver/Display.hpp"
-#include "MessageReceiver.hpp"
 #include "StateMachine/State.hpp"
 #include "StateMachine/Utils/TimeoutTimer.hpp"
 #include "WifiHost.hpp"
@@ -15,7 +15,7 @@
 /*
  *	Class implementation
  */
-class UpdateDisplays : public State, public MessageReceiver
+class UpdateDisplays : public State, public CanReceiver
 {
 public:
 	UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, std::vector<Display>* p_displays);
