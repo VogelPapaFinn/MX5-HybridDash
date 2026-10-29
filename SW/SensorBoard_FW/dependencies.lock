@@ -1,0 +1,18 @@
+dependencies:
+  bblanchon/ArduinoJson:
+    component_hash: 5e6aff2bc5bc988b36c8e90c01e637495ee895ad3af93911860c21ec6da79b6a
+    dependencies: []
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 7.4.3
+  idf:
+    source:
+      type: idf
+    version: 5.5.0
+direct_dependencies:
+- bblanchon/ArduinoJson
+- idf
+manifest_hash: 932060abda8bbb8956cd1a707b415f72d0105f629cd2f127b9ab0fd339bce801
+target: esp32s3
+version: 2.0.0

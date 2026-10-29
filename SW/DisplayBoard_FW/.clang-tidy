@@ -1,0 +1,58 @@
+---
+Checks: >
+  -*,
+  readability-identifier-naming,
+  readability-magic-numbers,
+  readability-function-cognitive-complexity,
+  readability-function-size,
+  llvm-include-order,
+  bugprone-*,
+  bugprone-macro-parentheses,
+  clang-analyzer-*,
+  performance-*,
+  portability-*,
+  -bugprone-easily-swappable-parameters,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling
+
+CheckOptions:
+  readability-identifier-naming.ConstexprVariableCase: UPPER_CASE
+  readability-identifier-naming.ConstexprVariablePrefix: ''
+  # -------------------------------------------------------------------------
+  # Konfiguration für readability-identifier-naming
+  # -------------------------------------------------------------------------
+
+  # WICHTIG: Wenn du snake_case (wie in C üblich) willst, nutze 'lower_case'.
+  # Wenn du camelBack (wie testFunction) willst, lass es so.
+  # Da deine Funktion 'test_function_snake_case' heißt, wird sie bei 'camelBack' als FEHLER markiert.
+  readability-identifier-naming.FunctionCase: camelBack
+
+  readability-identifier-naming.LocalVariableCase: camelBack
+  readability-identifier-naming.GlobalVariablePrefix: g_
+
+  readability-identifier-naming.StaticVariablePrefix: s_
+
+  readability-identifier-naming.TypedefCase: CamelCase
+  readability-identifier-naming.TypedefSuffix: _t
+
+  readability-identifier-naming.StructCase: CamelCase
+  readability-identifier-naming.UnionCase: CamelCase
+  readability-identifier-naming.EnumCase: UPPER_CASE
+  readability-identifier-naming.EnumConstantCase: UPPER_CASE
+
+  readability-identifier-naming.PointerParameterCase: camelBack
+  readability-identifier-naming.PointerParameterPrefix: p_
+
+  # Magic Numbers
+  readability-magic-numbers.IgnoredIntegerValues: '1:0'
+  readability-magic-numbers.IgnoredFloatingPointValues: '0.0;1.0'
+
+  # Komplexität
+  readability-function-cognitive-complexity.IgnoreMacros: true
+  readability-function-cognitive-complexity.Threshold: 25
+  readability-function-size.LineThreshold: 100
+
+  # Includes
+  llvm-include-order.SortIncludes: true
+
+  # Statements
+  readability-braces-around-statements.ShortStatementLines: 0

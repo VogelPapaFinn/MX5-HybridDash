@@ -1,0 +1,112 @@
+#include "StateMachine/States/Startup.hpp"
+
+// Project includes
+#include "DefaultConfig.hpp"
+#include "StateMachine/StateEvents.hpp"
+
+// espidf includes
+#include "esp_event.h"
+#include "esp_log.h"
+
+/*
+ *   constexpr
+ */
+constexpr auto TAG = "Startup";
+
+constexpr auto CONFIG_NAME = "config.json";
+
+/*
+ *   Public Function Implementations
+ */
+Startup::Startup(Filesystem* p_fs, Config* p_config, Can* p_can)
+{
+	fs_ = p_fs;
+	config_ = p_config;
+	can_ = p_can;
+}
+
+void Startup::enter()
+{
+	ESP_LOGI(TAG, "Entered Startup State");
+
+	// Activate CAN
+	can_->initialize();
+	can_->enable();
+
+	// Load config
+	if (!loadConfig()) {
+		ESP_LOGW(TAG, "Failed to load config. Loading default config");
+
+		if (!loadDefaultConfig()) {
+			ESP_LOGE(TAG, "Failed to load default config. Behavior undefined");
+		}
+		else {
+			ESP_LOGI(TAG, "Loaded default config");
+		}
+	}
+	config_->print();
+
+	// Enter the ConfigureDisplays state?
+	if (isFirstStartup()) {
+		esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::FIRST_STARTUP, nullptr, 0, portMAX_DELAY);
+		return;
+	}
+
+	// Enter the UpdateDisplays state?
+	if (isUpdateAvailable()) {
+		esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::UPDATE_AVAILABLE, nullptr, 0, portMAX_DELAY);
+		return;
+	}
+
+	// Enter the operation state
+	esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::STARTUP_FINISHED, nullptr, 0, portMAX_DELAY);
+}
+
+void Startup::quit() {}
+
+/*
+ *   Private Function Implementations
+ */
+bool Startup::loadConfig() { return config_->open(CONFIG_NAME); }
+
+bool Startup::loadDefaultConfig()
+{
+	// Create file if necessary
+	if (!fs_->doesFileExist(CONFIG_NAME, Filesystem::CONFIG_PARTITION)) {
+		fs_->createFile(CONFIG_NAME, Filesystem::CONFIG_PARTITION);
+	}
+
+	// Open file for writing
+	FILE* file = fs_->openFile(CONFIG_NAME, "w", Filesystem::CONFIG_PARTITION);
+
+	// Print default config to it
+	if (fprintf(file, "%s", DEFAULT_CONFIG) <= 0) {
+		ESP_LOGW(TAG, "Failed to create default config");
+
+		fclose(file);
+
+		return false;
+	}
+
+	fflush(file);
+	fsync(fileno(file));
+	fclose(file);
+
+	return loadConfig();
+}
+
+bool Startup::isFirstStartup()
+{
+	const auto json = config_->getReadAccess();
+	if (!json["FirstStartup"].is<bool>()) {
+		return true;
+	}
+
+	if (json["FirstStartup"].as<bool>()) {
+		return true;
+	}
+
+	return false;
+}
+
+bool Startup::isUpdateAvailable() { return fs_->doesFileExist("display_update.bin", Filesystem::DATA_PARTITION); }

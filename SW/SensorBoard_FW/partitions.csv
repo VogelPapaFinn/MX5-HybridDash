@@ -1,0 +1,8 @@
+# Name,   Type, SubType, Offset,  Size
+nvs,      data, nvs,     ,        0x6000,
+otadata,  data, ota,     ,        0x2000,
+phy_init, data, phy,     ,        0x1000,
+ota_0,    app,  ota_0,   ,        0x6D0000,
+ota_1,    app,  ota_1,   ,        0x6D0000,
+data,     data, spiffs,  ,        2M,
+config,   data, spiffs,  ,        0x40000,

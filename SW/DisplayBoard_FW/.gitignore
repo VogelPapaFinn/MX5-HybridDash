@@ -1,0 +1,4 @@
+build/
+.idea/
+managed_components/
+sdkconfig.old

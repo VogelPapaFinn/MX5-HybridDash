@@ -1,0 +1,7 @@
+build*
+.idea/
+config/config*
+.ollamassist/
+data/*.bin
+sdkconfig.old
+managed_components/

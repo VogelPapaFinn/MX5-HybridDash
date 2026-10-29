@@ -1,0 +1,49 @@
+{
+    "editor.fontFamily": "'JetBrains Mono', monospace",
+    "editor.fontSize": 14,
+    "editor.lineHeight": 1.6,
+    "editor.fontLigatures": true,
+    "idf.currentSetup": "/opt/esp/idf",
+    "idf.flashType": "UART",
+    "idf.port": "/dev/ttyACM1",
+    "idf.openOcdConfigs": [
+        "board/esp32s3-builtin.cfg"
+    ],
+    // Ersetzt idf.openOcdConfigs komplett -> Board-Config hier mit angeben
+    "idf.openOcdLaunchArgs": [
+        "-c",
+        "adapter serial FC:01:2C:C2:7A:B8",
+        "-f",
+        "board/esp32s3-builtin.cfg"
+    ],
+    // IntelliSense, clang-format und clang-tidy über clangd
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "C_Cpp.formatting": "disabled",
+    "clangd.path": "/usr/local/bin/clangd",
+    "clangd.checkUpdates": false,
+    "clangd.arguments": [
+        "--compile-commands-dir=/workspace/DisplayBoard_FW/build",
+        "--query-driver=/opt/esp/tools/**/bin/xtensa-esp*-elf-*",
+        "--background-index",
+        "--clang-tidy",
+        "--header-insertion=never",
+        "--completion-style=detailed"
+    ],
+    "[c]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnType": false,
+    "editor.formatOnPaste": false,
+    "files.exclude": {
+        "build": true,
+        "managed_components": true
+    },
+    "search.exclude": {
+        "build": true,
+        "managed_components": true
+    },
+}
