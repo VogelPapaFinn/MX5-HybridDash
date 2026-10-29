@@ -24,8 +24,8 @@ set(FILES
 )
 
 file(GLOB UI
-        "../res/ui/*.h"
-        "../res/ui/*.c"
+        "../res/UI/src/ui/*.h"
+        "../res/UI/src/ui/*.c"
 )
 
 idf_component_register(SRCS ${FILES} ${UI}
