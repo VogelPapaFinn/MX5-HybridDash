@@ -86,10 +86,9 @@ Hello! Im Finn a 21 year old computer science student from Bonn (Germany). I wor
 
 ## Contact
 
-If you have any questions or anything else you are welcome to contact me. There are three possible ways (ranked by my preference):
-1. send me a mail: finn.ganser@gmx.de
-2. Create an issue here in this GitHub repository
-3. Contact me via the Miata.net forum. Either via my linked thread or via a [private message](https://forum.miata.net/vb/member.php?u=307577)
+If you have any questions or anything else you are welcome to contact me:
+1. Create an issue here in this GitHub repository
+2. Contact me via the Miata.net forum. Either via my linked thread or via a [private message](https://forum.miata.net/vb/member.php?u=307577)
 
 ## License
 
