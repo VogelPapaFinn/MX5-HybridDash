@@ -20,6 +20,7 @@ public:
 	std::string toString();
 
 	bool operator==(const KLineMessage& rhs) const;
+	auto operator<=>(const KLineMessage& rhs) const = default;
 
 private:
 	/*

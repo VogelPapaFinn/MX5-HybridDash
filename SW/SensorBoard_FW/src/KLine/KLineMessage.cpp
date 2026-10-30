@@ -1,4 +1,4 @@
-#include "Driver/KLine/KLineMessage.hpp"
+#include "KLine/KLineMessage.hpp"
 
 // C++ includes
 #include <format>
@@ -59,7 +59,7 @@ bool KLineMessage::fromRaw(std::vector<uint8_t>& raw)
 
 	// Check length
 	length_ = (raw.at(0) >> 4) & 0b1111;
-	if (length_ < 4) {
+	if (length_ < 4 || raw.size() < length_) {
 		ESP_LOGW(TAG, "Passed raw message is too short!");
 		return false;
 	}
@@ -75,7 +75,12 @@ bool KLineMessage::fromRaw(std::vector<uint8_t>& raw)
 		payload_.push_back(raw.at(i));
 	}
 
-	checksum_ = raw.at(length_);
+	// Test Checksum
+	calcChecksum();
+	if (checksum_ != raw.at(length_)) {
+		ESP_LOGW(TAG, "Checksum mismatch!");
+		return false;
+	}
 
 	return true;
 }
@@ -133,11 +138,8 @@ void KLineMessage::calcChecksum()
 	sum += sender_;
 	sum += target_;
 	sum += sid_;
-	sum += pidHigh_;
-	sum += pidLow_;
-
-	for (const auto& d : payload_) {
-		sum += d;
+	for (const auto& p : payload_) {
+		sum += p;
 	}
 
 	checksum_ = sum % 256;

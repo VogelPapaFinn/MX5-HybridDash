@@ -8,7 +8,10 @@ set(FILES
 
         # Drivers
         "Driver/Display.cpp"
-        "Driver/KLine.cpp"
+
+        # KLine
+        "KLine/KLine.cpp"
+        "KLine/KLineMessage.cpp"
 
         # StateMachine
         "StateMachine/StateMachine.cpp"
