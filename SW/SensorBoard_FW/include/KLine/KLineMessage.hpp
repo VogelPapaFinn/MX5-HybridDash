@@ -1,6 +1,7 @@
 #pragma once
 
 // C++ includes
+#include <array>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -20,7 +21,6 @@ public:
 	std::string toString();
 
 	bool operator==(const KLineMessage& rhs) const;
-	auto operator<=>(const KLineMessage& rhs) const = default;
 
 private:
 	/*
@@ -38,6 +38,7 @@ private:
 	uint8_t sender_ = 0;
 	uint8_t target_ = 0;
 	uint8_t sid_ = 0;
-	std::vector<uint8_t> payload_ = {};
+	std::array<uint8_t, 10> payload_ = {};
+	uint8_t payloadSize_ = 0;
 	uint8_t checksum_ = 0;
 };

@@ -24,7 +24,9 @@ KLineMessage::KLineMessage(const uint8_t command, const uint8_t sender, const ui
 	sender_ = sender;
 	target_ = target;
 	sid_ = sid;
-	payload_ = payload;
+	for (uint8_t i = 0; i < payload.size(); i++) {
+		payload_[i] = payload.at(i);
+	}
 
 	calcLength();
 	calcChecksum();
@@ -40,8 +42,8 @@ std::vector<uint8_t> KLineMessage::getRaw()
 	output.push_back(target_);
 	output.push_back(sid_);
 
-	for (const auto& d : payload_) {
-		output.push_back(d);
+	for (uint8_t i = 0; i < payloadSize_; i++) {
+		output.push_back(payload_[i]);
 	}
 
 	calcChecksum();
@@ -70,9 +72,9 @@ bool KLineMessage::fromRaw(std::vector<uint8_t>& raw)
 	target_ = raw.at(2);
 	sid_ = raw.at(3);
 
-	payload_.clear();
+	payloadSize_ = length_ - 4;
 	for (uint8_t i = 4; i < length_; i++) {
-		payload_.push_back(raw.at(i));
+		payload_[i - 4] = raw.at(i);
 	}
 
 	// Test Checksum
@@ -93,8 +95,8 @@ std::string KLineMessage::toString()
 	output += std::format("0x{:02x} ", sender_);
 	output += std::format("0x{:02x} ", target_);
 	output += std::format("0x{:02x} ", sid_);
-	for (const auto& p : payload_) {
-		output += std::format("0x{:02x} ", p);
+	for (uint8_t i = 0; i < payloadSize_; i++) {
+		output += std::format("0x{:02x} ", payload_[i]);
 	}
 	output += std::format("0x{:02x} ", checksum_);
 
@@ -111,6 +113,7 @@ bool KLineMessage::operator==(const KLineMessage& rhs) const
 	equal &= target_ == rhs.target_;
 	equal &= sid_ == rhs.sid_;
 	equal &= payload_ == rhs.payload_;
+	equal &= payloadSize_ == rhs.payloadSize_;
 	equal &= checksum_ == rhs.checksum_;
 
 	return equal;
@@ -126,7 +129,7 @@ void KLineMessage::calcLength()
 	length_++; // Sender
 	length_++; // Target
 	length_++; // SID
-	length_ += payload_.size();
+	length_ += payloadSize_;
 	length_++; // CS
 }
 
@@ -138,8 +141,8 @@ void KLineMessage::calcChecksum()
 	sum += sender_;
 	sum += target_;
 	sum += sid_;
-	for (const auto& p : payload_) {
-		sum += p;
+	for (uint8_t i = 0; i < payloadSize_; i++) {
+		sum += payload_[i];
 	}
 
 	checksum_ = sum % 256;

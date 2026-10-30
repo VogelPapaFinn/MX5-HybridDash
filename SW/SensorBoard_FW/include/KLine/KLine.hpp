@@ -26,44 +26,33 @@ constexpr uint8_t SID_RESPONSE = 0x40;
 class KLine
 {
 public:
-	enum class Result
-	{
-		Ok,
-		TxFailed, // Could not write the request to the UART
-		EchoMismatch, // Echo differs from the request (collision on the bus)
-		NoResponse, // ECU did not answer within P2max
-		InvalidResponse, // Incomplete response or checksum mismatch
-	};
-
-	// Called from the KLine task, so keep it short and don't block
-	using ResponseCallback = std::function<void(Result result, const KLineMessage& response)>;
-
 	KLine();
 
 	~KLine();
 
-	// Queues a request. The callback is called once the ECU answered or the request failed
-	bool send(const KLineMessage& message, ResponseCallback rxCb);
+	bool send(const KLineMessage& message, std::function<void(KLineMessage&)> rxCb);
 
 private:
 	struct Request
 	{
 		KLineMessage message;
-		ResponseCallback callback;
+		std::function<void(KLineMessage&)> callback;
 	};
 
 	/*
 	 *	Private Functions
 	 */
+	bool setupUart();
+
 	static void klineTask(void* p_param);
 
-	Result process(Request& request, KLineMessage& response);
+	KLineMessage process(Request& request);
 
 	bool transmit(const std::vector<uint8_t>& raw);
 
 	bool receiveEcho(const std::vector<uint8_t>& raw);
 
-	Result receiveResponse(KLineMessage& response);
+	KLineMessage receiveResponse();
 
 	/*
 	 *	Private Variables
@@ -71,5 +60,5 @@ private:
 	bool initialized_ = false;
 
 	TaskHandle_t taskHandle_ = nullptr;
-	QueueHandle_t requestQueue_ = nullptr; // Holds Request*
+	QueueHandle_t requestQueue_ = nullptr;
 };
