@@ -85,8 +85,8 @@ extern "C" void app_main(void)
 	SensorBroadcaster sensorBroadcaster(&can, &sensorValues);
 
 	// States
-	Startup startupState(&fs, &config, &can);
-	Operation operationState(&hwSensorReader, &sensorLogger, &sensorBroadcaster);
+	Startup startupState(&fs, &config, &can, &displays);
+	Operation operationState(&hwSensorReader, &sensorLogger, &sensorBroadcaster, &kline);
 	UpdateDisplays updateDisplays(&fs, &config, &can, &displays);
 	ConfigureDisplays configureDisplays(&can, &config, &displays);
 

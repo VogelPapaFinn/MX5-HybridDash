@@ -1,18 +1,13 @@
 #include "KLine/KLine.hpp"
 
 // C++ includes
-#include <bits/stdc++.h>
-#include <string>
 #include <utility>
-
-// Project includes
-#include "Driver/EcuSensors.hpp"
 
 // espidf include
 #include "driver/gpio.h"
 #include "driver/uart.h"
-#include "esp_event.h"
 #include "esp_log.h"
+#include "esp_rom_sys.h"
 
 /*
  *	constexpr
@@ -21,12 +16,11 @@ constexpr auto TAG = "KLine";
 
 // UART stuff
 constexpr uart_port_t UART_PORT = UART_NUM_2;
-constexpr uint16_t BUFFER_SIZE_RX = 2048;
-constexpr uint16_t BUFFER_SIZE_TX = 2048;
-constexpr uint8_t UART_QUEUE_SIZE = 10;
-constexpr uint16_t UART_BAUD_RATE = 10400;
+constexpr uint16_t BUFFER_SIZE_RX = 256; // Has to be bigger than the HW FIFO (128 bytes)
+constexpr uint16_t BUFFER_SIZE_TX = 0; // No TX buffer, uart_write_bytes blocks until the data is in the HW FIFO
+constexpr uint32_t UART_BAUD_RATE = 10400;
 constexpr uart_config_t UART_CONFIG = {
-	.baud_rate = 10400,
+	.baud_rate = UART_BAUD_RATE,
 	.data_bits = UART_DATA_8_BITS,
 	.parity = UART_PARITY_DISABLE,
 	.stop_bits = UART_STOP_BITS_1,
@@ -38,70 +32,72 @@ constexpr uart_config_t UART_CONFIG = {
 constexpr gpio_num_t GPIO_RX = GPIO_NUM_12;
 constexpr gpio_num_t GPIO_TX = GPIO_NUM_11;
 
-// KLine stuff
-constexpr uint8_t COMMAND = 0x04;
-constexpr uint8_t ADDR_ECU = 0x10;
-constexpr uint8_t ADDR_PCB = 0xF5;
-constexpr uint8_t READ_SENSOR = 0x17;
-constexpr uint32_t ECU_ID_ADDR = 0x010006;
+// KLine timings (ISO 9141)
+constexpr uint32_t WAIT_FOR_BYTE_TIMEOUT_MS = 20;
+constexpr uint32_t WAIT_FOR_ANSWER_TIMEOUT_MS = 40;
+constexpr uint32_t DELAY_BETWEEN_TX_MESSAGES_MS = 25;
 
-constexpr uint8_t WAIT_FOR_ANSWER_TIMEOUT_MS = 50;
-constexpr uint8_t WAIT_FOR_BYTE_TIMEOUT_MS = 20;
-constexpr uint8_t DELAY_BETWEEN_RX_TX_MS = 60;
-
-constexpr uint8_t DELAY_BETWEEN_TX_BYTES_MS = 5;
-constexpr uint8_t DELAY_BETWEEN_TX_MESSAGES_MS = 55;
+constexpr uint32_t KEEP_ALIVE_TIME_MS = 4000;
+constexpr uint32_t ECHO_TIMEOUT_MS = 20;
+constexpr uint32_t TX_BYTE_TIMEOUT_MS = 10;
 
 /*
  *	Public Function Implementations
  */
 KLine::KLine()
 {
-	waitForAnswerTimeout_ =
-		xTimerCreate("WaitForAnswerTimeout", pdMS_TO_TICKS(WAIT_FOR_ANSWER_TIMEOUT_MS), false, this, noAnswerReceived);
-	waitForByteTimeout_ =
-		xTimerCreate("WaitForByteTimeout", pdMS_TO_TICKS(WAIT_FOR_BYTE_TIMEOUT_MS), false, this, noAnswerReceived);
-
-	pendingMessagesQueue_ = xQueueCreate(10, sizeof(KLineMessage));
-
-	// Initialize UART driver
-	if (uart_driver_install(UART_PORT, BUFFER_SIZE_RX, BUFFER_SIZE_TX, UART_QUEUE_SIZE, &uartQueueHandle_, 0) !=
-		ESP_OK) {
-		ESP_LOGE(TAG, "Failed to install UART driver");
+	if (!setupUart()) {
+		ESP_LOGE(TAG, "Failed to setup UART");
 		return;
 	}
 
-	// Initialize UART configuration
-	if (uart_param_config(UART_PORT, &UART_CONFIG)) {
-		ESP_LOGE(TAG, "Failed to parameterize UART");
-		return;
-	}
-
-	// Set GPIO pins for UART
-	if (uart_set_pin(UART_NUM_2, GPIO_TX, GPIO_RX, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE)) {
-		ESP_LOGE(TAG, "Failed to set the GPIOs for UART");
-		return;
-	}
-
-	// Create RX task
-	if (xTaskCreate(uartRxTask, "KLineRxTask", 2048 * 2, this, 2, &rxTaskHandle_) != pdPASS) {
-		ESP_LOGE(TAG, "Failed to create RX Task");
-		return;
-	}
-
-	initialized_ = true;
+	requestQueue_ = xQueueCreate(10, sizeof(Request*));
 }
 
-KLine::~KLine() { vTaskDelete(rxTaskHandle_); }
-
-bool KLine::send(KLineMessage& message, std::function<void()>* p_rxCb)
+KLine::~KLine()
 {
-	if (observers_.contains(message)) {
+	if (taskHandle_ != nullptr) {
+		vTaskDelete(taskHandle_);
+	}
+
+	if (requestQueue_ != nullptr) {
+		vQueueDelete(requestQueue_);
+	}
+
+	uart_driver_delete(UART_PORT);
+}
+
+bool KLine::init()
+{
+	if (initialized_) {
 		return false;
 	}
 
-	xQueueSend(pendingMessagesQueue_, &message, portMAX_DELAY);
-	observers_[message] = p_rxCb;
+	// baud5Init();
+
+	if (xTaskCreate(klineTask, "KLineTask", 4096, this, 2, &taskHandle_) != pdPASS) {
+		ESP_LOGE(TAG, "Failed to create KLine Task");
+		return false;
+	}
+
+	initialized_ = true;
+
+	return true;
+}
+
+bool KLine::send(const KLineMessage& message, std::function<void(KLineMessage&)> rxCb)
+{
+	if (!initialized_) {
+		return false;
+	}
+
+	ESP_LOGI(TAG, "Sending request: %s", message.toString().c_str());
+
+	auto request = new Request{message, std::move(rxCb)};
+	if (xQueueSend(requestQueue_, &request, portMAX_DELAY) != pdTRUE) {
+		delete (request);
+		return false;
+	}
 
 	return true;
 }
@@ -109,128 +105,225 @@ bool KLine::send(KLineMessage& message, std::function<void()>* p_rxCb)
 /*
  *	Private Function Implementations
  */
-void KLine::uartTxTask(void* p_param)
+bool KLine::setupUart()
 {
-	if (p_param == nullptr) {
-		vTaskDelete(nullptr);
+	// Initialize UART driver (no event queue, we read synchronously)
+	if (uart_driver_install(UART_PORT, BUFFER_SIZE_RX, BUFFER_SIZE_TX, 0, nullptr, 0) != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to install UART driver");
+		return false;
 	}
 
+	// Initialize UART configuration
+	if (uart_param_config(UART_PORT, &UART_CONFIG) != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to parameterize UART");
+		return false;
+	}
+
+	// Set GPIO pins for UART
+	if (!setUartGpios()) {
+		ESP_LOGE(TAG, "Failed to set the GPIOs for UART");
+		return false;
+	}
+
+	// Move every byte immediately from the HW FIFO to the RX buffer. Otherwise the driver waits
+	// until the FIFO threshold or the RX timeout (~10 byte times) is reached, which breaks the byte timeouts
+	uart_set_rx_full_threshold(UART_PORT, 1);
+	uart_set_rx_timeout(UART_PORT, 1);
+
+	return true;
+}
+
+bool KLine::setUartGpios()
+{
+	const auto result = uart_set_pin(UART_PORT, GPIO_TX, GPIO_RX, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE) == ESP_OK;
+
+	uart_flush_input(UART_PORT);
+
+	return result;
+}
+
+bool KLine::baud5Init()
+{
+	ESP_LOGI(TAG, "Starting 5-baud init");
+
+	send33Init();
+
+	ESP_LOGI(TAG, "Waiting for 0x55");
+
+	// Read 0x55
+	uint8_t firstResponse = 0;
+	const auto tmp = uart_read_bytes(UART_PORT, &firstResponse, 1, pdMS_TO_TICKS(300));
+	if (tmp != 1 || firstResponse != 0x55) {
+		ESP_LOGI(TAG, "%d", tmp);
+		ESP_LOGE(TAG, "Didn't receive 0x55 answer from ECU during init!");
+		return false;
+	}
+
+	ESP_LOGI(TAG, "Waiting for 0x808");
+
+	// Read 0x0808
+	uint8_t secondResponse[2] = {};
+	if (uart_read_bytes(UART_PORT, &secondResponse, 2, pdMS_TO_TICKS(WAIT_FOR_ANSWER_TIMEOUT_MS)) != 2 ||
+		secondResponse[0] != 0x08 || secondResponse[1] != 0x08) {
+		ESP_LOGE(TAG, "Didn't receive 0x0808 answer from ECU during init!");
+		return false;
+	}
+
+	// Transmit 0xF7
+	vTaskDelay(pdMS_TO_TICKS(DELAY_BETWEEN_TX_MESSAGES_MS));
+	if (!transmit({0xF7})) {
+		ESP_LOGE(TAG, "Failed to send 0xF7 to ECU during init!");
+		return false;
+	}
+	receiveEcho({0xF7});
+
+	// Read 0xCC
+	uint8_t thirdResponse = 0;
+	if (uart_read_bytes(UART_PORT, &thirdResponse, 1, pdMS_TO_TICKS(WAIT_FOR_ANSWER_TIMEOUT_MS)) != 1 ||
+		thirdResponse != 0xCC) {
+		ESP_LOGE(TAG, "Didn't receive 0xCC answer from ECU during init!");
+		return false;
+	}
+
+	return true;
+}
+
+void KLine::send33Init()
+{
+	// Reclaim GPIO
+	gpio_set_level(GPIO_TX, 1);
+	gpio_set_direction(GPIO_TX, GPIO_MODE_OUTPUT);
+
+	// Send start bit
+	vTaskDelay(pdMS_TO_TICKS(300)); // Needed before the start bit
+	gpio_set_level(GPIO_TX, 0);
+	vTaskDelay(pdMS_TO_TICKS(1000 / 5)); // Wait 200ms = 5-baud
+
+	ESP_LOGI(TAG, "Transmitting 0x33");
+
+	const uint8_t initVal = 0x33;
+	TickType_t ticks = xTaskGetTickCount();
+	for (uint8_t i = 0; i < 8; i++) {
+		gpio_set_level(GPIO_TX, initVal & (0b00000001 << i));
+		vTaskDelayUntil(&ticks, pdMS_TO_TICKS(1000 / 5)); // Wait 200ms = 5-baud
+	}
+
+	ESP_LOGI(TAG, "Finished transmitting 0x33");
+	vTaskDelayUntil(&ticks, pdMS_TO_TICKS(300));
+
+	// Send stop bit
+	gpio_set_level(GPIO_TX, 1);
+
+	// Return GPIOs
+	setUartGpios();
+}
+
+void KLine::klineTask(void* p_param)
+{
 	auto kline = static_cast<KLine*>(p_param);
 
-	KLineMessage message;
+	Request* request = nullptr;
 	while (true) {
-		if (xQueueReceive(kline->pendingMessagesQueue_, &message, portMAX_DELAY) != pdTRUE) {
+		if (xQueueReceive(kline->requestQueue_, &request, pdMS_TO_TICKS(KEEP_ALIVE_TIME_MS)) != pdTRUE) {
+			KLineMessage keepAlive(0x3F);
+			kline->send(keepAlive, nullptr);
 			continue;
 		}
 
-		kline->sendEachByte(message);
+		KLineMessage response = kline->process(*request);
 
-		// Wait until echo and new message were received
-		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+		if (response != KLineMessage() && request->callback) {
+			request->callback(response);
+		}
 
-		// Wait before sending again
+		delete (request);
+		request = nullptr;
+
+		// Wait before sending the next request
 		vTaskDelay(pdMS_TO_TICKS(DELAY_BETWEEN_TX_MESSAGES_MS));
 	}
 }
 
-void KLine::sendEachByte(KLineMessage& message)
+KLineMessage KLine::process(Request& request)
 {
-	const auto rawMessage = message.getRaw();
+	const auto rawRequest = request.message.getRaw();
 
-	echo_ = message;
+	uart_flush_input(UART_PORT);
 
-	for (const auto& b : rawMessage) {
-		uart_write_bytes(UART_PORT, &b, 1);
-		uart_wait_tx_done(UART_PORT, pdMS_TO_TICKS(DELAY_BETWEEN_TX_BYTES_MS));
-		vTaskDelay(pdMS_TO_TICKS(DELAY_BETWEEN_TX_BYTES_MS));
+	if (!transmit(rawRequest)) {
+		ESP_LOGW(TAG, "Failed to send %s", request.message.toString().c_str());
+		return KLineMessage();
 	}
+
+	if (!receiveEcho(rawRequest)) {
+		ESP_LOGW(TAG, "Echo mismatch for %s", request.message.toString().c_str());
+		return KLineMessage();
+	}
+
+	return receiveResponse();
 }
 
-void KLine::uartRxTask(void* p_param)
+bool KLine::transmit(const std::vector<uint8_t>& raw)
 {
-	if (p_param == nullptr) {
-		vTaskDelete(nullptr);
+	if (uart_write_bytes(UART_PORT, raw.data(), raw.size()) != raw.size()) {
+		return false;
 	}
 
-	KLine* kline = static_cast<KLine*>(p_param);
-	uart_event_t event;
+	if (uart_wait_tx_done(UART_PORT, pdMS_TO_TICKS(TX_BYTE_TIMEOUT_MS)) != ESP_OK) {
+		return false;
+	}
 
-	while (true) {
-		if (xQueueReceive(kline->uartQueueHandle_, &event, portMAX_DELAY) == pdFALSE) {
-			continue;
-		}
+	return true;
+}
 
-		switch (event.type) {
-			case UART_DATA: {
-				xTimerStop(kline->waitForAnswerTimeout_, 0);
+bool KLine::receiveEcho(const std::vector<uint8_t>& rawRequest)
+{
+	std::vector<uint8_t> echo(rawRequest.size());
 
-				// Pull received data
-				std::vector<uint8_t> fragment(event.size);
-				uart_read_bytes(UART_PORT, fragment.data(), event.size, portMAX_DELAY);
+	const int bytesRead = uart_read_bytes(UART_PORT, echo.data(), echo.size(), pdMS_TO_TICKS(ECHO_TIMEOUT_MS));
+	if (bytesRead != rawRequest.size()) {
+		return false;
+	}
 
-				// Add it to the other fragments
-				for (const auto& b : fragment) {
-					kline->rxMessageFragments_.push_back(b);
-				}
+	// ESP_LOGD(TAG, "Received possible echo");
 
-				// Check if it was the end of a message
-				if (!kline->isDataAMessage(kline->rxMessageFragments_)) {
-					xTimerStart(kline->waitForByteTimeout_, 0);
-					continue;
-				}
-				xTimerStop(kline->waitForByteTimeout_, 0);
+	return echo == rawRequest;
+}
 
-				KLineMessage m;
-				m.fromRaw(kline->rxMessageFragments_);
+KLineMessage KLine::receiveResponse()
+{
+	std::vector<uint8_t> raw(1);
 
-				// Ignore echo
-				if (kline->echo_ == m) {
-					kline->echo_ = KLineMessage();
-					kline->rxMessageFragments_.clear();
+	// First byte contains the length
+	if (uart_read_bytes(UART_PORT, raw.data(), 1, pdMS_TO_TICKS(WAIT_FOR_ANSWER_TIMEOUT_MS)) != 1) {
+		return KLineMessage();
+	}
 
-					xTimerStart(kline->waitForAnswerTimeout_, 0);
+	// Check if length is valid
+	const uint8_t length = (raw[0] >> 4) & 0b1111;
+	if (length < 4) {
+		ESP_LOGW(TAG, "Response with invalid length %d", length);
+		return KLineMessage();
+	}
 
-					return;
-				}
-
-				// TODO
-				// notify decoder task
-				kline->rxMessageFragments_.clear();
-			} break;
-
-			case UART_FIFO_OVF:
-			case UART_BUFFER_FULL: {
-				ESP_LOGW(TAG, "UART Buffer Overlow. Flushing");
-
-				uart_flush_input(UART_PORT);
-
-				xQueueReset(kline->uartQueueHandle_);
-				kline->rxMessageFragments_.clear();
-			} break;
-
-			default:
-				break;
+	// Read the rest of the response
+	raw.resize(length + 1);
+	for (uint8_t i = 1; i <= length; i++) {
+		if (uart_read_bytes(UART_PORT, &raw[i], 1, pdMS_TO_TICKS(WAIT_FOR_BYTE_TIMEOUT_MS)) != 1) {
+			ESP_LOGW(TAG, "Incomplete response, got %d of %d bytes", i, length + 1);
+			return KLineMessage();
 		}
 	}
-}
 
-bool KLine::isDataAMessage(std::vector<uint8_t>& data)
-{
-	KLineMessage m;
-	return m.fromRaw(data);
-}
+	KLineMessage response;
+	if (!response.fromRaw(raw)) {
+		return KLineMessage();
+	}
 
-void KLine::noAnswerReceived(TimerHandle_t p_timer)
-{
-	auto kline = static_cast<KLine*>(pvTimerGetTimerID(p_timer));
+	ESP_LOGI(TAG, "Received response: %s", response.toString().c_str());
 
-	kline->echo_ = KLineMessage();
-	kline->rxMessageFragments_.clear();
-
-	xTaskNotifyGive(kline->txTaskHandle_);
+	return response;
 }
 
 // TODO:
-// - Decoder Task, der die korrekte Message entgegen nimmt, den txTask notified und den observer benachrichtigt
-// - Init Fehlt (welcher den txTaskHandle und rxTaskHandle setzt)
-// - Code überarbeiten und besser strukturieren, benennen etc
+// - 5 Baud Init

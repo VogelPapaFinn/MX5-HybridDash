@@ -1,30 +1,17 @@
 #pragma once
 
-// Project includes
-
 // C++ includes
-#include <format>
+#include <cstdint>
 #include <functional>
-#include <list>
-#include <map>
 #include <vector>
 
+// Project includes
+#include "KLine/KLineMessage.hpp"
 
 // espidf includes
-#include "KLine/KLineMessage.hpp"
 #include "freertos/FreeRTOS.h"
-
-
-/*
- *	constexpr
- */
-constexpr uint16_t INTERNAL_BUFFER_SIZE_RX = 64;
-
-constexpr uint8_t MIN_MESSAGE_LENGTH_B = 5;
-
-constexpr uint8_t SID_RDBI = 0x22; // Read Data By Identifier
-constexpr uint8_t SID_READ_FLASH = 0x23; // Unknown SID, but used for reading the ECU ID
-constexpr uint8_t SID_RESPONSE = 0x40;
+#include "freertos/queue.h"
+#include "freertos/task.h"
 
 /*
  *	Class
@@ -36,36 +23,42 @@ public:
 
 	~KLine();
 
-	bool send(KLineMessage& message, std::function<void()>* rxCb);
+	bool init();
+
+	bool send(const KLineMessage& message, std::function<void(KLineMessage&)> rxCb);
 
 private:
+	struct Request
+	{
+		KLineMessage message;
+		std::function<void(KLineMessage&)> callback;
+	};
+
 	/*
 	 *	Private Functions
 	 */
-	static void uartTxTask(void* p_param);
-	void sendEachByte(KLineMessage& message);
+	bool setupUart();
+	bool setUartGpios();
 
-	static void uartRxTask(void* p_param);
-	bool isDataAMessage(std::vector<uint8_t>& data);
+	//! \note Not working with TJA1021 but not needed for communication!
+	bool baud5Init();
+	void send33Init();
 
-	static void noAnswerReceived(TimerHandle_t p_timer);
+	static void klineTask(void* p_param);
+
+	KLineMessage process(Request& request);
+
+	bool transmit(const std::vector<uint8_t>& raw);
+
+	bool receiveEcho(const std::vector<uint8_t>& raw);
+
+	KLineMessage receiveResponse();
 
 	/*
 	 *	Private Variables
 	 */
 	bool initialized_ = false;
 
-	QueueHandle_t uartQueueHandle_ = nullptr;
-
-	TimerHandle_t waitForAnswerTimeout_ = nullptr;
-	TimerHandle_t waitForByteTimeout_ = nullptr;
-
-	TaskHandle_t txTaskHandle_ = nullptr;
-	TaskHandle_t rxTaskHandle_ = nullptr;
-	std::vector<uint8_t> rxMessageFragments_;
-
-	KLineMessage echo_;
-
-	QueueHandle_t pendingMessagesQueue_ = nullptr;
-	std::map<KLineMessage, std::function<void()>*> observers_;
+	TaskHandle_t taskHandle_ = nullptr;
+	QueueHandle_t requestQueue_ = nullptr;
 };
