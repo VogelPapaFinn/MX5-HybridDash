@@ -3,6 +3,7 @@
 // Project includes
 #include "Can.hpp"
 #include "Config.hpp"
+#include "Driver/Display.hpp"
 #include "StateMachine/State.hpp"
 
 // espidf includes
@@ -11,7 +12,7 @@
 class Startup : public State
 {
 public:
-	Startup(Filesystem* p_fs, Config* p_config, Can* p_can);
+	Startup(Filesystem* p_fs, Config* p_config, Can* p_can, std::vector<Display>* p_displays);
 
 	void enter() override;
 
@@ -35,4 +36,5 @@ private:
 	Filesystem* fs_ = nullptr;
 	Config* config_ = nullptr;
 	Can* can_ = nullptr;
+	std::vector<Display>* displays_ = nullptr;
 };

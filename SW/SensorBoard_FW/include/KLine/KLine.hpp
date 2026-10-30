@@ -14,13 +14,6 @@
 #include "freertos/task.h"
 
 /*
- *	constexpr
- */
-constexpr uint8_t SID_RDBI = 0x22; // Read Data By Identifier
-constexpr uint8_t SID_READ_FLASH = 0x23; // Unknown SID, but used for reading the ECU ID
-constexpr uint8_t SID_RESPONSE = 0x40;
-
-/*
  *	Class
  */
 class KLine
@@ -29,6 +22,8 @@ public:
 	KLine();
 
 	~KLine();
+
+	bool init();
 
 	bool send(const KLineMessage& message, std::function<void(KLineMessage&)> rxCb);
 
@@ -43,6 +38,11 @@ private:
 	 *	Private Functions
 	 */
 	bool setupUart();
+	bool setUartGpios();
+
+	//! \note Not working with TJA1021 but not needed for communication!
+	bool baud5Init();
+	void send33Init();
 
 	static void klineTask(void* p_param);
 

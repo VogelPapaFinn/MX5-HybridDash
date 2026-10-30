@@ -18,11 +18,12 @@ constexpr auto CONFIG_NAME = "config.json";
 /*
  *   Public Function Implementations
  */
-Startup::Startup(Filesystem* p_fs, Config* p_config, Can* p_can)
+Startup::Startup(Filesystem* p_fs, Config* p_config, Can* p_can, std::vector<Display>* p_displays)
 {
 	fs_ = p_fs;
 	config_ = p_config;
 	can_ = p_can;
+	displays_ = p_displays;
 }
 
 void Startup::enter()
@@ -32,6 +33,11 @@ void Startup::enter()
 	// Activate CAN
 	can_->initialize();
 	can_->enable();
+
+	// Start displays
+	for (auto& d : *displays_) {
+		d.turnOn();
+	}
 
 	// Load config
 	if (!loadConfig()) {

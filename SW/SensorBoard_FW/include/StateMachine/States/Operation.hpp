@@ -1,6 +1,7 @@
 #pragma once
 
 // Project includes
+#include "KLine/KLine.hpp"
 #include "Sensors/HwSensorReader.hpp"
 #include "Sensors/SensorBroadcaster.hpp"
 #include "Sensors/SensorLogger.hpp"
@@ -13,7 +14,8 @@
 class Operation : public State
 {
 public:
-	Operation(HwSensorReader* p_hwSensorReader, SensorLogger* p_sensorLogger, SensorBroadcaster* p_sensorBroadcast);
+	Operation(HwSensorReader* p_hwSensorReader, SensorLogger* p_sensorLogger, SensorBroadcaster* p_sensorBroadcast,
+			  KLine* p_kline);
 
 	void enter() override;
 
@@ -23,4 +25,5 @@ private:
 	HwSensorReader* hwSensorReader_ = nullptr;
 	SensorLogger* sensorLogger_ = nullptr;
 	SensorBroadcaster* sensorBroadcaster_ = nullptr;
+	KLine* kline_ = nullptr;
 };
