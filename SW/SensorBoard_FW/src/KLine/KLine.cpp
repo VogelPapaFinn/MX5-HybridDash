@@ -224,9 +224,7 @@ void KLine::klineTask(void* p_param)
 
 	Request* request = nullptr;
 	while (true) {
-		if (xQueueReceive(kline->requestQueue_, &request, pdMS_TO_TICKS(KEEP_ALIVE_TIME_MS)) != pdTRUE) {
-			KLineMessage keepAlive(0x3F);
-			kline->send(keepAlive, nullptr);
+		if (xQueueReceive(kline->requestQueue_, &request, portMAX_DELAY) != pdTRUE) {
 			continue;
 		}
 
