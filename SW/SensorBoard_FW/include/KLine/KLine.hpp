@@ -1,27 +1,21 @@
 #pragma once
 
-// Project includes
-
 // C++ includes
-#include <format>
+#include <cstdint>
 #include <functional>
-#include <list>
-#include <map>
 #include <vector>
 
+// Project includes
+#include "KLine/KLineMessage.hpp"
 
 // espidf includes
-#include "KLine/KLineMessage.hpp"
 #include "freertos/FreeRTOS.h"
-
+#include "freertos/queue.h"
+#include "freertos/task.h"
 
 /*
  *	constexpr
  */
-constexpr uint16_t INTERNAL_BUFFER_SIZE_RX = 64;
-
-constexpr uint8_t MIN_MESSAGE_LENGTH_B = 5;
-
 constexpr uint8_t SID_RDBI = 0x22; // Read Data By Identifier
 constexpr uint8_t SID_READ_FLASH = 0x23; // Unknown SID, but used for reading the ECU ID
 constexpr uint8_t SID_RESPONSE = 0x40;
@@ -32,40 +26,50 @@ constexpr uint8_t SID_RESPONSE = 0x40;
 class KLine
 {
 public:
+	enum class Result
+	{
+		Ok,
+		TxFailed, // Could not write the request to the UART
+		EchoMismatch, // Echo differs from the request (collision on the bus)
+		NoResponse, // ECU did not answer within P2max
+		InvalidResponse, // Incomplete response or checksum mismatch
+	};
+
+	// Called from the KLine task, so keep it short and don't block
+	using ResponseCallback = std::function<void(Result result, const KLineMessage& response)>;
+
 	KLine();
 
 	~KLine();
 
-	bool send(KLineMessage& message, std::function<void()>* rxCb);
+	// Queues a request. The callback is called once the ECU answered or the request failed
+	bool send(const KLineMessage& message, ResponseCallback rxCb);
 
 private:
+	struct Request
+	{
+		KLineMessage message;
+		ResponseCallback callback;
+	};
+
 	/*
 	 *	Private Functions
 	 */
-	static void uartTxTask(void* p_param);
-	void sendEachByte(KLineMessage& message);
+	static void klineTask(void* p_param);
 
-	static void uartRxTask(void* p_param);
-	bool isDataAMessage(std::vector<uint8_t>& data);
+	Result process(Request& request, KLineMessage& response);
 
-	static void noAnswerReceived(TimerHandle_t p_timer);
+	bool transmit(const std::vector<uint8_t>& raw);
+
+	bool receiveEcho(const std::vector<uint8_t>& raw);
+
+	Result receiveResponse(KLineMessage& response);
 
 	/*
 	 *	Private Variables
 	 */
 	bool initialized_ = false;
 
-	QueueHandle_t uartQueueHandle_ = nullptr;
-
-	TimerHandle_t waitForAnswerTimeout_ = nullptr;
-	TimerHandle_t waitForByteTimeout_ = nullptr;
-
-	TaskHandle_t txTaskHandle_ = nullptr;
-	TaskHandle_t rxTaskHandle_ = nullptr;
-	std::vector<uint8_t> rxMessageFragments_;
-
-	KLineMessage echo_;
-
-	QueueHandle_t pendingMessagesQueue_ = nullptr;
-	std::map<KLineMessage, std::function<void()>*> observers_;
+	TaskHandle_t taskHandle_ = nullptr;
+	QueueHandle_t requestQueue_ = nullptr; // Holds Request*
 };
