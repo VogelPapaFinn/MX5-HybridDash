@@ -91,17 +91,16 @@ void SwSensorReader::readSensors(void* p_param)
 												 return;
 											 }
 
-
 											 // Check payload length
 											 const auto payload = response.getPayload();
-											 if (payload.size() != sensor.byteCount) {
+											 if (payload.size() - 2 != sensor.byteCount) { // PID = 2 byte
 												 return;
 											 }
 
 											 // Extract raw sensor value
 											 uint16_t rawValue = 0;
 											 uint8_t i = payload.size();
-											 for (const auto& b : response.getPayload()) {
+											 for (const auto& b : payload) {
 												 rawValue += (b << ((i - 1) * 8));
 
 												 i--;

@@ -169,12 +169,12 @@ void SensorLogger::logTask(void* p_param)
 
 		counter++;
 
+		ESP_LOGI(TAG, "Added line to log: %s", row.c_str());
+
 		// Only flush to the actual file every 10th time
 		if (counter < 10) {
 			continue;
 		}
-
-		ESP_LOGI(TAG, "Added line to log: %s", row.c_str());
 
 		fflush(sensorLogger->csvFile_);
 		fsync(fileno(sensorLogger->csvFile_));
