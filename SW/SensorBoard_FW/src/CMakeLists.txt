@@ -24,6 +24,7 @@ set(FILES
 
         # Sensors
         "Sensors/HwSensorReader.cpp"
+        "Sensors/SwSensorReader.cpp"
         "Sensors/SensorValues.cpp"
         "Sensors/SensorLogger.cpp"
         "Sensors/SensorBroadcaster.cpp"
