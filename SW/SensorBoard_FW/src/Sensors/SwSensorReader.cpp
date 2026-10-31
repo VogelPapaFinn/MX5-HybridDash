@@ -91,9 +91,18 @@ void SwSensorReader::readSensors(void* p_param)
 												 return;
 											 }
 
+											 // Check PID
+											 auto payload = response.getPayload();
+											 if (payload.size() <= 2 || payload.at(0) != (sensor.pid >> 8) ||
+												 payload.at(1) != (sensor.pid & 0xFF)) {
+												 return;
+											 }
+
+											 // Remove the pid
+											 payload.erase(payload.begin(), payload.begin() + 2);
+
 											 // Check payload length
-											 const auto payload = response.getPayload();
-											 if (payload.size() - 2 != sensor.byteCount) { // PID = 2 byte
+											 if (payload.size() != sensor.byteCount) {
 												 return;
 											 }
 
