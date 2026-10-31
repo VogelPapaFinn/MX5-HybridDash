@@ -47,7 +47,8 @@ inline constexpr NumericalSensor SW_NUMERICAL_SENSORS[] = {
 	{SENSOR::ECU_PRE_CAT_LAMBDA_V, 0x1795, 1,
 	 [](const uint16_t raw) { return static_cast<double>(raw) * (5.0 / 1024.0); }, UNIT_VOLT},
 
-	{SENSOR::ECU_RPM, 0x1738, 2, [](const uint16_t raw) { return static_cast<double>(raw) * (1000 / 1024); }, "RPM"},
+	{SENSOR::ECU_RPM, 0x1738, 2, [](const uint16_t raw) { return static_cast<double>(raw) * (1000.0 / 1024.0); },
+	 "RPM"},
 
 	{SENSOR::ECU_ADVANCED_IGNITION_D, 0x1743, 2,
 	 [](const uint16_t raw) { return static_cast<double>(raw - 85) * (60.0 / 256.0); }, UNIT_DEGREE},
@@ -79,3 +80,17 @@ inline constexpr NumericalSensor SW_NUMERICAL_SENSORS[] = {
 
 	{SENSOR::ECU_EGR_VALVE_POSITION, 0x1775, 1, [](const uint16_t raw) { return static_cast<double>(raw); }, "pos"},
 };
+
+/*
+ *	Helper function
+ */
+inline NumericalSensor getNumericalSensor(const SENSOR& type)
+{
+	for (auto& sensor : SW_NUMERICAL_SENSORS) {
+		if (sensor.id == type) {
+			return sensor;
+		}
+	}
+
+	return NumericalSensor();
+}

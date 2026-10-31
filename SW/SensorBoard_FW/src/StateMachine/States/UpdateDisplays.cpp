@@ -15,13 +15,16 @@
  */
 constexpr auto TAG = "UpdateDisplays";
 
+constexpr uint8_t HTTP_WORKER_COUNT = 3; // One per display
+constexpr uint32_t HTTP_WORKER_STACK_SIZE = 6144; // Contains the 1 KB chunk buffer
+
 /*
  *	Static Functions
  */
 void doAt3Call(const std::function<void()>& cb)
 {
 	static uint8_t s_counter = 0;
-	if (++s_counter >= 1) {
+	if (++s_counter >= 3) {
 		s_counter = 0;
 		cb();
 		return;
@@ -208,6 +211,7 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 			doAt3Call(
 				[this]()
 				{
+					ESP_LOGI(TAG, "All display executed the update. Rebooting.");
 					fs_->deleteFile("display_update.bin", Filesystem::DATA_PARTITION);
 					esp_restart();
 				});
@@ -258,64 +262,100 @@ void UpdateDisplays::startWifiAP()
  */
 bool UpdateDisplays::startWebserver()
 {
+	// Workers must be ready before the first request can arrive
+	if (!startHttpWorkers()) {
+		return false;
+	}
+
 	// Start server
 	if (httpd_start(&webserver_, &webserverConfig_) != ESP_OK) {
 		ESP_LOGW(TAG, "Failed to start Webserver");
 		return false;
 	}
 
-	// The handler that transmits the display_update.bin file
-	auto updateHandler = [](httpd_req_t* p_req) -> esp_err_t
-	{
-		if (p_req == nullptr || p_req->user_ctx == nullptr) {
-			return ESP_FAIL;
-		}
-
-		auto fs = static_cast<Filesystem*>(p_req->user_ctx);
-
-		// Open the display_update.bin file
-		FILE* updateFile = fs->openFile("display_update.bin", "r", Filesystem::DATA_PARTITION);
-		if (updateFile == nullptr) {
-			httpd_resp_send_err(p_req, HTTPD_404_NOT_FOUND, "display_update.bin not found");
-			return ESP_FAIL;
-		}
-
-		// Set answer type (binary)
-		httpd_resp_set_type(p_req, "application/octet-stream");
-
-		// Send in chunks
-		static char s_fileChunk[1024]; // static: der httpd-Task hat nur ~4 KB Stack
-		size_t chunkSize = 0;
-		do {
-			chunkSize = fread(s_fileChunk, 1, sizeof(s_fileChunk), updateFile);
-
-			if (chunkSize <= 0) {
-				continue;
-			}
-
-			// Send
-			if (httpd_resp_send_chunk(p_req, s_fileChunk, chunkSize) != ESP_OK) {
-				// ERRPR
-				fclose(updateFile);
-				return ESP_FAIL;
-			}
-		}
-		while (chunkSize != 0);
-
-		// Finished
-		fclose(updateFile);
-		httpd_resp_send_chunk(p_req, nullptr, 0); // Empty packet = Client knows transmission is completed
-		return ESP_OK;
-	};
-
 	// Register URI
 	updateUri_ = {.uri = "/display_update.bin",
 				  .method = HTTP_GET,
-				  .handler = updateHandler,
-				  .user_ctx = fs_,
+				  .handler = updateRequestHandler,
+				  .user_ctx = this,
 				  .is_websocket = false};
 
 	return httpd_register_uri_handler(webserver_, &updateUri_) == ESP_OK;
+}
+
+bool UpdateDisplays::startHttpWorkers()
+{
+	httpRequestQueue_ = xQueueCreate(HTTP_WORKER_COUNT, sizeof(httpd_req_t*));
+	if (httpRequestQueue_ == nullptr) {
+		ESP_LOGE(TAG, "Failed to create HTTP request queue");
+		return false;
+	}
+
+	for (uint8_t i = 0; i < HTTP_WORKER_COUNT; i++) {
+		if (xTaskCreate(httpWorkerTask, "HttpWorker", HTTP_WORKER_STACK_SIZE, this, 2, nullptr) != pdPASS) {
+			ESP_LOGE(TAG, "Failed to start Task \'HttpWorker\' %u", i);
+			return false;
+		}
+	}
+
+	return true;
+}
+
+esp_err_t UpdateDisplays::updateRequestHandler(httpd_req_t* p_req)
+{
+	if (p_req == nullptr || p_req->user_ctx == nullptr) {
+		return ESP_FAIL;
+	}
+
+	auto state = static_cast<UpdateDisplays*>(p_req->user_ctx);
+
+	// Create a copy of the request that outlives this handler
+	httpd_req_t* asyncReq = nullptr;
+	if (httpd_req_async_handler_begin(p_req, &asyncReq) != ESP_OK) {
+		ESP_LOGW(TAG, "Failed to create async request");
+		return ESP_FAIL;
+	}
+
+	// Hand it over to a worker
+	if (xQueueSend(state->httpRequestQueue_, &asyncReq, 0) != pdTRUE) {
+		ESP_LOGW(TAG, "All HTTP workers busy, rejecting request");
+
+		// Release the copy, answer on the original request
+		httpd_req_async_handler_complete(asyncReq);
+		httpd_resp_send_err(p_req, HTTPD_500_INTERNAL_SERVER_ERROR, "Server busy");
+		return ESP_FAIL;
+	}
+
+	return ESP_OK;
+}
+
+esp_err_t UpdateDisplays::sendUpdateFile(httpd_req_t* p_req)
+{
+	// Open the display_update.bin file (every worker has its own FILE*)
+	FILE* updateFile = fs_->openFile("display_update.bin", "r", Filesystem::DATA_PARTITION);
+	if (updateFile == nullptr) {
+		httpd_resp_send_err(p_req, HTTPD_404_NOT_FOUND, "display_update.bin not found");
+		return ESP_FAIL;
+	}
+
+	// Set answer type (binary)
+	httpd_resp_set_type(p_req, "application/octet-stream");
+
+	// Send in chunks - buffer is local, because several workers send in parallel
+	char fileChunk[1024];
+	size_t chunkSize = 0;
+
+	while ((chunkSize = fread(fileChunk, 1, sizeof(fileChunk), updateFile)) > 0) {
+		if (httpd_resp_send_chunk(p_req, fileChunk, chunkSize) != ESP_OK) {
+			fclose(updateFile);
+			return ESP_FAIL;
+		}
+	}
+
+	// Finished
+	fclose(updateFile);
+	httpd_resp_send_chunk(p_req, nullptr, 0); // Empty packet = Client knows transmission is completed
+	return ESP_OK;
 }
 
 /*
@@ -590,5 +630,26 @@ void UpdateDisplays::canRxTask(void* p_param)
 		}
 
 		state->handleCanFrame(frame);
+	}
+}
+
+void UpdateDisplays::httpWorkerTask(void* p_param)
+{
+	if (p_param == nullptr) {
+		vTaskDelete(nullptr);
+	}
+
+	auto state = static_cast<UpdateDisplays*>(p_param);
+
+	httpd_req_t* req = nullptr;
+	while (true) {
+		if (xQueueReceive(state->httpRequestQueue_, &req, portMAX_DELAY) != pdTRUE) {
+			continue;
+		}
+
+		state->sendUpdateFile(req);
+
+		// Must be called on every path, otherwise the socket stays blocked
+		httpd_req_async_handler_complete(req);
 	}
 }

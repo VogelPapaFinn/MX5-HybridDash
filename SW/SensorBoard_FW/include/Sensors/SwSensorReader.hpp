@@ -1,6 +1,7 @@
 #pragma once
 
 // Project includes
+#include "KLine/KLine.hpp"
 #include "SensorValues.hpp"
 
 // espidf includes
@@ -10,7 +11,9 @@
 class SwSensorReader
 {
 public:
-	SwSensorReader(SensorValues* p_sensorValues);
+	SwSensorReader(KLine* p_kline, SensorValues* p_sensorValues);
+
+	~SwSensorReader();
 
 	void start();
 
@@ -31,7 +34,8 @@ private:
 	/*
 	 *	Private Variables
 	 */
-	TaskHandle_t readSensorsTask_ = nullptr;
-
+	KLine* kline_ = nullptr;
 	SensorValues* sensorValues_ = nullptr;
+
+	TaskHandle_t readSensorsTask_ = nullptr;
 };

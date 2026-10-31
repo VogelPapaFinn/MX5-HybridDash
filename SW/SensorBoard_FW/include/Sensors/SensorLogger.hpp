@@ -22,7 +22,7 @@ private:
 	/*
 	 *   Private Functions
 	 */
-	void createAndOpenFile();
+	bool createAndOpenFile();
 
 	int getFileIndex();
 

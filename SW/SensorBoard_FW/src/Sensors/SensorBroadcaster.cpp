@@ -73,14 +73,14 @@ void SensorBroadcaster::broadcastTask(void* p_param)
 		frame.answer = false;
 
 		// Build payload
-		frame.data[0] = sensorData.at(SENSOR::FUEL_LEVEL_P);
-		frame.data[1] = sensorData.at(SENSOR::OIL_PRESSURE_B);
-		frame.data[2] = sensorData.at(SENSOR::WATER_TEMP_C);
-		frame.data[3] = (sensorData.at(SENSOR::RPM) >> 8) & 0xFF;
-		frame.data[4] = (sensorData.at(SENSOR::RPM) >> 0) & 0xFF;
-		frame.data[5] = sensorData.at(SENSOR::SPEED);
-		frame.data[6] = sensorData.at(SENSOR::LEFT_INDICATOR);
-		frame.data[7] = sensorData.at(SENSOR::RIGHT_INDICATOR);
+		frame.data[0] = static_cast<uint8_t>(sensorData.at(SENSOR::FUEL_LEVEL_P));
+		frame.data[1] = static_cast<uint8_t>(sensorData.at(SENSOR::OIL_PRESSURE_B));
+		frame.data[2] = static_cast<uint8_t>(sensorData.at(SENSOR::WATER_TEMP_C));
+		frame.data[3] = (static_cast<uint8_t>(sensorData.at(SENSOR::RPM)) >> 8) & 0xFF;
+		frame.data[4] = (static_cast<uint8_t>(sensorData.at(SENSOR::RPM)) >> 0) & 0xFF;
+		frame.data[5] = static_cast<uint8_t>(sensorData.at(SENSOR::SPEED));
+		frame.data[6] = static_cast<uint8_t>(sensorData.at(SENSOR::LEFT_INDICATOR));
+		frame.data[7] = static_cast<uint8_t>(sensorData.at(SENSOR::RIGHT_INDICATOR));
 
 		// Transmit frame
 		sensorBroadcaster->can_->queueFrame(frame);

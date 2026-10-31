@@ -12,6 +12,8 @@ class HwSensorReader
 public:
 	HwSensorReader(adc_oneshot_unit_handle_t p_adc1, SensorValues* p_sensorValues);
 
+	~HwSensorReader();
+
 	void start();
 
 	void stop();

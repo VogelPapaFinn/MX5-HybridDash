@@ -5,7 +5,7 @@
     "editor.fontLigatures": true,
     "idf.currentSetup": "/opt/esp/idf",
     "idf.flashType": "UART",
-    "idf.port": "/dev/ttyACM1",
+    "idf.port": "/dev/ttyACM2",
     "idf.openOcdConfigs": [
         "board/esp32s3-builtin.cfg"
     ],

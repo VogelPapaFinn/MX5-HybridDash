@@ -23,6 +23,13 @@ public:
 
 	bool operator==(const KLineMessage& rhs) const;
 
+	/*
+	 *	Getter
+	 */
+	uint8_t getSid();
+
+	std::vector<uint8_t> getPayload();
+
 private:
 	/*
 	 *	Private Functions

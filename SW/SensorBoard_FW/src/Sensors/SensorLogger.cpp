@@ -8,10 +8,21 @@
  *	constexpr
  */
 constexpr auto TAG = "SensorLogger";
-constexpr auto SENSORS_TO_LOG = {
-	SENSOR::FUEL_LEVEL_R, SENSOR::FUEL_LEVEL_P,	  SENSOR::OIL_PRESSURE_R,  SENSOR::OIL_PRESSURE_B, SENSOR::WATER_TEMP_R,
-	SENSOR::WATER_TEMP_C, SENSOR::LEFT_INDICATOR, SENSOR::RIGHT_INDICATOR, SENSOR::SPEED,		   SENSOR::RPM,
-};
+constexpr auto SENSORS_TO_LOG = {SENSOR::FUEL_LEVEL_R,
+								 SENSOR::FUEL_LEVEL_P,
+								 SENSOR::OIL_PRESSURE_R,
+								 SENSOR::OIL_PRESSURE_B,
+								 SENSOR::WATER_TEMP_R,
+								 SENSOR::WATER_TEMP_C,
+								 SENSOR::LEFT_INDICATOR,
+								 SENSOR::RIGHT_INDICATOR,
+								 SENSOR::SPEED,
+								 SENSOR::RPM,
+								 SENSOR::ECU_COOLANT_C,
+								 SENSOR::ECU_COOLANT_V,
+								 SENSOR::ECU_INJECTION_MS,
+								 SENSOR::ECU_RPM,
+								 SENSOR::ECU_SPEED};
 
 /*
  *	Public Function Implementations
@@ -36,11 +47,13 @@ SensorLogger::~SensorLogger()
 /*
  *	Private Function Implementations
  */
-void SensorLogger::createAndOpenFile()
+bool SensorLogger::createAndOpenFile()
 {
 	// Build file name
 	csvPath_ = "SensorData_x.csv";
-	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(getFileIndex()));
+	const auto fileIndex = getFileIndex();
+	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(fileIndex));
+	ESP_LOGI(TAG, "Starting new log file with index %d", fileIndex);
 
 	increaseFileIndex();
 
@@ -49,8 +62,13 @@ void SensorLogger::createAndOpenFile()
 
 	// Open the file
 	csvFile_ = fs_->openFile(csvPath_, "w", Filesystem::SD_CARD);
+	if (csvFile_ == nullptr) {
+		return false;
+	}
 
 	printHeader();
+
+	return true;
 }
 
 int SensorLogger::getFileIndex()
@@ -78,10 +96,13 @@ void SensorLogger::increaseFileIndex()
 
 void SensorLogger::printHeader()
 {
+	std::string row = "";
 	for (const auto& sensor : SENSORS_TO_LOG) {
-		fprintf(csvFile_, "%s,", g_SENSOR_NAME.at(sensor).c_str());
+		row += g_SENSOR_NAME.at(sensor) + ",";
 	}
-	fprintf(csvFile_, ";\n");
+	fprintf(csvFile_, "%s;\n", row.c_str());
+
+	ESP_LOGI(TAG, "Log Header: %s", row.c_str());
 
 	fflush(csvFile_);
 	fsync(fileno(csvFile_));
@@ -89,7 +110,10 @@ void SensorLogger::printHeader()
 
 void SensorLogger::start()
 {
-	createAndOpenFile();
+	if (!createAndOpenFile()) {
+		ESP_LOGW(TAG, "Failed to create and open new log file");
+		return;
+	}
 
 	if (xTaskCreate(logTask, "LogTask", 4096, this, 2, &taskHandle_) == pdPASS) {
 		// Success
@@ -137,10 +161,11 @@ void SensorLogger::logTask(void* p_param)
 		auto sensorData = sensorLogger->sensorValues_->getSnapshot();
 
 		// Print data of all sensors
+		std::string row = "";
 		for (const auto& sensor : SENSORS_TO_LOG) {
-			fprintf(sensorLogger->csvFile_, "%d,", sensorData.at(sensor));
+			row += std::to_string(sensorData.at(sensor)) + ",";
 		}
-		fprintf(sensorLogger->csvFile_, ";\n");
+		fprintf(sensorLogger->csvFile_, "%s;\n", row.c_str());
 
 		counter++;
 
@@ -148,6 +173,8 @@ void SensorLogger::logTask(void* p_param)
 		if (counter < 10) {
 			continue;
 		}
+
+		ESP_LOGI(TAG, "Added line to log: %s", row.c_str());
 
 		fflush(sensorLogger->csvFile_);
 		fsync(fileno(sensorLogger->csvFile_));

@@ -50,7 +50,7 @@ extern "C" void app_main(void)
 
 	// Drivers
 	Filesystem fs(false, false);
-	Config config;
+	Config config(&fs);
 	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
 	GuiHandler guiHandler;
 

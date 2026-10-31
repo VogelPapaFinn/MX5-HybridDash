@@ -4,6 +4,7 @@
 #include "Filesystem.hpp"
 #include "KLine/KLine.hpp"
 #include "Sensors/HwSensorReader.hpp"
+#include "Sensors/SwSensorReader.hpp"
 #include "StateMachine/StateEvents.hpp"
 #include "StateMachine/StateMachine.hpp"
 #include "StateMachine/States/ConfigureDisplays.hpp"
@@ -70,23 +71,22 @@ extern "C" void app_main(void)
 	adc_oneshot_unit_handle_t adc1 = nullptr;
 	Config config(&fs);
 	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
-	std::vector<Display> displays = {
-		// Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
-		Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
-		// Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)
-	};
+	std::vector<Display> displays = {Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
+									 Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
+									 Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
 
 	initAdc1(&adc1);
 
 	// Object which holds all sensor values
 	SensorValues sensorValues;
 	HwSensorReader hwSensorReader(adc1, &sensorValues);
+	SwSensorReader swSensorReader(&kline, &sensorValues);
 	SensorLogger sensorLogger(&fs, &config, &sensorValues);
 	SensorBroadcaster sensorBroadcaster(&can, &sensorValues);
 
 	// States
 	Startup startupState(&fs, &config, &can, &displays);
-	Operation operationState(&hwSensorReader, &sensorLogger, &sensorBroadcaster, &kline);
+	Operation operationState(&hwSensorReader, &swSensorReader, &sensorLogger, &sensorBroadcaster, &kline);
 	UpdateDisplays updateDisplays(&fs, &config, &can, &displays);
 	ConfigureDisplays configureDisplays(&can, &config, &displays);
 

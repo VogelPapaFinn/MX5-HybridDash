@@ -36,6 +36,12 @@ HwSensorReader::HwSensorReader(adc_oneshot_unit_handle_t p_adc1, SensorValues* p
 	}
 }
 
+HwSensorReader::~HwSensorReader()
+{
+	stop();
+	gpio_uninstall_isr_service();
+}
+
 void HwSensorReader::start()
 {
 	startReadThread();

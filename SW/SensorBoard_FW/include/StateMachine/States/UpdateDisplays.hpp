@@ -38,6 +38,9 @@ private:
 
 	// STARTIN_WEBSERVER
 	bool startWebserver();
+	bool startHttpWorkers();
+	static esp_err_t updateRequestHandler(httpd_req_t* p_req);
+	esp_err_t sendUpdateFile(httpd_req_t* p_req);
 
 	// ENTERING_UPDATE_MODE
 	void enterUpdateMode();
@@ -66,6 +69,7 @@ private:
 	 *   Private Task Functions
 	 */
 	static void canRxTask(void* p_param);
+	static void httpWorkerTask(void* p_param);
 
 	/*
 	 *   Private Variables
@@ -97,6 +101,7 @@ private:
 	httpd_handle_t webserver_ = nullptr;
 	const httpd_config_t webserverConfig_ = HTTPD_DEFAULT_CONFIG();
 	httpd_uri_t updateUri_ = {};
+	QueueHandle_t httpRequestQueue_ = nullptr;
 
 	TimeoutTimer* timeoutTimer_ = nullptr;
 

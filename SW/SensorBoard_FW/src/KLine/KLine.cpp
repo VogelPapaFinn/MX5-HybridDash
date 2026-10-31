@@ -91,7 +91,7 @@ bool KLine::send(const KLineMessage& message, std::function<void(KLineMessage&)>
 		return false;
 	}
 
-	ESP_LOGI(TAG, "Sending request: %s", message.toString().c_str());
+	// ESP_LOGI(TAG, "Sending request: %s", message.toString().c_str());
 
 	auto request = new Request{message, std::move(rxCb)};
 	if (xQueueSend(requestQueue_, &request, portMAX_DELAY) != pdTRUE) {
@@ -318,7 +318,7 @@ KLineMessage KLine::receiveResponse()
 		return KLineMessage();
 	}
 
-	ESP_LOGI(TAG, "Received response: %s", response.toString().c_str());
+	// ESP_LOGI(TAG, "Received response: %s", response.toString().c_str());
 
 	return response;
 }
