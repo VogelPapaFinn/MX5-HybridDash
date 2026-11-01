@@ -108,7 +108,7 @@ int PassiveSensor::convertSampleToVoltage(const int sample)
 {
 	int voltage = 0;
 
-	if (adc_cali_raw_to_voltage(calibrationHandle_, sample, &voltage_) != ESP_OK) {
+	if (adc_cali_raw_to_voltage(calibrationHandle_, sample, &voltage) != ESP_OK) {
 		// Something went wrong
 		ESP_LOGW(TAG, "Couldn't convert adc channel %d value to voltage", channel_);
 		return 0;

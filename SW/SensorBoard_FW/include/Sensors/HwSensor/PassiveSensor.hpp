@@ -8,7 +8,7 @@ class PassiveSensor
 {
 public:
 	PassiveSensor(gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc,
-				  adc_unit_t unit = ADC_UNIT_2);
+				  adc_unit_t unit = ADC_UNIT_1);
 
 	void read();
 
