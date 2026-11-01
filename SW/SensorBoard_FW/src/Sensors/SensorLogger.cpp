@@ -169,7 +169,7 @@ void SensorLogger::logTask(void* p_param)
 
 		counter++;
 
-		ESP_LOGI(TAG, "Added line to log: %s", row.c_str());
+		// ESP_LOGI(TAG, "Added line to log: %s", row.c_str());
 
 		// Only flush to the actual file every 10th time
 		if (counter < 10) {
