@@ -78,6 +78,33 @@ void LogFileServer::stopWebserver()
 	webserver_ = nullptr;
 }
 
+bool LogFileServer::setMimeType(httpd_req_t* p_req, const std::string& filepath)
+{
+	// .csv
+	if (filepath.ends_with(".csv")) {
+		httpd_resp_set_type(p_req, "text/csv");
+		return true;
+	}
+
+	// .json
+	if (filepath.ends_with(".json")) {
+		httpd_resp_set_type(p_req, "text/json");
+		return true;
+	}
+
+	return ESP_FAIL;
+}
+
+Filesystem::Location LogFileServer::getFileLocation(const std::string& filepath)
+{
+	// .json
+	if (filepath.ends_with(".json")) {
+		return Filesystem::CONFIG_PARTITION;
+	}
+
+	return Filesystem::SD_CARD;
+}
+
 bool LogFileServer::transmitFile(httpd_req_t* p_req, FILE* p_file)
 {
 	if (p_file == nullptr) {
@@ -123,37 +150,35 @@ esp_err_t LogFileServer::csvDownloadHandler(httpd_req_t* p_req)
 	filepath = p_req->uri;
 	filepath.erase(filepath.begin(), filepath.begin() + 1); // Remove the leading '/'
 
-	// Check file type
-	if (!filepath.ends_with(".csv")) {
-		ESP_LOGW(TAG, "Requested file '%s' is not a .csv file!", filepath.c_str());
-		httpd_resp_send_404(p_req);
+	if (!server->setMimeType(p_req, filepath)) {
+		ESP_LOGW(TAG, "Requested file '%s' is not a vaild file type!", filepath.c_str());
 		return ESP_FAIL;
 	}
-	httpd_resp_set_type(p_req, "text/csv");
 
 	// Check if file exists
-	if (!server->fs_->doesFileExist(filepath, Filesystem::SD_CARD)) {
+	const auto partition = server->getFileLocation(filepath);
+	if (!server->fs_->doesFileExist(filepath, partition)) {
 		ESP_LOGW(TAG, "Couldn't find requested file: %s", filepath.c_str());
 		httpd_resp_send_404(p_req);
 		return ESP_FAIL;
 	}
 
 	// Open the file
-	FILE* csvFile = server->fs_->openFile(filepath, "r", Filesystem::SD_CARD);
-	if (csvFile == nullptr) {
+	FILE* file = server->fs_->openFile(filepath, "r", partition);
+	if (file == nullptr) {
 		ESP_LOGW(TAG, "Couldn't open requested file: %s", filepath.c_str());
 		httpd_resp_send_404(p_req);
 		return ESP_FAIL;
 	}
 
 	// Transmit the file
-	if (!server->transmitFile(p_req, csvFile)) {
-		fclose(csvFile);
+	if (!server->transmitFile(p_req, file)) {
+		fclose(file);
 		ESP_LOGW(TAG, "Failed to transmit requested file: %s", filepath.c_str());
 		return ESP_FAIL;
 	}
 
-	fclose(csvFile);
+	fclose(file);
 
 	return ESP_OK;
 }

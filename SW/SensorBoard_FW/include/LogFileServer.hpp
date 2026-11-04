@@ -27,6 +27,8 @@ private:
 	bool startWebserver();
 	void stopWebserver();
 
+	bool setMimeType(httpd_req_t* p_req, const std::string& filepath);
+	Filesystem::Location getFileLocation(const std::string& filepath);
 	bool transmitFile(httpd_req_t* p_req, FILE* p_file);
 
 	static esp_err_t csvDownloadHandler(httpd_req_t* p_req);
