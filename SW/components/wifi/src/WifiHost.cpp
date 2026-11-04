@@ -119,7 +119,8 @@ void WifiHost::stop()
 
 	esp_wifi_deinit();
 
-	esp_event_loop_delete_default();
 	esp_netif_deinit();
 	nvs_flash_deinit();
+
+	connected_ = false;
 }

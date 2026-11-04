@@ -11,6 +11,8 @@
 
 // espidf includes
 #include "esp_http_server.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 
 /*
  *	Class implementation
@@ -35,10 +37,13 @@ private:
 
 	// STARTING_AP
 	void startWifiAP();
+	void stopWifiAP();
 
 	// STARTIN_WEBSERVER
 	bool startWebserver();
+	void stopWebserver();
 	bool startHttpWorkers();
+	void stopHttpWorkers();
 	static esp_err_t updateRequestHandler(httpd_req_t* p_req);
 	esp_err_t sendUpdateFile(httpd_req_t* p_req);
 
@@ -102,6 +107,8 @@ private:
 	const httpd_config_t webserverConfig_ = HTTPD_DEFAULT_CONFIG();
 	httpd_uri_t updateUri_ = {};
 	QueueHandle_t httpRequestQueue_ = nullptr;
+	SemaphoreHandle_t httpWorkersStopped_ = nullptr;
+	uint8_t httpWorkerCount_ = 0;
 
 	TimeoutTimer* timeoutTimer_ = nullptr;
 

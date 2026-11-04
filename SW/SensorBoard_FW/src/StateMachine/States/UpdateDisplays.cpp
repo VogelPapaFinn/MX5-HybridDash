@@ -69,7 +69,11 @@ void UpdateDisplays::quit()
 
 	substate_ = UNDEFINED;
 
+	// Stop webserver & Wifi
+	stopWebserver();
+	stopWifiAP();
 	unregisterWifiEventHandlers();
+
 	stopCanRxTask();
 
 	restartDisplays();
@@ -257,6 +261,8 @@ void UpdateDisplays::startWifiAP()
 	wifi_.start();
 }
 
+void UpdateDisplays::stopWifiAP() { wifi_.stop(); }
+
 /*
  *	STARTING_WEBSERVER
  */
@@ -283,6 +289,22 @@ bool UpdateDisplays::startWebserver()
 	return httpd_register_uri_handler(webserver_, &updateUri_) == ESP_OK;
 }
 
+void UpdateDisplays::stopWebserver()
+{
+	// No new requests from here on
+	if (webserver_ != nullptr) {
+		httpd_unregister_uri(webserver_, updateUri_.uri);
+	}
+
+	// Workers must be gone before httpd_stop, because their async requests reference the sessions of the server
+	stopHttpWorkers();
+
+	if (webserver_ != nullptr) {
+		httpd_stop(webserver_);
+		webserver_ = nullptr;
+	}
+}
+
 bool UpdateDisplays::startHttpWorkers()
 {
 	httpRequestQueue_ = xQueueCreate(HTTP_WORKER_COUNT, sizeof(httpd_req_t*));
@@ -291,14 +313,47 @@ bool UpdateDisplays::startHttpWorkers()
 		return false;
 	}
 
+	httpWorkersStopped_ = xSemaphoreCreateCounting(HTTP_WORKER_COUNT, 0);
+	if (httpWorkersStopped_ == nullptr) {
+		ESP_LOGE(TAG, "Failed to create HTTP worker semaphore");
+		return false;
+	}
+
 	for (uint8_t i = 0; i < HTTP_WORKER_COUNT; i++) {
 		if (xTaskCreate(httpWorkerTask, "HttpWorker", HTTP_WORKER_STACK_SIZE, this, 2, nullptr) != pdPASS) {
 			ESP_LOGE(TAG, "Failed to start Task \'HttpWorker\' %u", i);
 			return false;
 		}
+
+		httpWorkerCount_++;
 	}
 
 	return true;
+}
+
+void UpdateDisplays::stopHttpWorkers()
+{
+	// Queue is FIFO: Requests that are already queued get served before a worker sees its stop signal
+	httpd_req_t* stopSignal = nullptr;
+	for (uint8_t i = 0; i < httpWorkerCount_; i++) {
+		xQueueSend(httpRequestQueue_, &stopSignal, portMAX_DELAY);
+	}
+
+	// Wait for running transfers. Terminates, as a send to an unresponsive client fails after its timeout
+	for (uint8_t i = 0; i < httpWorkerCount_; i++) {
+		xSemaphoreTake(httpWorkersStopped_, portMAX_DELAY);
+	}
+	httpWorkerCount_ = 0;
+
+	if (httpWorkersStopped_ != nullptr) {
+		vSemaphoreDelete(httpWorkersStopped_);
+		httpWorkersStopped_ = nullptr;
+	}
+
+	if (httpRequestQueue_ != nullptr) {
+		vQueueDelete(httpRequestQueue_);
+		httpRequestQueue_ = nullptr;
+	}
 }
 
 esp_err_t UpdateDisplays::updateRequestHandler(httpd_req_t* p_req)
@@ -645,6 +700,12 @@ void UpdateDisplays::httpWorkerTask(void* p_param)
 	while (true) {
 		if (xQueueReceive(state->httpRequestQueue_, &req, portMAX_DELAY) != pdTRUE) {
 			continue;
+		}
+
+		// Stop signal from stopHttpWorkers()
+		if (req == nullptr) {
+			xSemaphoreGive(state->httpWorkersStopped_);
+			vTaskDelete(nullptr);
 		}
 
 		state->sendUpdateFile(req);
