@@ -34,11 +34,12 @@ void doAt3Call(const std::function<void()>& cb)
 /*
  *   Public Function Implementations
  */
-UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, std::vector<Display>* p_displays) :
-	CanReceiver(p_can)
+UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, WifiHost* p_wifiHost,
+							   std::vector<Display>* p_displays) : CanReceiver(p_can)
 {
 	fs_ = p_fs;
 	config_ = p_config;
+	wifi_ = p_wifiHost;
 	displays_ = p_displays;
 
 	esp_log_level_set(TAG, ESP_LOG_DEBUG);
@@ -112,14 +113,14 @@ void UpdateDisplays::enterNextState()
 		case TRANSMITTING_SSID: {
 			ESP_LOGD(TAG, "Entering TRANSMITTING_SSID");
 
-			ssidPackages_ = getAsPackages(wifi_.getSsid());
+			ssidPackages_ = getAsPackages(wifi_->getSsid());
 			transmitSsidPackages();
 		} break;
 
 		case TRANSMITTING_PSSWD: {
 			ESP_LOGD(TAG, "Entering TRANSMITTING_PSSWD");
 
-			psswdPackages_ = getAsPackages(wifi_.getPassword());
+			psswdPackages_ = getAsPackages(wifi_->getPassword());
 			transmitPsswdPackages();
 		} break;
 
@@ -233,17 +234,20 @@ void UpdateDisplays::restartDisplays()
 	}
 
 	// Restart them after a short delay
-	xTimerCreate("RestartDisplays", pdMS_TO_TICKS(100), false, displays_,
-				 [](TimerHandle_t p_timer)
-				 {
-					 auto displays = static_cast<std::vector<Display>*>(pvTimerGetTimerID(p_timer));
+	TimerHandle_t timer = xTimerCreate("RestartDisplays", pdMS_TO_TICKS(100), false, displays_,
+									   [](TimerHandle_t p_timer)
+									   {
+										   auto displays =
+											   static_cast<std::vector<Display>*>(pvTimerGetTimerID(p_timer));
 
-					 for (auto& d : *displays) {
-						 d.turnOn();
-					 }
+										   for (auto& d : *displays) {
+											   d.turnOn();
+										   }
 
-					 xTimerDelete(p_timer, 0);
-				 });
+										   xTimerDelete(p_timer, 0);
+									   });
+
+	xTimerStart(timer, 0);
 }
 
 /*
@@ -251,17 +255,29 @@ void UpdateDisplays::restartDisplays()
  */
 void UpdateDisplays::startWifiAP()
 {
+	if (wifi_ == nullptr) {
+		return;
+	}
+
 	const auto json = config_->getReadAccess();
 
-	wifi_.setSsid(json["WifiHost"]["ssid"]);
-	wifi_.setPassword(json["WifiHost"]["password"]);
+	wifi_->setSsid(json["WifiHost"]["ssid"]);
+	wifi_->setPassword(json["WifiHost"]["password"]);
 
-	wifi_.callOnSuccess([this] { this->enterNextState(); });
+	wifi_->callOnSuccess([this] { this->enterNextState(); });
 
-	wifi_.start();
+	wifi_->start();
 }
 
-void UpdateDisplays::stopWifiAP() { wifi_.stop(); }
+void UpdateDisplays::stopWifiAP()
+{
+	if (wifi_ == nullptr) {
+		return;
+	}
+
+	wifi_->stop();
+	wifi_->callOnSuccess(nullptr);
+}
 
 /*
  *	STARTING_WEBSERVER
@@ -599,7 +615,7 @@ void UpdateDisplays::transmitPsswdPackages()
  */
 void UpdateDisplays::transmitHostIp()
 {
-	const auto& ip = wifi_.getIp();
+	const auto& ip = wifi_->getIp();
 
 	/*
 	 *	Transmit Host IP

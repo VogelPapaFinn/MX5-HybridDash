@@ -71,9 +71,11 @@ extern "C" void app_main(void)
 	adc_oneshot_unit_handle_t adc1 = nullptr;
 	Config config(&fs);
 	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
+	WifiHost wifiHost;
 	std::vector<Display> displays = {Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
 									 Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
 									 Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
+	LogFileServer logFileServer(&fs, &config, &wifiHost);
 
 	initAdc1(&adc1);
 
@@ -86,8 +88,9 @@ extern "C" void app_main(void)
 
 	// States
 	Startup startupState(&fs, &config, &can, &displays);
-	Operation operationState(&hwSensorReader, &swSensorReader, &sensorLogger, &sensorBroadcaster, &kline);
-	UpdateDisplays updateDisplays(&fs, &config, &can, &displays);
+	Operation operationState(&hwSensorReader, &swSensorReader, &sensorLogger, &sensorBroadcaster, &kline,
+							 &logFileServer, &sensorValues);
+	UpdateDisplays updateDisplays(&fs, &config, &can, &wifiHost, &displays);
 	ConfigureDisplays configureDisplays(&can, &config, &displays);
 
 	// StateMachine

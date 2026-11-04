@@ -9,6 +9,8 @@ set(FILES
         # Drivers
         "Driver/Display.cpp"
 
+        "LogFileServer.cpp"
+
         # KLine
         "KLine/KLine.cpp"
         "KLine/KLineMessage.cpp"

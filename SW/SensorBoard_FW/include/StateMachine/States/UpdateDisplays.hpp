@@ -20,7 +20,8 @@
 class UpdateDisplays : public State, public CanReceiver
 {
 public:
-	UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, std::vector<Display>* p_displays);
+	UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, WifiHost* p_wifiHost,
+				   std::vector<Display>* p_displays);
 
 	void enter() override;
 
@@ -96,7 +97,7 @@ private:
 	Filesystem* fs_ = nullptr;
 	Config* config_ = nullptr;
 	std::vector<Display>* displays_ = nullptr;
-	WifiHost wifi_;
+	WifiHost* wifi_ = nullptr;
 
 	std::vector<std::vector<char>> ssidPackages_;
 	std::vector<std::vector<char>> psswdPackages_;
