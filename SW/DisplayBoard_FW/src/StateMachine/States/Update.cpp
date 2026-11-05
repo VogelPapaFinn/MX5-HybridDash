@@ -191,6 +191,9 @@ void Update::executeUpdate()
 	ESP_LOGI(TAG, "OTA Update sucessful!");
 
 	reportUpdateSuccess();
+
+	vTaskDelay(pdMS_TO_TICKS(50));
+	esp_restart();
 }
 
 void Update::reportUpdateSuccess()

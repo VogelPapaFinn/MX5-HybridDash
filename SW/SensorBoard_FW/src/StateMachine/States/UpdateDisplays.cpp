@@ -234,7 +234,7 @@ void UpdateDisplays::restartDisplays()
 	}
 
 	// Restart them after a short delay
-	TimerHandle_t timer = xTimerCreate("RestartDisplays", pdMS_TO_TICKS(100), false, displays_,
+	TimerHandle_t timer = xTimerCreate("RestartDisplays", pdMS_TO_TICKS(1000), false, displays_,
 									   [](TimerHandle_t p_timer)
 									   {
 										   auto displays =
