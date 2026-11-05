@@ -6,7 +6,9 @@
 // espidf includes
 #include "display/lv_display_private.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
+
 
 // ui includes
 extern "C" {
@@ -99,6 +101,13 @@ void GuiHandler::setLeftIndicatorActive(const bool& active) const
 		return;
 	}
 
+	// Ignore if the value didnt change
+	static bool s_wasLeftIndicActive = false;
+	if (active == s_wasLeftIndicActive) {
+		return;
+	}
+	s_wasLeftIndicActive = active;
+
 	GuiLock lock(guiMutex_);
 
 	if (active) {
@@ -114,6 +123,13 @@ void GuiHandler::setRightIndicatorActive(const bool& active) const
 	if (objects.right_indicator == nullptr) {
 		return;
 	}
+
+	// Ignore if the value didnt change
+	static bool s_wasRightIndicActive = false;
+	if (active == s_wasRightIndicActive) {
+		return;
+	}
+	s_wasRightIndicActive = active;
 
 	GuiLock lock(guiMutex_);
 
@@ -131,6 +147,13 @@ void GuiHandler::setSpeed(const uint8_t& speed) const
 		return;
 	}
 
+	// Ignore if the value didnt change
+	static uint8_t s_lastSpeed = 0;
+	if (speed == s_lastSpeed) {
+		return;
+	}
+	s_lastSpeed = speed;
+
 	GuiLock lock(guiMutex_);
 
 	lv_label_set_text(objects.speed_label, std::to_string(speed).c_str());
@@ -142,6 +165,13 @@ void GuiHandler::setRpm(const uint16_t& rpm) const
 		return;
 	}
 
+	// Ignore if the value didnt change
+	static uint8_t s_lastRpm = 0;
+	if (rpm == s_lastRpm) {
+		return;
+	}
+	s_lastRpm = rpm;
+
 	GuiLock lock(guiMutex_);
 
 	lv_label_set_text(objects.rpm_label, std::to_string(rpm).c_str());
@@ -152,6 +182,13 @@ void GuiHandler::setOilPressure(const bool& active) const
 	if (objects.oil_can == nullptr) {
 		return;
 	}
+
+	// Ignore if the value didnt change
+	static bool s_lastOilPressure = false;
+	if (active == s_lastOilPressure) {
+		return;
+	}
+	s_lastOilPressure = active;
 
 	GuiLock lock(guiMutex_);
 
@@ -174,7 +211,6 @@ void GuiHandler::setFuelLevel(const uint8_t& fuelLevelPercent) const
 	if (fuelLevelPercent == s_lastFuelLevelValue) {
 		return;
 	}
-
 	s_lastFuelLevelValue = fuelLevelPercent;
 
 	GuiLock lock(guiMutex_);
@@ -198,6 +234,13 @@ void GuiHandler::setWaterTemperature(const uint8_t& temperature) const
 	if (objects.temperature_label == nullptr) {
 		return;
 	}
+
+	// Ignore if the value didnt change
+	static uint8_t s_lastWaterTemp = 0;
+	if (temperature == s_lastWaterTemp) {
+		return;
+	}
+	s_lastWaterTemp = temperature;
 
 	GuiLock lock(guiMutex_);
 
@@ -245,7 +288,7 @@ bool GuiHandler::initFrameBuffers()
 void GuiHandler::registerCallbacks()
 {
 	lv_display_set_flush_cb(display_, flushToDisplay);
-	lv_tick_set_cb(xTaskGetTickCount);
+	lv_tick_set_cb([]() -> uint32_t { return (esp_timer_get_time() / 1000); });
 }
 
 bool GuiHandler::startLvglUpdateTask()

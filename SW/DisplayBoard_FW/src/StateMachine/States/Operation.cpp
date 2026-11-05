@@ -30,7 +30,7 @@ void Operation::quit() { stopCanRxTask(); }
  */
 void Operation::handleCanFrame(const Can::Frame_t& frame)
 {
-	ESP_LOGI(TAG, "Received CAN frame: %s", frame.toString().c_str());
+	// ESP_LOGI(TAG, "Received CAN frame: %s", frame.toString().c_str());
 
 	switch (frame.function) {
 		case CanFrameGroups::FUNC::ENTER_UPDATE_MODE: {
