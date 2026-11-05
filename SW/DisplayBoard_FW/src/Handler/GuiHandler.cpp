@@ -93,7 +93,11 @@ void GuiHandler::loadScreen(const SCREEN screen)
 	}
 }
 
-void GuiHandler::setRotation(bool rotation) { st77916_.setRotated(rotation); }
+void GuiHandler::setRotation(bool rotation)
+{
+	GuiLock lock(guiMutex_);
+	st77916_.setRotated(rotation);
+}
 
 void GuiHandler::setLeftIndicatorActive(const bool& active) const
 {

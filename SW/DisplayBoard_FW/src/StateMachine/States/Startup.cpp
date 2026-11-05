@@ -48,11 +48,11 @@ void Startup::enter()
 		return;
 	}
 
+	setRotation();
+
 	guiHandler_->init();
 
 	loadScreen();
-
-	setRotation();
 
 	forceCanId();
 
