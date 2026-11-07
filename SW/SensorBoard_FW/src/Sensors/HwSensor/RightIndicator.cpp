@@ -16,4 +16,7 @@ RightIndicator::RightIndicator() : ActiveSensor(GPIO_NUM_7, GPIO_INTR_ANYEDGE) {
 
 int RightIndicator::get() { return active_; }
 
+/*
+ *	Private Function Implementations
+ */
 void RightIndicator::cb() { active_ = gpio_get_level(gpio_) == 0; }

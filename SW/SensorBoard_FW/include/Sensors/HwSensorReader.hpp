@@ -3,6 +3,9 @@
 // Project includes
 #include "SensorValues.hpp"
 
+// C++ includes
+#include <functional>
+
 // espidf includes
 #include "esp_adc/adc_oneshot.h"
 #include "freertos/FreeRTOS.h"
@@ -10,7 +13,7 @@
 class HwSensorReader
 {
 public:
-	HwSensorReader(adc_oneshot_unit_handle_t p_adc1, SensorValues* p_sensorValues);
+	HwSensorReader(adc_oneshot_unit_handle_t p_adc1, SensorValues* p_sensorValues, std::function<void()> cb);
 
 	~HwSensorReader();
 
@@ -25,6 +28,9 @@ private:
 	void startReadThread();
 	void stopReadThread();
 
+	void startIndicatorThreads();
+	void stopIndicatorThreads();
+
 	void startWriteThread();
 	void stopWriteThread();
 
@@ -35,18 +41,21 @@ private:
 
 	static void writeSensorsTask(void* p_param);
 
+	static void leftIndicatorTask(void* p_param);
+	static void rightIndicatorTask(void* p_param);
+
 	/*
 	 *	Private Variables
 	 */
-	std::unordered_map<SENSOR, int> newSensorValues_;
-
-	SemaphoreHandle_t newSensorValuesMutex_ = nullptr;
-
 	TaskHandle_t updateSensorReadTask_ = nullptr;
-
 	TaskHandle_t sensorWriteTask_ = nullptr;
 
-	adc_oneshot_unit_handle_t adc1_ = nullptr;
+	TaskHandle_t leftIndicatorTask_ = nullptr;
+	TaskHandle_t rightIndicatorTask_ = nullptr;
+	std::function<void()> indicatorChangedCb_ = nullptr;
 
+	std::unordered_map<SENSOR, int> newSensorValues_;
+	SemaphoreHandle_t newSensorValuesMutex_ = nullptr;
+	adc_oneshot_unit_handle_t adc1_ = nullptr;
 	SensorValues* sensorValues_ = nullptr;
 };

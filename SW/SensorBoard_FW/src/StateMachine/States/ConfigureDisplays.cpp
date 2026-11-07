@@ -176,7 +176,7 @@ void ConfigureDisplays::waitForDisplay()
 			vTaskDelete(nullptr);
 		}
 
-		auto can = static_cast<Can*>(p_param);
+		{auto can = static_cast<Can*>(p_param);
 
 		// Build request frame
 		Can::Frame_t frame;
@@ -189,11 +189,13 @@ void ConfigureDisplays::waitForDisplay()
 		while (true) {
 			// Stop if ordered to
 			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100)) != 0) {
-				vTaskDelete(nullptr);
+				break;
 			}
 
 			can->queueFrame(frame);
-		}
+		}}
+		
+		vTaskDelete(nullptr);
 	};
 
 	/*

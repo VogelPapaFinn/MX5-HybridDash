@@ -13,6 +13,8 @@ public:
 
 	void stop();
 
+	void broadcastIndicators();
+
 private:
 	/*
 	 *	Private Task Functions

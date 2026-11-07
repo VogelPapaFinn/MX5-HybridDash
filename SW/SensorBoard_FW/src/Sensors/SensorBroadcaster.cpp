@@ -44,6 +44,27 @@ void SensorBroadcaster::stop()
 	broadcastTaskHandle_ = nullptr;
 }
 
+void SensorBroadcaster::broadcastIndicators()
+{
+	const auto sensorData = sensorValues_->getSnapshot();
+
+	// Build header
+	Can::Frame_t frame;
+	frame.sender = CAN_MASTER_ID;
+	frame.target = CAN_BROADCAST_ID;
+	frame.group = CanFrameGroups::GROUP::SENSOR;
+	frame.function = CanFrameGroups::FUNC::INTR_SENSOR_DATA;
+	frame.dataLengthCode = 2;
+	frame.answer = false;
+
+	// Build payload
+	frame.data[0] = static_cast<uint8_t>(sensorData.at(SENSOR::LEFT_INDICATOR));
+	frame.data[1] = static_cast<uint8_t>(sensorData.at(SENSOR::RIGHT_INDICATOR));
+
+	// Transmit frame
+	can_->queueFrame(frame);
+}
+
 /*
  *   Private Task Function Implementations
  */
@@ -53,12 +74,12 @@ void SensorBroadcaster::broadcastTask(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	auto sensorBroadcaster = static_cast<SensorBroadcaster*>(p_param);
+	{auto sensorBroadcaster = static_cast<SensorBroadcaster*>(p_param);
 
 	while (true) {
 		// Stop if ordered to
 		if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(BROADCAST_INTERVALL_MS)) != 0) {
-			vTaskDelete(nullptr);
+			break;
 		}
 
 		const auto sensorData = sensorBroadcaster->sensorValues_->getSnapshot();
@@ -68,8 +89,8 @@ void SensorBroadcaster::broadcastTask(void* p_param)
 		frame.sender = CAN_MASTER_ID;
 		frame.target = CAN_BROADCAST_ID;
 		frame.group = CanFrameGroups::GROUP::SENSOR;
-		frame.function = CanFrameGroups::FUNC::BROADCAST_DATA;
-		frame.dataLengthCode = 8;
+		frame.function = CanFrameGroups::FUNC::POLL_SENSOR_DATA;
+		frame.dataLengthCode = 6;
 		frame.answer = false;
 
 		// Build payload
@@ -79,10 +100,10 @@ void SensorBroadcaster::broadcastTask(void* p_param)
 		frame.data[3] = static_cast<uint8_t>((static_cast<uint16_t>(sensorData.at(SENSOR::RPM)) >> 8) & 0xFF);
 		frame.data[4] = static_cast<uint8_t>(static_cast<uint16_t>(sensorData.at(SENSOR::RPM)) & 0xFF);
 		frame.data[5] = static_cast<uint8_t>(sensorData.at(SENSOR::SPEED));
-		frame.data[6] = static_cast<uint8_t>(sensorData.at(SENSOR::LEFT_INDICATOR));
-		frame.data[7] = static_cast<uint8_t>(sensorData.at(SENSOR::RIGHT_INDICATOR));
 
 		// Transmit frame
 		sensorBroadcaster->can_->queueFrame(frame);
-	}
+	}}
+
+	vTaskDelete(nullptr);
 }

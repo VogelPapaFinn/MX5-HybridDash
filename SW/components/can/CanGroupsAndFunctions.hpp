@@ -30,6 +30,7 @@ namespace CanFrameGroups
 		SAVE_CONFIGURATION,
 
 		// SENSOR
-		BROADCAST_DATA
+		POLL_SENSOR_DATA,
+		INTR_SENSOR_DATA,
 	};
 } // namespace CanFrameGroups

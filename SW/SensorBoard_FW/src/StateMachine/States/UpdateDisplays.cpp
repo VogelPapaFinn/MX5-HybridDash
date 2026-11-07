@@ -443,7 +443,7 @@ void UpdateDisplays::enterUpdateMode()
 			vTaskDelete(nullptr);
 		}
 
-		auto can = static_cast<Can*>(p_param);
+		{auto can = static_cast<Can*>(p_param);
 
 		// Build request frame
 		Can::Frame_t frame;
@@ -457,11 +457,13 @@ void UpdateDisplays::enterUpdateMode()
 		while (true) {
 			// Stop if ordered to
 			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(1000)) != 0) {
-				vTaskDelete(nullptr);
+				break;
 			}
 
 			can->queueFrame(frame);
-		}
+		}}
+		
+		vTaskDelete(nullptr);
 	};
 
 	/*

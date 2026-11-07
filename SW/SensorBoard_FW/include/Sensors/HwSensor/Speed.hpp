@@ -13,12 +13,12 @@ public:
 
 	int get() override;
 
+private:
 	/*
 	 *	Public Callback functions
 	 */
 	IRAM_ATTR void cb() override;
 
-private:
 	/*
 	 *	Private Functions
 	 */

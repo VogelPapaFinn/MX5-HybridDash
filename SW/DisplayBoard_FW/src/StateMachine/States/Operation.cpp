@@ -43,15 +43,13 @@ void Operation::handleCanFrame(const Can::Frame_t& frame)
 			return;
 		}
 
-		case CanFrameGroups::FUNC::BROADCAST_DATA: {
+		case CanFrameGroups::FUNC::POLL_SENSOR_DATA: {
 			// Get data
 			const uint8_t fuelLevelP = frame.data[0];
 			const bool oilPressureB = frame.data[1];
 			const uint8_t waterTempC = frame.data[2];
 			const uint16_t rpm = (frame.data[3] << 8) + frame.data[4];
 			const uint8_t speed = frame.data[5];
-			const bool leftIndic = frame.data[6];
-			const bool rightIndic = frame.data[7];
 
 			// Update GUI
 			guiHandler_->setFuelLevel(fuelLevelP);
@@ -59,6 +57,15 @@ void Operation::handleCanFrame(const Can::Frame_t& frame)
 			guiHandler_->setWaterTemperature(waterTempC);
 			guiHandler_->setRpm(rpm);
 			guiHandler_->setSpeed(speed);
+		} break;
+
+
+		case CanFrameGroups::FUNC::INTR_SENSOR_DATA: {
+			// Get data
+			const bool leftIndic = frame.data[0];
+			const bool rightIndic = frame.data[1];
+
+			// Update GUI
 			guiHandler_->setLeftIndicatorActive(leftIndic);
 			guiHandler_->setRightIndicatorActive(rightIndic);
 		} break;

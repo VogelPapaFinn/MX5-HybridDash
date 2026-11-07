@@ -26,16 +26,20 @@ static void saveConfigTask(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	auto config = static_cast<Config*>(p_param);
+	{
+		auto config = static_cast<Config*>(p_param);
 
-	while (true) {
-		// Stop if ordered to
-		if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(60000)) != 0) {
-			vTaskDelete(nullptr);
+		while (true) {
+			// Stop if ordered to
+			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(120000)) != 0) {
+				break;
+			}
+
+			config->save();
 		}
-
-		config->save();
 	}
+
+	vTaskDelete(nullptr);
 }
 
 /*

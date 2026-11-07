@@ -81,10 +81,11 @@ extern "C" void app_main(void)
 
 	// Object which holds all sensor values
 	SensorValues sensorValues;
-	HwSensorReader hwSensorReader(adc1, &sensorValues);
-	SwSensorReader swSensorReader(&kline, &sensorValues);
 	SensorLogger sensorLogger(&fs, &config, &sensorValues);
 	SensorBroadcaster sensorBroadcaster(&can, &sensorValues);
+	HwSensorReader hwSensorReader(adc1, &sensorValues,
+								  [&sensorBroadcaster]() { sensorBroadcaster.broadcastIndicators(); });
+	SwSensorReader swSensorReader(&kline, &sensorValues);
 
 	// States
 	Startup startupState(&fs, &config, &can, &displays);

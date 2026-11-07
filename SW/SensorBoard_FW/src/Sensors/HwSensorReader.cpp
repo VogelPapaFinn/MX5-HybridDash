@@ -13,6 +13,8 @@
 // espidf includes
 #include <esp_log.h>
 
+#include <utility>
+
 /*
  *  constexpr
  */
@@ -23,15 +25,16 @@ constexpr auto SENSORS_WRITE_INTERVAL_MS = 100;
 /*
  *   Public Function Implementations
  */
-HwSensorReader::HwSensorReader(adc_oneshot_unit_handle_t p_adc1, SensorValues* p_sensorValues)
+HwSensorReader::HwSensorReader(adc_oneshot_unit_handle_t p_adc1, SensorValues* p_sensorValues, std::function<void()> cb)
 {
 	adc1_ = p_adc1;
 	sensorValues_ = p_sensorValues;
+	indicatorChangedCb_ = std::move(cb);
 
 	newSensorValuesMutex_ = xSemaphoreCreateMutex();
 
 	// Install ISR Service, needed for Speed, Rpm and Indicators
-	if (gpio_install_isr_service(ESP_INTR_FLAG_IRAM) != ESP_OK) {
+	if (gpio_install_isr_service(0) != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to install the ISR service");
 	}
 }
@@ -46,12 +49,14 @@ void HwSensorReader::start()
 {
 	startReadThread();
 	startWriteThread();
+	startIndicatorThreads();
 }
 
 void HwSensorReader::stop()
 {
 	stopWriteThread();
 	stopReadThread();
+	stopIndicatorThreads();
 }
 
 /*
@@ -68,7 +73,6 @@ void HwSensorReader::startReadThread()
 	// Fail
 	updateSensorReadTask_ = nullptr;
 	ESP_LOGW(TAG, "Failed to start task which updates the passive sensor values");
-	return;
 }
 
 void HwSensorReader::stopReadThread()
@@ -79,6 +83,46 @@ void HwSensorReader::stopReadThread()
 
 	xTaskNotifyGive(updateSensorReadTask_);
 	updateSensorReadTask_ = nullptr;
+}
+
+void HwSensorReader::startIndicatorThreads()
+{
+	/*
+	 *	Left Indicator
+	 */
+	if (xTaskCreate(leftIndicatorTask, "LeftIndicatorTask", 2048, this, 2, &leftIndicatorTask_) != pdPASS) {
+		// Fail
+		leftIndicatorTask_ = nullptr;
+		ESP_LOGW(TAG, "Failed to start task which updates the left indicator.");
+	}
+
+	/*
+	 *	Right Indicator
+	 */
+	if (xTaskCreate(rightIndicatorTask, "RightIndicatorTask", 2048, this, 2, &rightIndicatorTask_) != pdPASS) {
+		// Fail
+		rightIndicatorTask_ = nullptr;
+		ESP_LOGW(TAG, "Failed to start task which updates the right indicator.");
+	}
+}
+
+void HwSensorReader::stopIndicatorThreads()
+{
+	/*
+	 *	Left Indicator
+	 */
+	if (leftIndicatorTask_ != nullptr) {
+		xTaskNotify(leftIndicatorTask_, 0b10, eSetBits);
+		leftIndicatorTask_ = nullptr;
+	}
+
+	/*
+	 *	Right Indicator
+	 */
+	if (rightIndicatorTask_ != nullptr) {
+		xTaskNotify(rightIndicatorTask_, 0b10, eSetBits);
+		rightIndicatorTask_ = nullptr;
+	}
 }
 
 void HwSensorReader::startWriteThread()
@@ -113,41 +157,45 @@ void HwSensorReader::updatePassiveSensorsTask(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	auto hwSensorReader = static_cast<HwSensorReader*>(p_param);
+	{
+		auto hwSensorReader = static_cast<HwSensorReader*>(p_param);
 
-	// Create all sensors
-	FuelLevel fL(hwSensorReader->adc1_);
-	OilPressure oP(hwSensorReader->adc1_);
-	WaterTemperature wT(hwSensorReader->adc1_);
+		// Create all sensors
+		FuelLevel fL(hwSensorReader->adc1_);
+		OilPressure oP(hwSensorReader->adc1_);
+		WaterTemperature wT(hwSensorReader->adc1_);
 
-	while (true) {
-		// Stop if ordered to
-		if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(PASSIVE_SENSOR_READ_INTERVAL_MS)) != 0) {
-			vTaskDelete(nullptr);
+		while (true) {
+			// Stop if ordered to
+			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(PASSIVE_SENSOR_READ_INTERVAL_MS)) != 0) {
+				break;
+			}
+
+			// Read sensors
+			fL.read();
+			oP.read();
+			wT.read();
+
+			// Acquire mutex
+			if (xSemaphoreTake(hwSensorReader->newSensorValuesMutex_, pdMS_TO_TICKS(SENSORS_WRITE_INTERVAL_MS / 2)) ==
+				pdFALSE) {
+				continue;
+			}
+
+			// Save new values
+			(hwSensorReader->newSensorValues_)[SENSOR::FUEL_LEVEL_P] = fL.get();
+			(hwSensorReader->newSensorValues_)[SENSOR::FUEL_LEVEL_R] = fL.getResistance();
+			(hwSensorReader->newSensorValues_)[SENSOR::OIL_PRESSURE_B] = oP.get();
+			(hwSensorReader->newSensorValues_)[SENSOR::OIL_PRESSURE_R] = oP.getResistance();
+			(hwSensorReader->newSensorValues_)[SENSOR::WATER_TEMP_C] = wT.get();
+			(hwSensorReader->newSensorValues_)[SENSOR::WATER_TEMP_R] = wT.getResistance();
+
+			// Return mutex
+			xSemaphoreGive(hwSensorReader->newSensorValuesMutex_);
 		}
-
-		// Read sensors
-		fL.read();
-		oP.read();
-		wT.read();
-
-		// Acquire mutex
-		if (xSemaphoreTake(hwSensorReader->newSensorValuesMutex_, pdMS_TO_TICKS(SENSORS_WRITE_INTERVAL_MS / 2)) ==
-			pdFALSE) {
-			continue;
-		}
-
-		// Save new values
-		(hwSensorReader->newSensorValues_)[SENSOR::FUEL_LEVEL_P] = fL.get();
-		(hwSensorReader->newSensorValues_)[SENSOR::FUEL_LEVEL_R] = fL.getResistance();
-		(hwSensorReader->newSensorValues_)[SENSOR::OIL_PRESSURE_B] = oP.get();
-		(hwSensorReader->newSensorValues_)[SENSOR::OIL_PRESSURE_R] = oP.getResistance();
-		(hwSensorReader->newSensorValues_)[SENSOR::WATER_TEMP_C] = wT.get();
-		(hwSensorReader->newSensorValues_)[SENSOR::WATER_TEMP_R] = wT.getResistance();
-
-		// Return mutex
-		xSemaphoreGive(hwSensorReader->newSensorValuesMutex_);
 	}
+
+	vTaskDelete(nullptr);
 }
 
 void HwSensorReader::writeSensorsTask(void* p_param)
@@ -156,49 +204,157 @@ void HwSensorReader::writeSensorsTask(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	auto hwSensorReader = static_cast<HwSensorReader*>(p_param);
+	{
+		auto hwSensorReader = static_cast<HwSensorReader*>(p_param);
 
-	// Create all isr sensors
-	Speed speed;
-	Rpm rpm;
-	LeftIndicator lIndic;
-	RightIndicator rIndic;
+		// Create all isr sensors
+		Speed speed;
+		Rpm rpm;
 
-	while (true) {
-		// Stop if ordered to
-		if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(SENSORS_WRITE_INTERVAL_MS)) != 0) {
-			vTaskDelete(nullptr);
-		}
-
-		// Get newest sensor values
-		const int speedVal = speed.get();
-		const int rpmVal = rpm.get();
-		const int lIndicVal = lIndic.get();
-		const int rIndicVal = rIndic.get();
-
-		// Acquire mutex
-		if (xSemaphoreTake(hwSensorReader->newSensorValuesMutex_, pdMS_TO_TICKS(SENSORS_WRITE_INTERVAL_MS / 2)) ==
-			pdFALSE) {
-			continue;
-		}
-
-		// Update sensor values of the ISR sensors
-		(hwSensorReader->newSensorValues_)[SENSOR::SPEED] = speedVal;
-		(hwSensorReader->newSensorValues_)[SENSOR::RPM] = rpmVal;
-		(hwSensorReader->newSensorValues_)[SENSOR::LEFT_INDICATOR] = lIndicVal;
-		(hwSensorReader->newSensorValues_)[SENSOR::RIGHT_INDICATOR] = rIndicVal;
-
-		// Update values in the SensorValues object
-		auto currData = hwSensorReader->sensorValues_->getWriteAccess();
-		if (currData != nullptr) {
-			for (auto& entry : hwSensorReader->newSensorValues_) {
-				(*currData)[entry.first] = entry.second;
+		while (true) {
+			// Stop if ordered to
+			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(SENSORS_WRITE_INTERVAL_MS)) != 0) {
+				break;
 			}
 
-			hwSensorReader->sensorValues_->returnWriteAccess();
-		}
+			// Get newest sensor values
+			const int speedVal = speed.get();
+			const int rpmVal = rpm.get();
 
-		// Return mutex
-		xSemaphoreGive(hwSensorReader->newSensorValuesMutex_);
+			// Acquire mutex
+			if (xSemaphoreTake(hwSensorReader->newSensorValuesMutex_, pdMS_TO_TICKS(SENSORS_WRITE_INTERVAL_MS / 2)) ==
+				pdFALSE) {
+				continue;
+			}
+
+			// Update sensor values of the ISR sensors
+			(hwSensorReader->newSensorValues_)[SENSOR::SPEED] = speedVal;
+			(hwSensorReader->newSensorValues_)[SENSOR::RPM] = rpmVal;
+
+			// Update values in the SensorValues object
+			auto currData = hwSensorReader->sensorValues_->getWriteAccess();
+			if (currData != nullptr) {
+				for (auto& entry : hwSensorReader->newSensorValues_) {
+					(*currData)[entry.first] = entry.second;
+				}
+
+				hwSensorReader->sensorValues_->returnWriteAccess();
+			}
+
+			// Return mutex
+			xSemaphoreGive(hwSensorReader->newSensorValuesMutex_);
+		}
 	}
+
+	vTaskDelete(nullptr);
+}
+
+void HwSensorReader::leftIndicatorTask(void* p_param)
+{
+	if (p_param == nullptr) {
+		vTaskDelete(nullptr);
+	}
+
+	{
+		auto hwSensorReader = static_cast<HwSensorReader*>(p_param);
+
+		// Create Sensor
+		LeftIndicator lIndic;
+		lIndic.setTaskToNotifyOnChange(xTaskGetCurrentTaskHandle());
+
+		uint32_t bits = 0;
+		while (true) {
+			// Wait for notification
+			// b01 = New Indicator Value
+			// b10 = Stop Task
+			xTaskNotifyWait(0b00, 0b11, &bits, portMAX_DELAY);
+
+			// Should the task stop?
+			if (bits & 0b10) {
+				break;
+			}
+
+			auto leftIndicActive = lIndic.get();
+
+			if (xSemaphoreTake(hwSensorReader->newSensorValuesMutex_, portMAX_DELAY) == pdFALSE) {
+				continue;
+			}
+
+			// Update sensor values of the ISR sensors
+			(hwSensorReader->newSensorValues_)[SENSOR::LEFT_INDICATOR] = leftIndicActive;
+
+			// Update value in the SensorsValue object
+			auto currData = hwSensorReader->sensorValues_->getWriteAccess();
+			if (currData != nullptr) {
+				(*currData)[SENSOR::LEFT_INDICATOR] = (hwSensorReader->newSensorValues_)[SENSOR::LEFT_INDICATOR];
+
+				hwSensorReader->sensorValues_->returnWriteAccess();
+			}
+
+			// Return mutex
+			xSemaphoreGive(hwSensorReader->newSensorValuesMutex_);
+
+			// Notify the broadcaster, that the indicator state changed
+			if (hwSensorReader->indicatorChangedCb_) {
+				hwSensorReader->indicatorChangedCb_();
+			}
+		}
+	}
+
+	vTaskDelete(nullptr);
+}
+
+void HwSensorReader::rightIndicatorTask(void* p_param)
+{
+	if (p_param == nullptr) {
+		vTaskDelete(nullptr);
+	}
+
+	{
+		auto hwSensorReader = static_cast<HwSensorReader*>(p_param);
+
+		// Create Sensor
+		RightIndicator rIndic;
+		rIndic.setTaskToNotifyOnChange(xTaskGetCurrentTaskHandle());
+
+		uint32_t bits = 0;
+		while (true) {
+			// Wait for notification
+			// b01 = New Indicator Value
+			// b10 = Stop Task
+			xTaskNotifyWait(0b00, 0b11, &bits, portMAX_DELAY);
+
+			// Should the task stop?
+			if (bits & 0b10) {
+				break;
+			}
+
+			auto rightIndicActive = rIndic.get();
+
+			if (xSemaphoreTake(hwSensorReader->newSensorValuesMutex_, portMAX_DELAY) == pdFALSE) {
+				continue;
+			}
+
+			// Update sensor values of the ISR sensors
+			(hwSensorReader->newSensorValues_)[SENSOR::RIGHT_INDICATOR] = rightIndicActive;
+
+			// Update value in the SensorsValue object
+			auto currData = hwSensorReader->sensorValues_->getWriteAccess();
+			if (currData != nullptr) {
+				(*currData)[SENSOR::RIGHT_INDICATOR] = (hwSensorReader->newSensorValues_)[SENSOR::RIGHT_INDICATOR];
+
+				hwSensorReader->sensorValues_->returnWriteAccess();
+			}
+
+			// Return mutex
+			xSemaphoreGive(hwSensorReader->newSensorValuesMutex_);
+
+			// Notify the broadcaster, that the indicator state changed
+			if (hwSensorReader->indicatorChangedCb_) {
+				hwSensorReader->indicatorChangedCb_();
+			}
+		}
+	}
+
+	vTaskDelete(nullptr);
 }

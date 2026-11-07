@@ -14,8 +14,6 @@ constexpr auto SENSORS_TO_LOG = {SENSOR::FUEL_LEVEL_R,
 								 SENSOR::OIL_PRESSURE_B,
 								 SENSOR::WATER_TEMP_R,
 								 SENSOR::WATER_TEMP_C,
-								 SENSOR::LEFT_INDICATOR,
-								 SENSOR::RIGHT_INDICATOR,
 								 SENSOR::SPEED,
 								 SENSOR::RPM,
 								 SENSOR::ECU_COOLANT_C,
@@ -146,7 +144,7 @@ void SensorLogger::logTask(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	auto sensorLogger = static_cast<SensorLogger*>(p_param);
+	{auto sensorLogger = static_cast<SensorLogger*>(p_param);
 
 	unsigned int counter = 0;
 	while (true) {
@@ -154,7 +152,7 @@ void SensorLogger::logTask(void* p_param)
 		if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(1000)) != 0) {
 			fflush(sensorLogger->csvFile_);
 			fsync(fileno(sensorLogger->csvFile_));
-			vTaskDelete(nullptr);
+			break;
 		}
 
 		// Get snapshot
@@ -179,5 +177,7 @@ void SensorLogger::logTask(void* p_param)
 		fflush(sensorLogger->csvFile_);
 		fsync(fileno(sensorLogger->csvFile_));
 		counter = 0;
-	}
+	}}
+
+	vTaskDelete(nullptr);
 }
