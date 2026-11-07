@@ -53,13 +53,16 @@ SensorLogger::~SensorLogger()
  */
 bool SensorLogger::createAndOpenFile()
 {
+	// Get index
+	const auto index = getFileIndex();
+	ESP_LOGI(TAG, "Using file index %d for the new .csv", index);
+	increaseFileIndex();
+
 	// Build file name
 	csvPath_ = "SensorData_x.csv";
-	const auto fileIndex = getFileIndex();
+	const auto fileIndex = index;
 	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(fileIndex));
 	ESP_LOGI(TAG, "Starting new log file with index %d", fileIndex);
-
-	increaseFileIndex();
 
 	// Create file
 	fs_->createFile(csvPath_, Filesystem::SD_CARD);
