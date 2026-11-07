@@ -15,6 +15,7 @@
     "ui_font_vcr_osd_mono.c",
     "ui_image_left_indicator.c",
     "ui_image_oil_can.c",
+    "ui_image_right_indicator.c",
     "vars.h"
   ]
 }

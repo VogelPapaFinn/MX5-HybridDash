@@ -40,7 +40,7 @@ void create_screen_rpm() {
             lv_obj_set_style_text_font(obj, &ui_font_e1234, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_label_set_text_static(obj, "0000");
+            lv_label_set_text_static(obj, "0");
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
@@ -119,7 +119,7 @@ void create_screen_speed() {
             lv_obj_set_style_text_color(obj, lv_color_hex(0x008f3c), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_font(obj, &ui_font_e1234, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_label_set_text_static(obj, "0000");
+            lv_label_set_text_static(obj, "0");
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
@@ -136,8 +136,7 @@ void create_screen_speed() {
             objects.right_indicator = obj;
             lv_obj_set_pos(obj, 161, 246);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_image_set_src(obj, &img_left_indicator);
-            lv_image_set_rotation(obj, 1800);
+            lv_image_set_src(obj, &img_right_indicator);
             lv_obj_set_style_width(obj, 38, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_height(obj, 48, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_image_opa(obj, 51, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -204,7 +203,8 @@ void create_screen_temperature() {
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_set_style_text_color(obj, lv_color_hex(0x008f3c), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_font(obj, &ui_font_e1234, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_label_set_text_static(obj, "90");
+            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text_static(obj, " 0");
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);

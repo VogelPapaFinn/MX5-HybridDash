@@ -16,7 +16,8 @@
       "circularDisplay": true,
       "displayBorderRadius": 0,
       "darkTheme": false,
-      "colorFormat": "BGR",
+      "colorBpp": "16",
+      "bitmapColorFormat": "BGR",
       "resourceFiles": [],
       "hiddenWidgetLines": "dimmed",
       "dimmedLinesOpacity": "20",
@@ -146,7 +147,7 @@
               "type": "LVGLLabelWidget",
               "left": 0,
               "top": -11,
-              "width": 224,
+              "width": 56,
               "height": 63,
               "customInputs": [],
               "customOutputs": [],
@@ -190,10 +191,11 @@
               },
               "group": "",
               "groupIndex": 0,
-              "text": "0000",
+              "text": "0",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false
+              "recolor": false,
+              "useStaticText": true
             },
             {
               "objID": "2e023125-f9bd-49a5-adeb-8f73b6b0662f",
@@ -244,7 +246,8 @@
               "text": "RPM",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false
+              "recolor": false,
+              "useStaticText": true
             },
             {
               "objID": "c4763dd2-3832-487c-e379-9691e1120b2b",
@@ -519,7 +522,7 @@
               "type": "LVGLLabelWidget",
               "left": 0,
               "top": -11,
-              "width": 224,
+              "width": 56,
               "height": 63,
               "customInputs": [],
               "customOutputs": [],
@@ -563,10 +566,11 @@
               },
               "group": "",
               "groupIndex": 0,
-              "text": "0000",
+              "text": "0",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false
+              "recolor": false,
+              "useStaticText": true
             },
             {
               "objID": "b6fe9ba6-e07f-419d-824d-77f9a6c4c238",
@@ -618,7 +622,8 @@
               "text": "kmh",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false
+              "recolor": false,
+              "useStaticText": true
             },
             {
               "objID": "f43894d3-904f-424f-ee37-bd6395088b0f",
@@ -668,12 +673,12 @@
               },
               "group": "",
               "groupIndex": 0,
-              "image": "LeftIndicator",
+              "image": "RightIndicator",
               "setPivot": false,
               "pivotX": 0,
               "pivotY": 0,
               "zoom": 256,
-              "angle": 1800,
+              "angle": 0,
               "innerAlign": "CENTER",
               "sizeMode": "VIRTUAL",
               "value": 0,
@@ -971,17 +976,19 @@
                   "MAIN": {
                     "DEFAULT": {
                       "text_color": "#008F3C",
-                      "text_font": "E1234"
+                      "text_font": "E1234",
+                      "text_align": "RIGHT"
                     }
                   }
                 }
               },
               "group": "",
               "groupIndex": 0,
-              "text": "90",
+              "text": " 0",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false
+              "recolor": false,
+              "useStaticText": true
             },
             {
               "objID": "98fe4cb3-4a53-44cd-f148-e52027ae39c4",
@@ -1033,7 +1040,8 @@
               "text": "°C",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false
+              "recolor": false,
+              "useStaticText": true
             },
             {
               "objID": "0d975bd8-1323-4a1e-9b4e-9633fa82874e",
@@ -2085,7 +2093,8 @@
               "text": "100%",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false
+              "recolor": false,
+              "useStaticText": true
             },
             {
               "objID": "7a44bffe-0aa5-46c7-c222-d011cfb5bd14",
@@ -2138,7 +2147,8 @@
               "text": "50L",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false
+              "recolor": false,
+              "useStaticText": true
             },
             {
               "objID": "aacb25f5-4d1a-4e62-9ed0-41fe3be9ca92",
@@ -2312,6 +2322,15 @@
       "objID": "41c77525-9321-44a0-c63c-477d22ce84b8",
       "name": "OilCan",
       "image": "data:image/png;base64,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",
+      "bpp": 16,
+      "alwaysBuild": false,
+      "lvglBinaryOutputFormat": 3,
+      "lvglDither": false
+    },
+    {
+      "objID": "d5b05954-a010-448a-c74e-7eedd768ee8a",
+      "name": "RightIndicator",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAwCAYAAAB9sggoAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAGtSURBVHgBzZa9TcNAGIYvTtjDKzACI9AgYgrIBtDwUyGXMQ1MAFUcQcMGeAPYAI9ARyTkfJwtRXyyjX2v7veRHMnyFZ+eu3sUcZ0nj1f5cSwCI5LP2UREb5er+bkIiIk0Ruy9JLE9WM7XpfBM1HqPpb1POeyt8EzbGKespj+Hd0cvH8ID0cC3eFrtvfu6HJHCmuZy3KxOToVDhrayjyd5OVIXl0PFGMdZWlBjHKtpQY1xrKZFxxjHeFp0jHGMp8XUYDuMpcXUVvahlRbTxjhaabFpjAOnxaYxDpwWV8Y4SmlxZYyjlBYfg+0YTIuPreyjkxafxjidtIRijNOkJRRjDCrr35kIBLltX0SUZkl+X78HMhgV8llkyd/h9zwYlVuqLrLk+bX9xd8ZI3rYbL73+4aq8WCM5K2jxTJZF0OrnBqTBzytLcmQFmNrHRmjorEE/O2xOlg7AQgWB+smAMHCYP8nAMHs4R9JAIIhY2oJQNA2hiQAQcMYngAEeDCdBCCAg+klAEFxMDMJQBg//AYTgDBgzHwCEHqN2UoAQsuY3QQgNIO5SgDCzGUCEH4BL3wg9gCHjzwAAAAASUVORK5CYII=",
       "bpp": 16,
       "alwaysBuild": false,
       "lvglBinaryOutputFormat": 3,
