@@ -170,7 +170,7 @@ void GuiHandler::setRpm(const uint16_t& rpm) const
 	}
 
 	// Ignore if the value didnt change
-	static uint8_t s_lastRpm = 0;
+	static uint16_t s_lastRpm = 0;
 	if (rpm == s_lastRpm) {
 		return;
 	}
