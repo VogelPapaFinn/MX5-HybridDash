@@ -22,14 +22,18 @@ constexpr auto SENSORS_TO_LOG = {SENSOR::FUEL_LEVEL_R,
 								 SENSOR::ECU_RPM,
 								 SENSOR::ECU_SPEED};
 
+constexpr auto NVS_PARTITION = "SensorLogger";
+constexpr auto NVS_FILE_INDEX = "Index";
+
 /*
  *	Public Function Implementations
  */
-SensorLogger::SensorLogger(Filesystem* p_fs, Config* p_config, SensorValues* p_sensorValues)
+SensorLogger::SensorLogger(Filesystem* p_fs, SensorValues* p_sensorValues)
 {
 	fs_ = p_fs;
-	config_ = p_config;
 	sensorValues_ = p_sensorValues;
+
+	nvs_open(NVS_PARTITION, NVS_READWRITE, &nvsHandle_);
 }
 
 SensorLogger::~SensorLogger()
@@ -40,6 +44,8 @@ SensorLogger::~SensorLogger()
 		fclose(csvFile_);
 		csvFile_ = nullptr;
 	}
+
+	nvs_close(nvsHandle_);
 }
 
 /*
@@ -69,28 +75,16 @@ bool SensorLogger::createAndOpenFile()
 	return true;
 }
 
-int SensorLogger::getFileIndex()
+uint32_t SensorLogger::getFileIndex()
 {
-	auto json = config_->getReadAccess();
+	uint32_t value = 0;
 
-	if (json["SensorDataFileIndex"].is<int>()) {
-		return json["SensorDataFileIndex"].as<int>();
-	}
+	nvs_get_u32(nvsHandle_, NVS_FILE_INDEX, &value);
 
-	return 0;
+	return value;
 }
 
-void SensorLogger::increaseFileIndex()
-{
-	auto json = config_->getWriteAccess();
-	if (json == nullptr) {
-		return;
-	}
-
-	(*json)["SensorDataFileIndex"] = (*json)["SensorDataFileIndex"].as<int>() + 1;
-
-	config_->returnWriteAccess();
-}
+void SensorLogger::increaseFileIndex() { nvs_set_u32(nvsHandle_, NVS_FILE_INDEX, getFileIndex()); }
 
 void SensorLogger::printHeader()
 {
@@ -144,40 +138,42 @@ void SensorLogger::logTask(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	{auto sensorLogger = static_cast<SensorLogger*>(p_param);
+	{
+		auto sensorLogger = static_cast<SensorLogger*>(p_param);
 
-	unsigned int counter = 0;
-	while (true) {
-		// Stop if ordered to
-		if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(1000)) != 0) {
+		unsigned int counter = 0;
+		while (true) {
+			// Stop if ordered to
+			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(1000)) != 0) {
+				fflush(sensorLogger->csvFile_);
+				fsync(fileno(sensorLogger->csvFile_));
+				break;
+			}
+
+			// Get snapshot
+			auto sensorData = sensorLogger->sensorValues_->getSnapshot();
+
+			// Print data of all sensors
+			std::string row = "";
+			for (const auto& sensor : SENSORS_TO_LOG) {
+				row += std::to_string(sensorData.at(sensor)) + ",";
+			}
+			fprintf(sensorLogger->csvFile_, "%s;\n", row.c_str());
+
+			counter++;
+
+			// ESP_LOGI(TAG, "Added line to log: %s", row.c_str());
+
+			// Only flush to the actual file every 10th time
+			if (counter < 10) {
+				continue;
+			}
+
 			fflush(sensorLogger->csvFile_);
 			fsync(fileno(sensorLogger->csvFile_));
-			break;
+			counter = 0;
 		}
-
-		// Get snapshot
-		auto sensorData = sensorLogger->sensorValues_->getSnapshot();
-
-		// Print data of all sensors
-		std::string row = "";
-		for (const auto& sensor : SENSORS_TO_LOG) {
-			row += std::to_string(sensorData.at(sensor)) + ",";
-		}
-		fprintf(sensorLogger->csvFile_, "%s;\n", row.c_str());
-
-		counter++;
-
-		// ESP_LOGI(TAG, "Added line to log: %s", row.c_str());
-
-		// Only flush to the actual file every 10th time
-		if (counter < 10) {
-			continue;
-		}
-
-		fflush(sensorLogger->csvFile_);
-		fsync(fileno(sensorLogger->csvFile_));
-		counter = 0;
-	}}
+	}
 
 	vTaskDelete(nullptr);
 }

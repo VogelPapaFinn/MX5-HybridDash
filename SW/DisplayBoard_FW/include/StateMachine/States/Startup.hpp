@@ -20,6 +20,8 @@ private:
 	/*
 	 *   Public Functions
 	 */
+	bool initNvs();
+
 	bool loadConfig();
 
 	bool loadDefaultConfig();

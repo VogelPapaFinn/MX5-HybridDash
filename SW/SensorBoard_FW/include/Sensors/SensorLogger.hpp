@@ -7,10 +7,13 @@
 // C++ includes
 #include <string>
 
+// espidf includes
+#include "nvs_flash.h"
+
 class SensorLogger
 {
 public:
-	SensorLogger(Filesystem* p_fs, Config* p_config, SensorValues* p_sensorValues);
+	SensorLogger(Filesystem* p_fs, SensorValues* p_sensorValues);
 
 	~SensorLogger();
 
@@ -24,7 +27,7 @@ private:
 	 */
 	bool createAndOpenFile();
 
-	int getFileIndex();
+	uint32_t getFileIndex();
 
 	void increaseFileIndex();
 
@@ -39,8 +42,9 @@ private:
 	 *   Private Variables
 	 */
 	Filesystem* fs_ = nullptr;
-	Config* config_ = nullptr;
 	SensorValues* sensorValues_ = nullptr;
+
+	nvs_handle_t nvsHandle_;
 
 	std::string csvPath_;
 	FILE* csvFile_ = nullptr;

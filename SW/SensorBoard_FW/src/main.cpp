@@ -81,7 +81,7 @@ extern "C" void app_main(void)
 
 	// Object which holds all sensor values
 	SensorValues sensorValues;
-	SensorLogger sensorLogger(&fs, &config, &sensorValues);
+	SensorLogger sensorLogger(&fs, &sensorValues);
 	SensorBroadcaster sensorBroadcaster(&can, &sensorValues);
 	HwSensorReader hwSensorReader(adc1, &sensorValues,
 								  [&sensorBroadcaster]() { sensorBroadcaster.broadcastIndicators(); });
