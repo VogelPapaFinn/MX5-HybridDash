@@ -1,8 +1,8 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[UI.eez-project]:/userPages/2",
+    "selectedUserPageObject": "[UI.eez-project]:/userPages/1",
     "selectedFontObject": "[UI.eez-project]:/fonts/1",
-    "selectedBitmapObject": "[UI.eez-project]:/bitmaps/1",
+    "selectedBitmapObject": "[UI.eez-project]:/bitmaps/2",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
     }
@@ -193,10 +193,21 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 62.14191729603304,
-              "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
+                {
+                  "type": "tab",
+                  "id": "#49d9c26b-3a2b-4f83-abfa-d6765a00c911",
+                  "name": "Settings",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[UI.eez-project]:/settings",
+                    "subObjectPath": "[UI.eez-project]:/settings",
+                    "permanent": false
+                  },
+                  "icon": "material:settings"
+                },
                 {
                   "type": "tab",
                   "id": "#107d0122-7e2c-475d-a9bd-d37540cbfd69",
@@ -230,7 +241,8 @@
                   },
                   "icon": "svg:page"
                 }
-              ]
+              ],
+              "active": true
             },
             {
               "type": "row",
@@ -250,8 +262,7 @@
                       "enableClose": false,
                       "icon": "svg:properties"
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
@@ -1089,8 +1100,8 @@
       },
       "transform": {
         "translate": {
-          "x": -180,
-          "y": -380
+          "x": -300,
+          "y": -303
         },
         "scale": 1.75
       },
@@ -1105,6 +1116,7 @@
       "selectionFront": {},
       "selectionBack": {
         "0": {
+          "0": {},
           "1": {},
           "2": {},
           "3": {},
@@ -1114,8 +1126,8 @@
       },
       "transform": {
         "translate": {
-          "x": -180,
-          "y": -180
+          "x": -368,
+          "y": -350
         },
         "scale": 1.75
       },
@@ -1131,17 +1143,17 @@
       "selectionBack": {
         "0": {
           "5": {},
-          "14": {},
-          "15": {},
-          "16": {
+          "14": {
             "$selected": true
-          }
+          },
+          "15": {},
+          "16": {}
         }
       },
       "transform": {
         "translate": {
-          "x": -462.125,
-          "y": -315.35416666666663
+          "x": -426.125,
+          "y": -306.35416666666663
         },
         "scale": 1.75
       },
@@ -1187,11 +1199,12 @@
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "POSITION AND SIZE"
+    "POSITION AND SIZE",
+    "TEXT"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
   "flowZoom": 1.75,
   "implementationLanguage": "C",
-  "openDialogDefaultPath": "C:\\Users\\finng\\Documents\\MX5-HybridDash\\SW\\DisplayBoard_FW\\res\\img\\png\\oilCan.png"
+  "openDialogDefaultPath": "/home/Finn/Projekte/MX5-HybridDash/SW/DisplayBoard_FW/res/UI/src/ui/"
 }
