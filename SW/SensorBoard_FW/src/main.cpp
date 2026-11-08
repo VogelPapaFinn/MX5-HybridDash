@@ -72,8 +72,8 @@ extern "C" void app_main(void)
 	Config config(&fs);
 	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
 	WifiHost wifiHost;
-	std::vector<Display> displays = {Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 0, true),
-									 Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 1, false),
+	std::vector<Display> displays = {Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 1, false),
+									 Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 0, true),
 									 Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
 	LogFileServer logFileServer(&fs, &config, &wifiHost);
 
