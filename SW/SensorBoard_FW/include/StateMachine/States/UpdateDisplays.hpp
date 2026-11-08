@@ -105,7 +105,7 @@ private:
 	TaskHandle_t enterUpdateModeTask_ = nullptr;
 
 	httpd_handle_t webserver_ = nullptr;
-	const httpd_config_t webserverConfig_ = HTTPD_DEFAULT_CONFIG();
+	httpd_config_t webserverConfig_ = HTTPD_DEFAULT_CONFIG();
 	httpd_uri_t updateUri_ = {};
 	QueueHandle_t httpRequestQueue_ = nullptr;
 	SemaphoreHandle_t httpWorkersStopped_ = nullptr;

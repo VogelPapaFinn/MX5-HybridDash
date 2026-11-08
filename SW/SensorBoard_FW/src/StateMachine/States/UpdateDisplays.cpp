@@ -43,6 +43,8 @@ UpdateDisplays::UpdateDisplays(Filesystem* p_fs, Config* p_config, Can* p_can, W
 	displays_ = p_displays;
 
 	esp_log_level_set(TAG, ESP_LOG_DEBUG);
+
+	webserverConfig_.send_wait_timeout = 30000;
 }
 
 void UpdateDisplays::enter()
@@ -50,7 +52,7 @@ void UpdateDisplays::enter()
 	ESP_LOGI(TAG, "Entered UpdateDisplays State");
 
 	timeoutTimer_ =
-		new TimeoutTimer(60000,
+		new TimeoutTimer(240000,
 						 []()
 						 {
 							 ESP_LOGE(TAG, "Timeout: Failed to update displays. Aborting.");
@@ -443,26 +445,28 @@ void UpdateDisplays::enterUpdateMode()
 			vTaskDelete(nullptr);
 		}
 
-		{auto can = static_cast<Can*>(p_param);
+		{
+			auto can = static_cast<Can*>(p_param);
 
-		// Build request frame
-		Can::Frame_t frame;
-		frame.sender = CAN_MASTER_ID;
-		frame.target = CAN_BROADCAST_ID;
-		frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
-		frame.function = CanFrameGroups::FUNC::ENTER_UPDATE_MODE;
-		frame.dataLengthCode = 0;
-		frame.answer = false;
+			// Build request frame
+			Can::Frame_t frame;
+			frame.sender = CAN_MASTER_ID;
+			frame.target = CAN_BROADCAST_ID;
+			frame.group = CanFrameGroups::GROUP::UPDATE_DISPLAY;
+			frame.function = CanFrameGroups::FUNC::ENTER_UPDATE_MODE;
+			frame.dataLengthCode = 0;
+			frame.answer = false;
 
-		while (true) {
-			// Stop if ordered to
-			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(1000)) != 0) {
-				break;
+			while (true) {
+				// Stop if ordered to
+				if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(1000)) != 0) {
+					break;
+				}
+
+				can->queueFrame(frame);
 			}
+		}
 
-			can->queueFrame(frame);
-		}}
-		
 		vTaskDelete(nullptr);
 	};
 

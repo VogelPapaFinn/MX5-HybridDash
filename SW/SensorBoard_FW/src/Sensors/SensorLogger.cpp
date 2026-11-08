@@ -34,6 +34,9 @@ SensorLogger::SensorLogger(Filesystem* p_fs, SensorValues* p_sensorValues)
 	sensorValues_ = p_sensorValues;
 
 	nvs_open(NVS_PARTITION, NVS_READWRITE, &nvsHandle_);
+
+	// DEBUGGING PURPOSE
+	// nvs_set_u32(nvsHandle_, NVS_FILE_INDEX, 0);
 }
 
 SensorLogger::~SensorLogger()
@@ -60,9 +63,7 @@ bool SensorLogger::createAndOpenFile()
 
 	// Build file name
 	csvPath_ = "SensorData_x.csv";
-	const auto fileIndex = index;
-	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(fileIndex));
-	ESP_LOGI(TAG, "Starting new log file with index %d", fileIndex);
+	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(index));
 
 	// Create file
 	fs_->createFile(csvPath_, Filesystem::SD_CARD);
@@ -87,7 +88,22 @@ uint32_t SensorLogger::getFileIndex()
 	return value;
 }
 
-void SensorLogger::increaseFileIndex() { nvs_set_u32(nvsHandle_, NVS_FILE_INDEX, getFileIndex()); }
+void SensorLogger::increaseFileIndex()
+{
+	// Save after 4 Minutes, so a short engine start to move the car doesnt produce a whole file, which could clutter
+	// the sd card
+	auto timer = xTimerCreate("IncreaseSensorLoggerFileIndex", pdMS_TO_TICKS(60000 * 4), pdFALSE, this,
+							  [](TimerHandle_t p_timer)
+							  {
+								  auto sensorLogger = static_cast<SensorLogger*>(pvTimerGetTimerID(p_timer));
+
+								  const auto newIndex = sensorLogger->getFileIndex() + 1;
+								  nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex);
+
+								  ESP_LOGI(TAG, "Increased %s to %d", NVS_FILE_INDEX, newIndex);
+							  });
+	xTimerStart(timer, 0);
+}
 
 void SensorLogger::printHeader()
 {
