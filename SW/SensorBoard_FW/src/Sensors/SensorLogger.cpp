@@ -22,7 +22,7 @@ constexpr auto SENSORS_TO_LOG = {SENSOR::FUEL_LEVEL_R,
 								 SENSOR::ECU_RPM,
 								 SENSOR::ECU_SPEED};
 
-constexpr auto NVS_PARTITION = "SensorLogger";
+constexpr auto NVS_NAMESPACE = "SensorLogger";
 constexpr auto NVS_FILE_INDEX = "Index";
 
 /*
@@ -33,7 +33,7 @@ SensorLogger::SensorLogger(Filesystem* p_fs, SensorValues* p_sensorValues)
 	fs_ = p_fs;
 	sensorValues_ = p_sensorValues;
 
-	nvs_open(NVS_PARTITION, NVS_READWRITE, &nvsHandle_);
+	nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvsHandle_);
 
 	// DEBUGGING PURPOSE
 	// nvs_set_u32(nvsHandle_, NVS_FILE_INDEX, 0);
@@ -99,6 +99,7 @@ void SensorLogger::increaseFileIndex()
 
 								  const auto newIndex = sensorLogger->getFileIndex() + 1;
 								  nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex);
+								  nvs_commit(sensorLogger->nvsHandle_);
 
 								  ESP_LOGI(TAG, "Increased %s to %d", NVS_FILE_INDEX, newIndex);
 							  });

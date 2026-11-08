@@ -14,71 +14,74 @@
 constexpr auto TAG = "FuelLevel";
 
 constexpr uint16_t R1 = 240;
-constexpr float NEW_VALUES_DAMPENER = 0.01f;
+constexpr float EMA_ALPHA = 0.01f;
+
+constexpr auto NVS_NAMESPACE = "FuelLevel";
+constexpr auto NVS_LAST_VALUE = "LastValue";
 
 /*
  *	Public Function Implementations
  */
-FuelLevel::FuelLevel(adc_oneshot_unit_handle_t p_adc) : PassiveSensor(GPIO_NUM_1, ADC_CHANNEL_0, p_adc) {}
+FuelLevel::FuelLevel(adc_oneshot_unit_handle_t p_adc) : PassiveSensor(GPIO_NUM_1, ADC_CHANNEL_0, p_adc)
+{
+	nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvsHandle_);
+
+	// Load last value
+	uint8_t lastValue = 0;
+	if (nvsHandle_ != 0) {
+		nvs_get_u8(nvsHandle_, NVS_LAST_VALUE, &lastValue);
+	}
+	emaValue_ = static_cast<float>(lastValue);
+}
+
+FuelLevel::~FuelLevel() { nvs_close(nvsHandle_); }
 
 int FuelLevel::get()
 {
-	calcLevel();
+	const auto level = static_cast<int>(std::lround(emaValue_));
 
-	const float median = getMedianElement(lastLevels_);
+	if (nvsHandle_ != 0) {
+		nvs_set_u8(nvsHandle_, NVS_LAST_VALUE, static_cast<uint8_t>(level));
+		nvs_commit(nvsHandle_);
+	}
 
-	return getDampenedValue(median);
+	return level;
 }
 
 /*
  *	Private Function Implementations
  */
-void FuelLevel::specificRead() { resistance_ = calcVoltageDividerR2(voltage_, R1); }
-
-void FuelLevel::calcLevel()
+void FuelLevel::specificRead()
 {
-	int levelInPercent = std::round((-0.000102885 * resistance_ * resistance_ * resistance_) +
-									(0.0246611 * resistance_ * resistance_) + (-2.44333 * resistance_) + 107.321);
+	resistance_ = calcVoltageDividerR2(voltage_, R1);
+
+	const float resistanceFloat = static_cast<float>(resistance_);
+	float levelInPercent = (-0.000102885f * resistanceFloat * resistanceFloat * resistanceFloat) +
+		(0.0246611f * resistanceFloat * resistanceFloat) + (-2.44333f * resistanceFloat) + 107.321f;
 
 	// Too low
-	if (levelInPercent < 0.0) {
-		levelInPercent = 0.0;
+	if (levelInPercent < 0.0f) {
+		levelInPercent = 0.0f;
 	}
 
 	// Too high
-	if (levelInPercent > 100.0) {
-		levelInPercent = 100.0;
+	if (levelInPercent > 100.0f) {
+		levelInPercent = 100.0f;
 	}
 
-	// Track the
-	if (lastLevels_.size() >= 21) {
-		lastLevels_.erase(lastLevels_.begin());
-	}
-	lastLevels_.push_back(levelInPercent);
-}
+	// If its the first read and the read value is 15% higher (or more),
+	// override the ema value with it
+	if (firstRead_) {
+		if (emaValue_ < levelInPercent * 0.85) {
+			emaValue_ = levelInPercent;
+		}
 
-float FuelLevel::getMedianElement(std::vector<uint8_t>& values)
-{
-	auto sortedLevels = values;
-
-	// Sort - increasing
-	std::ranges::sort(sortedLevels.begin(), sortedLevels.end());
-
-	// Return median element
-	return sortedLevels.at(static_cast<int>(sortedLevels.size() / 2));
-}
-
-int FuelLevel::getDampenedValue(const float raw)
-{
-	float smoothed = raw;
-
-	// Calculate the dampened value
-	smoothed = (NEW_VALUES_DAMPENER * raw) + ((1.0f - NEW_VALUES_DAMPENER) * smoothed);
-
-	// Prevent unlogical value
-	if (smoothed > 100.0f) {
-		smoothed = 100.0f;
+		firstRead_ = false;
 	}
 
-	return static_cast<int>(smoothed);
+	// Xt = a * xt + (1 - a) * Xt-1
+	// Xt = new value
+	// xt = new data point
+	// xt-1 = previous data point
+	emaValue_ = (EMA_ALPHA * levelInPercent) + ((1.0f - EMA_ALPHA) * emaValue_);
 }

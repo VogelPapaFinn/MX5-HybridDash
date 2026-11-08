@@ -6,10 +6,15 @@
 // C++ includes
 #include <vector>
 
+// espidf includes
+#include "nvs.h"
+
 class FuelLevel : public PassiveSensor
 {
 public:
 	FuelLevel(adc_oneshot_unit_handle_t p_adc);
+
+	~FuelLevel();
 
 	int get() override;
 
@@ -19,14 +24,13 @@ protected:
 	 */
 	void specificRead() override;
 
-	void calcLevel();
-
-	float getMedianElement(std::vector<uint8_t>& values);
-
-	int getDampenedValue(const float raw);
-
 	/*
 	 *	Private Variables
 	 */
-	std::vector<uint8_t> lastLevels_;
+	// EMA = Exponential Moving Average (Smoothing)
+	float emaValue_ = 0.0f;
+
+	bool firstRead_ = true;
+
+	nvs_handle_t nvsHandle_ = 0;
 };
