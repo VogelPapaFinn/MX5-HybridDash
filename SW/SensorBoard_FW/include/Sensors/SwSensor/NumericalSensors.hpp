@@ -58,7 +58,7 @@ inline constexpr NumericalSensor SW_NUMERICAL_SENSORS[] = {
 
 	{SENSOR::ECU_INPUT_V, 0x1785, 1, [](const uint16_t raw) { return static_cast<double>(raw) / 12.8; }, UNIT_VOLT},
 
-	{SENSOR::ECU_SPEED, 0x174A, 1, [](const uint16_t raw) { return static_cast<double>(raw); }, "KMH"},
+	{SENSOR::ECU_SPEED, 0x174A, 1, [](const uint16_t raw) { return static_cast<double>(raw) * 1.88; }, "KMH"},
 
 	{SENSOR::ECU_INTAKE_AIR_C, 0x1720, 1, [](const uint16_t raw) { return static_cast<double>(raw - 64) * 0.625; },
 	 UNIT_CELSIUS},
