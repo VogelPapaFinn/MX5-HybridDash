@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[UI.eez-project]:/userPages/1",
+    "selectedUserPageObject": "[UI.eez-project]:/userPages/2",
     "selectedFontObject": "[UI.eez-project]:/fonts/1",
     "selectedBitmapObject": "[UI.eez-project]:/bitmaps/2",
     "subnavigationSelectedItems": {
@@ -25,7 +25,6 @@
           },
           {
             "type": "border",
-            "selected": 2,
             "size": 240,
             "location": "right",
             "children": [
@@ -193,21 +192,10 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 62.14191729603304,
+              "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
-                {
-                  "type": "tab",
-                  "id": "#49d9c26b-3a2b-4f83-abfa-d6765a00c911",
-                  "name": "Settings",
-                  "component": "editor",
-                  "config": {
-                    "objectPath": "[UI.eez-project]:/settings",
-                    "subObjectPath": "[UI.eez-project]:/settings",
-                    "permanent": false
-                  },
-                  "icon": "material:settings"
-                },
                 {
                   "type": "tab",
                   "id": "#107d0122-7e2c-475d-a9bd-d37540cbfd69",
@@ -1143,9 +1131,7 @@
       "selectionBack": {
         "0": {
           "5": {},
-          "14": {
-            "$selected": true
-          },
+          "14": {},
           "15": {},
           "16": {}
         }
@@ -1200,7 +1186,8 @@
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
     "POSITION AND SIZE",
-    "TEXT"
+    "TEXT",
+    "MISCELLANEOUS"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,

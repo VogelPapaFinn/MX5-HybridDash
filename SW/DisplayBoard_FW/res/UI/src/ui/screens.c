@@ -200,11 +200,11 @@ void create_screen_temperature() {
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.temperature_label = obj;
             lv_obj_set_pos(obj, 124, 148);
-            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_size(obj, 112, 63);
             lv_obj_set_style_text_color(obj, lv_color_hex(0x008f3c), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_font(obj, &ui_font_e1234, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_label_set_text_static(obj, " 0");
+            lv_label_set_text_static(obj, "0");
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);

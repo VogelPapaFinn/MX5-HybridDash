@@ -16,8 +16,7 @@
       "circularDisplay": true,
       "displayBorderRadius": 0,
       "darkTheme": false,
-      "colorBpp": "16",
-      "bitmapColorFormat": "BGR",
+      "colorFormat": "BGR",
       "resourceFiles": [],
       "hiddenWidgetLines": "dimmed",
       "dimmedLinesOpacity": "20",
@@ -194,8 +193,7 @@
               "text": "0",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false,
-              "useStaticText": true
+              "recolor": false
             },
             {
               "objID": "2e023125-f9bd-49a5-adeb-8f73b6b0662f",
@@ -246,8 +244,7 @@
               "text": "RPM",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false,
-              "useStaticText": true
+              "recolor": false
             },
             {
               "objID": "c4763dd2-3832-487c-e379-9691e1120b2b",
@@ -569,8 +566,7 @@
               "text": "0",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false,
-              "useStaticText": true
+              "recolor": false
             },
             {
               "objID": "b6fe9ba6-e07f-419d-824d-77f9a6c4c238",
@@ -622,8 +618,7 @@
               "text": "kmh",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false,
-              "useStaticText": true
+              "recolor": false
             },
             {
               "objID": "f43894d3-904f-424f-ee37-bd6395088b0f",
@@ -956,8 +951,8 @@
               "identifier": "TemperatureLabel",
               "leftUnit": "px",
               "topUnit": "px",
-              "widthUnit": "content",
-              "heightUnit": "content",
+              "widthUnit": "px",
+              "heightUnit": "px",
               "children": [],
               "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
               "hiddenFlagType": "literal",
@@ -984,11 +979,10 @@
               },
               "group": "",
               "groupIndex": 0,
-              "text": " 0",
+              "text": "0",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false,
-              "useStaticText": true
+              "recolor": false
             },
             {
               "objID": "98fe4cb3-4a53-44cd-f148-e52027ae39c4",
@@ -1040,8 +1034,7 @@
               "text": "°C",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false,
-              "useStaticText": true
+              "recolor": false
             },
             {
               "objID": "0d975bd8-1323-4a1e-9b4e-9633fa82874e",
@@ -2093,8 +2086,7 @@
               "text": "100%",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false,
-              "useStaticText": true
+              "recolor": false
             },
             {
               "objID": "7a44bffe-0aa5-46c7-c222-d011cfb5bd14",
@@ -2147,8 +2139,7 @@
               "text": "50L",
               "textType": "literal",
               "longMode": "WRAP",
-              "recolor": false,
-              "useStaticText": true
+              "recolor": false
             },
             {
               "objID": "aacb25f5-4d1a-4e62-9ed0-41fe3be9ca92",
