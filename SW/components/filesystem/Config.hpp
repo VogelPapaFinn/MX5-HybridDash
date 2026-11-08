@@ -33,14 +33,14 @@ public:
 
 	void returnWriteAccess();
 
-	bool save();
-
 	void print();
 
 private:
 	/*
 	 *   Private Functions
 	 */
+	bool save();
+
 	long getFileSize();
 
 	bool isFileEmpty();
@@ -48,9 +48,6 @@ private:
 	std::vector<char> readFileContent();
 
 	bool extractJsonFromFile(std::vector<char>& fileContent);
-
-	void startSaveTask();
-	void stopSaveTask();
 
 	/*
 	 *   Private Variables
@@ -62,8 +59,5 @@ private:
 	FILE* file_ = nullptr;
 
 	ArduinoJson::JsonDocument json_;
-
-	bool configChanged_ = false;
 	SemaphoreHandle_t configMutex_ = nullptr;
-	TaskHandle_t saveTask_ = nullptr;
 };

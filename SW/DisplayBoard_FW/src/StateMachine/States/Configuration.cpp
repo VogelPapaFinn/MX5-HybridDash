@@ -145,7 +145,6 @@ void Configuration::saveConfiguration()
 	(*json)["screen"] = screen_;
 	(*json)["rotation"] = rotation_;
 	config_->returnWriteAccess();
-	config_->save();
 
 	Can::Frame_t frame;
 	frame.sender = CAN_CONFIGURATION_ID;

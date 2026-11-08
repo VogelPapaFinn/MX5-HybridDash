@@ -10,39 +10,6 @@ constexpr auto TAG = "Config";
 constexpr auto GET_MUTEX_TIMEOUT_MS = 100;
 
 /*
- *	Private Task Struct
- */
-struct TaskStuff
-{
-	bool* configChanged = nullptr;
-};
-
-/*
- *	Task Functions
- */
-static void saveConfigTask(void* p_param)
-{
-	if (p_param == nullptr) {
-		vTaskDelete(nullptr);
-	}
-
-	{
-		auto config = static_cast<Config*>(p_param);
-
-		while (true) {
-			// Stop if ordered to
-			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(120000)) != 0) {
-				break;
-			}
-
-			config->save();
-		}
-	}
-
-	vTaskDelete(nullptr);
-}
-
-/*
  *	Public Function Implementations
  */
 Config::Config(Filesystem* p_fs)
@@ -72,7 +39,6 @@ Config::~Config()
 	}
 
 	if (!json_.isNull()) {
-		save();
 		json_.clear();
 	}
 
@@ -119,16 +85,16 @@ bool Config::open()
 		return false;
 	}
 
-	startSaveTask();
-
 	return true;
 }
 
 void Config::close()
 {
+	xSemaphoreTake(configMutex_, portMAX_DELAY);
+
 	save();
 
-	stopSaveTask();
+	xSemaphoreGive(configMutex_);
 
 	if (configMutex_ != nullptr) {
 		vSemaphoreDelete(configMutex_);
@@ -144,19 +110,29 @@ ArduinoJson::JsonDocument* Config::getWriteAccess()
 		return nullptr;
 	}
 
-	configChanged_ = true;
-
 	return &json_;
 }
 
-void Config::returnWriteAccess() { xSemaphoreGive(configMutex_); }
+void Config::returnWriteAccess()
+{
+	this->save();
+
+	xSemaphoreGive(configMutex_);
+}
+
+void Config::print()
+{
+	std::string json;
+	ArduinoJson::serializeJsonPretty(json_, json);
+	ESP_LOGI(TAG, "%s", json.c_str());
+}
+
+/*
+ *	Private Function Implementations
+ */
 
 bool Config::save()
 {
-	if (!configChanged_) {
-		return true;
-	}
-
 	std::string output = "";
 	ArduinoJson::serializeJsonPretty(json_, output);
 
@@ -186,21 +162,9 @@ bool Config::save()
 	fclose(file_);
 	file_ = nullptr;
 
-	configChanged_ = false;
-
 	return true;
 }
 
-void Config::print()
-{
-	std::string json;
-	ArduinoJson::serializeJsonPretty(json_, json);
-	ESP_LOGI(TAG, "%s", json.c_str());
-}
-
-/*
- *	Private Function Implementations
- */
 long Config::getFileSize()
 {
 	fseek(file_, 0, SEEK_END);
@@ -244,26 +208,4 @@ bool Config::extractJsonFromFile(std::vector<char>& fileContent)
 	}
 
 	return true;
-}
-
-void Config::startSaveTask()
-{
-	if (xTaskCreate(saveConfigTask, "SaveConfigTask", 4096, this, 2, &saveTask_) == pdPASS) {
-		// Success
-		return;
-	}
-
-	// Fail
-	saveTask_ = nullptr;
-	ESP_LOGW(TAG, "Failed to start task which saves the Config file regularily");
-}
-
-void Config::stopSaveTask()
-{
-	if (saveTask_ == nullptr) {
-		return;
-	}
-
-	xTaskNotifyGive(saveTask_);
-	saveTask_ = nullptr;
 }

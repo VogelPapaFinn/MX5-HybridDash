@@ -49,7 +49,6 @@ void ConfigureDisplays::quit()
 	auto json = config_->getWriteAccess();
 	(*json)["FirstStartup"] = false;
 	config_->returnWriteAccess();
-	config_->save();
 
 	// Turn all displays back on
 	for (auto& d : *displays_) {
@@ -176,25 +175,27 @@ void ConfigureDisplays::waitForDisplay()
 			vTaskDelete(nullptr);
 		}
 
-		{auto can = static_cast<Can*>(p_param);
+		{
+			auto can = static_cast<Can*>(p_param);
 
-		// Build request frame
-		Can::Frame_t frame;
-		frame.sender = CAN_MASTER_ID;
-		frame.target = CAN_BROADCAST_ID;
-		frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
-		frame.function = CanFrameGroups::FUNC::ENTER_CONFIGURATION_MODE;
-		frame.dataLengthCode = 0;
+			// Build request frame
+			Can::Frame_t frame;
+			frame.sender = CAN_MASTER_ID;
+			frame.target = CAN_BROADCAST_ID;
+			frame.group = CanFrameGroups::GROUP::CONFIGURE_DISPLAY;
+			frame.function = CanFrameGroups::FUNC::ENTER_CONFIGURATION_MODE;
+			frame.dataLengthCode = 0;
 
-		while (true) {
-			// Stop if ordered to
-			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100)) != 0) {
-				break;
+			while (true) {
+				// Stop if ordered to
+				if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100)) != 0) {
+					break;
+				}
+
+				can->queueFrame(frame);
 			}
+		}
 
-			can->queueFrame(frame);
-		}}
-		
 		vTaskDelete(nullptr);
 	};
 
