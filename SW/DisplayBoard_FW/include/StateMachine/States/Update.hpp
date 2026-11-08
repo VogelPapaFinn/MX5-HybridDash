@@ -3,13 +3,14 @@
 // Project includes
 #include "Can.hpp"
 #include "CanReceiver.hpp"
+#include "Handler/GuiHandler.hpp"
 #include "StateMachine/State.hpp"
 #include "WifiJoin.hpp"
 
 class Update : public State, public CanReceiver
 {
 public:
-	Update(Can* p_can);
+	Update(Can* p_can, GuiHandler* p_guiHandler);
 
 	void enter() override;
 
@@ -43,6 +44,7 @@ private:
 	};
 	uint8_t substate_ = UNDEFINED;
 
+	GuiHandler* guiHandler_ = nullptr;
 	WifiJoin wifi_;
 	std::string ssid_;
 	std::string psswd_;

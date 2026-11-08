@@ -19,6 +19,9 @@ class ST77916
 public:
 	ST77916();
 
+	void blockInterrupt();
+	void unblockInterrupt();
+
 	void setLvglDisplay(lv_display_t* p_display);
 
 	static void setBacklightLevel(uint8_t percent);

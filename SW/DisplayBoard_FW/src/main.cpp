@@ -59,7 +59,7 @@ extern "C" void app_main(void)
 	WaitingForConfiguration waitingState(&can);
 	Operation operationState(&can, &guiHandler);
 	Configuration configurationState(&fs, &config, &can);
-	Update updateState(&can);
+	Update updateState(&can, &guiHandler);
 
 	// StateMachine
 	StateMachine stateMachine(

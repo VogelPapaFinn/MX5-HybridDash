@@ -65,6 +65,19 @@ bool GuiHandler::init()
 	return true;
 }
 
+
+void GuiHandler::blockUpdating()
+{
+	st77916_.blockInterrupt();
+	xSemaphoreTake(guiMutex_, portMAX_DELAY);
+}
+
+void GuiHandler::unblockUpdating()
+{
+	st77916_.unblockInterrupt();
+	xSemaphoreGive(guiMutex_);
+}
+
 void GuiHandler::loadScreen(const SCREEN screen)
 {
 	currentScreen_ = screen;

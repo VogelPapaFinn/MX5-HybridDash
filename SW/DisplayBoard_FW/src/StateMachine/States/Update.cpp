@@ -15,7 +15,7 @@ constexpr auto TAG = "UpdateState";
 /*
  *   Public Function Implementations
  */
-Update::Update(Can* p_can) : CanReceiver(p_can) {}
+Update::Update(Can* p_can, GuiHandler* p_guiHandler) : CanReceiver(p_can) { guiHandler_ = p_guiHandler; }
 
 void Update::enter()
 {
@@ -163,6 +163,8 @@ void Update::executeUpdate()
 {
 	ESP_LOGI(TAG, "Starting OTA update");
 
+	guiHandler_->blockUpdating();
+
 	// Build webaddress
 	std::string downloadPath =
 		std::format("http://{}.{}.{}.{}/display_update.bin", masterIp_[0], masterIp_[1], masterIp_[2], masterIp_[3]);
@@ -170,7 +172,7 @@ void Update::executeUpdate()
 	// Build configurations
 	const esp_http_client_config_t config = {
 		.url = downloadPath.c_str(),
-		.timeout_ms = 5000,
+		.timeout_ms = 30000,
 		.keep_alive_enable = true,
 	};
 	const esp_https_ota_config_t otaConfig = {
@@ -184,6 +186,7 @@ void Update::executeUpdate()
 	if (updateSuccess != ESP_OK) {
 		ESP_LOGE(TAG, "OTA Update error: %s", esp_err_to_name(updateSuccess));
 
+		guiHandler_->unblockUpdating();
 		esp_event_post(STATE_EVENT_BASE, UPDATE_FAILED, nullptr, 0, portMAX_DELAY);
 
 		return;

@@ -108,6 +108,9 @@ ST77916::ST77916()
 	initialized_ = true;
 }
 
+void ST77916::blockInterrupt() { gpio_intr_disable(GPIO_TE); }
+void ST77916::unblockInterrupt() { gpio_intr_enable(GPIO_TE); }
+
 void ST77916::setLvglDisplay(lv_display_t* p_lvDisplay) { lvDisplay_ = p_lvDisplay; }
 
 void ST77916::setBacklightLevel(uint8_t percent)

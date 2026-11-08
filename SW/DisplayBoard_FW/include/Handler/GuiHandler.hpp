@@ -29,6 +29,9 @@ public:
 
 	bool init();
 
+	void blockUpdating();
+	void unblockUpdating();
+
 	void loadScreen(SCREEN screen);
 
 	void setRotation(bool rotation);
