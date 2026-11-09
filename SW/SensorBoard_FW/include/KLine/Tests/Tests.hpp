@@ -12,6 +12,7 @@ enum ECU_TEST
 	// Switch Tests
 	FAN_MAX,
 	FAN_MED,
+	TANK_BLEEDING_VALVE,
 	FUEL_PUMP,
 	FUEL_PRESSURE_VALVE,
 	SHUTDOWN_CYCLINDER_1,
@@ -27,6 +28,7 @@ const std::unordered_map<ECU_TEST, std::string> g_ECU_TEST_NAME = {
 	// Switch tests
 	{ECU_TEST::FAN_MAX, "Turn on the cooling fan (MAX speed)"},
 	{ECU_TEST::FAN_MED, "Turn on the cooling fan (LOW speed)"},
+	{ECU_TEST::TANK_BLEEDING_VALVE, "Open the bleeding valve in the fuel tank"},
 	{ECU_TEST::FUEL_PUMP, "Turn on the fuel pump"},
 	{ECU_TEST::FUEL_PRESSURE_VALVE, "Turn on the fuel pressure valve"},
 	{ECU_TEST::SHUTDOWN_CYCLINDER_1, "Shutdown the 1th Cyclinder"},

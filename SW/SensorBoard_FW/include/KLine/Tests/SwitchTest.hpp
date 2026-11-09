@@ -5,19 +5,16 @@
 
 // C++ includes
 #include <cstdint>
-
-struct SwitchTest
-{
-	ECU_TEST type;
-	uint8_t testId = 0;
-};
+#include <map>
 
 /*
  *   Array
  */
-inline constexpr SwitchTest SWITCH_TESTS[] = {
+inline const std::map<ECU_TEST, uint8_t> g_SWITCH_TESTS = {
 	{ECU_TEST::FAN_MAX, 0x3A},
 	{ECU_TEST::FAN_MED, 0x3C},
+
+	{ECU_TEST::TANK_BLEEDING_VALVE, 0x10},
 
 	{ECU_TEST::FUEL_PUMP, 0x23},
 	{ECU_TEST::FUEL_PRESSURE_VALVE, 0x20},

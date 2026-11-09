@@ -79,8 +79,8 @@ int ActuatorTests::listTests(int argc, char** p_argv)
 {
 	// List all switch tests
 	printf("Switch tests:\n");
-	for (const auto& test : SWITCH_TESTS) {
-		printf("- %d %s\n", test.type, g_ECU_TEST_NAME.at(test.type).c_str());
+	for (const auto& test : g_SWITCH_TESTS) {
+		printf("- %d %s\n", test.first, g_ECU_TEST_NAME.at(test.first).c_str());
 	}
 
 	return 0;
@@ -88,19 +88,27 @@ int ActuatorTests::listTests(int argc, char** p_argv)
 
 int ActuatorTests::executeSwitchTest(int argc, char** p_argv)
 {
-	if (argc < 2) {
+	if (argc < 3) {
 		printf("Please provide the test number (see list_tests) and the value (1 = on, 0 = off)");
 		return 1;
 	}
 
+	const std::string firstParameter = std::string{p_argv[1]};
+	const std::string secondParameter = std::string{p_argv[2]};
+
 	// Extract needed values
-	const auto testNumber = static_cast<ECU_TEST>(*p_argv[0]);
-	const auto value = static_cast<uint8_t>(*p_argv[1]);
-	const auto testId = SWITCH_TESTS[testNumber].testId;
+	const auto testNumber = static_cast<ECU_TEST>(std::stoi(firstParameter));
+	volatile const uint8_t value = std::stoi(secondParameter) == 0 ? 0x00 : 0xFF;
+	volatile const auto testId = g_SWITCH_TESTS.at(testNumber);
 
 	// Tell the ECU to start the test
 	KLineMessage message(TEST_PID, {testId, value, 0x00});
-	kline_->send(message, [this](KLineMessage& message) { this->handleCommandAnswer(message); });
+	kline_->send(message,
+				 [this](KLineMessage& message)
+				 {
+					 printf("ECU answer: %s\n", message.toString().c_str());
+					 this->handleCommandAnswer(message);
+				 });
 
 	return 0;
 }
