@@ -29,7 +29,7 @@ ActuatorTests::ActuatorTests(KLine* p_kline)
 
 		esp_console_cmd_t{.command = "execute_switch_test",
 						  .help = "Prints a list of all available tests",
-						  .hint = "<test> <1 = on, 0 = off>",
+						  .hint = "<test> <value: 1 = on, 0 = off>",
 						  .func_w_context = [](void* p_ctx, int argc, char** p_argv) -> int
 						  { return static_cast<ActuatorTests*>(p_ctx)->executeSwitchTest(argc, p_argv); },
 						  .context = this},
@@ -106,7 +106,7 @@ int ActuatorTests::executeSwitchTest(int argc, char** p_argv)
 	kline_->send(message,
 				 [this](KLineMessage& message)
 				 {
-					 printf("ECU answer: %s\n", message.toString().c_str());
+					 // printf("ECU answer: %s\n", message.toString().c_str());
 					 this->handleCommandAnswer(message);
 				 });
 

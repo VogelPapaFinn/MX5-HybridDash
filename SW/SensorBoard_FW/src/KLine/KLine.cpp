@@ -34,10 +34,9 @@ constexpr gpio_num_t GPIO_TX = GPIO_NUM_11;
 
 // KLine timings (ISO 9141)
 constexpr uint32_t WAIT_FOR_BYTE_TIMEOUT_MS = 20;
-constexpr uint32_t WAIT_FOR_ANSWER_TIMEOUT_MS = 40;
-constexpr uint32_t DELAY_BETWEEN_TX_MESSAGES_MS = 25;
+constexpr uint32_t WAIT_FOR_ANSWER_TIMEOUT_MS = 55;
+constexpr uint32_t DELAY_BETWEEN_TX_MESSAGES_MS = 60;
 
-constexpr uint32_t KEEP_ALIVE_TIME_MS = 4000;
 constexpr uint32_t ECHO_TIMEOUT_MS = 20;
 constexpr uint32_t TX_BYTE_TIMEOUT_MS = 10;
 
