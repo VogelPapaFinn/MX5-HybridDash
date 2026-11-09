@@ -131,9 +131,9 @@ bool KLineMessage::operator==(const KLineMessage& rhs) const
 	return equal;
 }
 
-uint8_t KLineMessage::getSid() { return sid_; }
+uint8_t KLineMessage::getSid() const { return sid_; }
 
-std::vector<uint8_t> KLineMessage::getPayload()
+std::vector<uint8_t> KLineMessage::getPayload() const
 {
 	std::vector<uint8_t> output(payloadSize_);
 

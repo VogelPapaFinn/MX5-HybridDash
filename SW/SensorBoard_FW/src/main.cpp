@@ -5,6 +5,7 @@
 #include "KLine/KLine.hpp"
 #include "Sensors/HwSensorReader.hpp"
 #include "Sensors/SwSensorReader.hpp"
+#include "SerialConsole/SerialConsole.hpp"
 #include "StateMachine/StateEvents.hpp"
 #include "StateMachine/StateMachine.hpp"
 #include "StateMachine/States/ConfigureDisplays.hpp"
@@ -76,6 +77,7 @@ extern "C" void app_main(void)
 									 Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 0, true),
 									 Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
 	LogFileServer logFileServer(&fs, &config, &wifiHost);
+	SerialConsole serialConsole(&kline);
 
 	initAdc1(&adc1);
 
@@ -90,7 +92,7 @@ extern "C" void app_main(void)
 	// States
 	Startup startupState(&fs, &config, &can, &displays);
 	Operation operationState(&hwSensorReader, &swSensorReader, &sensorLogger, &sensorBroadcaster, &kline,
-							 &logFileServer, &sensorValues);
+							 &logFileServer, &sensorValues, &serialConsole);
 	UpdateDisplays updateDisplays(&fs, &config, &can, &wifiHost, &displays);
 	ConfigureDisplays configureDisplays(&can, &config, &displays);
 

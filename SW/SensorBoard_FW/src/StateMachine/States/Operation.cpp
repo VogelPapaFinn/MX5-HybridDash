@@ -13,7 +13,7 @@ constexpr auto TAG = "Operation";
  */
 Operation::Operation(HwSensorReader* p_hwSensorReader, SwSensorReader* p_swSensorReader, SensorLogger* p_sensorLogger,
 					 SensorBroadcaster* p_sensorBroadcast, KLine* p_kline, LogFileServer* p_logFileServer,
-					 SensorValues* p_sensorValues)
+					 SensorValues* p_sensorValues, SerialConsole* p_serialConsole)
 {
 	swSensorReader_ = p_swSensorReader;
 	hwSensorReader_ = p_hwSensorReader;
@@ -22,6 +22,7 @@ Operation::Operation(HwSensorReader* p_hwSensorReader, SwSensorReader* p_swSenso
 	kline_ = p_kline;
 	logFileServer_ = p_logFileServer;
 	sensorValues_ = p_sensorValues;
+	serialConsole_ = p_serialConsole;
 }
 
 void Operation::enter()
@@ -33,6 +34,7 @@ void Operation::enter()
 	sensorLogger_->start();
 	sensorBroadcaster_->start();
 	logFileServer_->start();
+	serialConsole_->start();
 	startRpmTimer();
 }
 
@@ -45,6 +47,7 @@ void Operation::quit()
 	sensorLogger_->stop();
 	sensorBroadcaster_->stop();
 	logFileServer_->stop();
+	serialConsole_->stop();
 }
 
 /*

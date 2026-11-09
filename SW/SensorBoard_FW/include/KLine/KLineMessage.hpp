@@ -26,9 +26,9 @@ public:
 	/*
 	 *	Getter
 	 */
-	uint8_t getSid();
+	uint8_t getSid() const;
 
-	std::vector<uint8_t> getPayload();
+	std::vector<uint8_t> getPayload() const;
 
 private:
 	/*

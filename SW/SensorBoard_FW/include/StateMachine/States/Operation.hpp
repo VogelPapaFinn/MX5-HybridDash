@@ -7,6 +7,7 @@
 #include "Sensors/SensorBroadcaster.hpp"
 #include "Sensors/SensorLogger.hpp"
 #include "Sensors/SwSensorReader.hpp"
+#include "SerialConsole/SerialConsole.hpp"
 #include "StateMachine/State.hpp"
 
 
@@ -18,7 +19,7 @@ class Operation : public State
 public:
 	Operation(HwSensorReader* p_hwSensorReader, SwSensorReader* p_swSensorReader, SensorLogger* p_sensorLogger,
 			  SensorBroadcaster* p_sensorBroadcast, KLine* p_kline, LogFileServer* p_logFileServer,
-			  SensorValues* p_sensorValues);
+			  SensorValues* p_sensorValues, SerialConsole* p_serialConsole);
 
 	void enter() override;
 
@@ -42,6 +43,7 @@ private:
 	KLine* kline_ = nullptr;
 	SensorValues* sensorValues_ = nullptr;
 	LogFileServer* logFileServer_ = nullptr;
+	SerialConsole* serialConsole_ = nullptr;
 
 	TimerHandle_t rpmTimer_ = nullptr;
 };

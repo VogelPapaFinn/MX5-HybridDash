@@ -11,6 +11,9 @@ set(FILES
 
         "LogFileServer.cpp"
 
+        "SerialConsole/SerialConsole.cpp"
+        "SerialConsole/Commands/ActuatorTests.cpp"
+
         # KLine
         "KLine/KLine.cpp"
         "KLine/KLineMessage.cpp"
@@ -43,7 +46,7 @@ set(FILES
 )
 
 idf_component_register(SRCS ${FILES}
-        REQUIRES src driver spi_flash esp_psram esp_adc esp_wifi esp_http_server nvs_flash can esp_timer app_update esp_http_client esp_https_ota mbedtls esp-tls ArduinoJson filesystem wifi
+        REQUIRES src driver spi_flash esp_psram esp_adc esp_wifi esp_http_server nvs_flash can esp_timer app_update esp_http_client esp_https_ota mbedtls esp-tls ArduinoJson filesystem wifi console
         INCLUDE_DIRS "../include" "."
         EMBED_TXTFILES "" # For Files
         EMBED_FILES "") # For images
