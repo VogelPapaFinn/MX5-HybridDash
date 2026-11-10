@@ -30,7 +30,7 @@ ActuatorTests::ActuatorTests(KLine* p_kline)
 						  { return static_cast<ActuatorTests*>(p_ctx)->executeSwitchTest(argc, p_argv); },
 						  .context = this},
 
-		esp_console_cmd_t{.command = "execute_switch_test",
+		esp_console_cmd_t{.command = "execute_value_test",
 						  .help = "Executes a value test",
 						  .hint = "<test> <value, see list_tests to see allowed values>",
 						  .func_w_context = [](void* p_ctx, int argc, char** p_argv) -> int
@@ -121,6 +121,13 @@ int ActuatorTests::listTests(int argc, char** p_argv)
 		printf("- %d %s\n", test.first, g_ECU_TEST_NAME.at(test.first).c_str());
 	}
 
+	// List all value tests
+	printf("\n");
+	printf("Value tests:\n");
+	for (const auto& test : g_VALUE_TESTS) {
+		printf("- %d %s\n", test.first, g_ECU_TEST_NAME.at(test.first).c_str());
+	}
+
 	return 0;
 }
 
@@ -164,7 +171,7 @@ int ActuatorTests::executeValueTest(int argc, char** p_argv)
 	// Extract needed values
 	const auto testNumber = static_cast<ECU_TEST>(std::stoi(firstParameter));
 	const int value = std::stoi(secondParameter);
-	volatile const auto testId = g_SWITCH_TESTS.at(testNumber);
+	volatile const auto testId = g_VALUE_TESTS.at(testNumber);
 
 	// Tell the ECU to start the test
 	KLineMessage message(TEST_PID, {testId, getValueTestValue(testNumber, value), 0x00});
