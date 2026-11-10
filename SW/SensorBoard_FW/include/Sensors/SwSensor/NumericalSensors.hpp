@@ -36,8 +36,8 @@ inline constexpr NumericalSensor SW_NUMERICAL_SENSORS[] = {
 
 	{SENSOR::ECU_INJECTION_MS, 0x1762, 2, [](const uint16_t raw) { return static_cast<double>(raw) * 0.002; }, UNIT_MS},
 
-	{SENSOR::ECU_IDLE_BYPASS_MS, 0x1769, 2, [](const uint16_t raw) { return static_cast<double>(raw) * 0.002; },
-	 UNIT_MS},
+	{SENSOR::ECU_IDLE_VALVE_POS, 0x1769, 2, [](const uint16_t raw) { return static_cast<double>(raw) / 1024.0; },
+	 UNIT_PERCENT},
 
 	{SENSOR::ECU_ENGINE_LOAD_P, 0x174C, 2, [](const uint16_t raw) { return static_cast<double>(raw) / 40.96; },
 	 UNIT_PERCENT},
