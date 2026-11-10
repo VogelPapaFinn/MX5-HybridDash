@@ -14,6 +14,7 @@
 constexpr auto TAG = "FuelLevel";
 
 constexpr uint16_t R1 = 240;
+constexpr uint16_t BOOST_RESISTOR = 98;
 constexpr float EMA_ALPHA = 0.01f;
 
 constexpr auto NVS_NAMESPACE = "FuelLevel";
@@ -53,7 +54,7 @@ int FuelLevel::get()
  */
 void FuelLevel::specificRead()
 {
-	resistance_ = calcVoltageDividerR2(voltage_, R1);
+	resistance_ = calcVoltageDividerR2(voltage_, R1) - BOOST_RESISTOR;
 
 	const float resistanceFloat = static_cast<float>(resistance_);
 	float levelInPercent = (-0.000102885f * resistanceFloat * resistanceFloat * resistanceFloat) +
