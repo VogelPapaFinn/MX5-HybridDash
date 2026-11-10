@@ -51,7 +51,8 @@ const std::unordered_map<ECU_TEST, std::string> g_ECU_TEST_NAME = {
 	// Value tests
 	{ECU_TEST::ALTER_INJECTION_AMOUNT, "Change the amount of injected fuel (-50% <= value <= 50%)"},
 	{ECU_TEST::ALTER_IGNITION_TIMING, "Change the ignition timing (-30° <= value <= 30°; default value = 0°)"},
-	{ECU_TEST::ALTER_IDLE_VALVE_POS, "Set idle valve position (0% <= value <= 100%, default value = 18)"},
+	{ECU_TEST::ALTER_IDLE_VALVE_POS,
+	 "Set idle valve position (0% <= value <= 100%, default value is around 18 when the engine is warm)"},
 	{ECU_TEST::DRIVE_EGR_TO_POS, "Move the EGR to the specific position (0 <= value <= 255)"},
 };
 

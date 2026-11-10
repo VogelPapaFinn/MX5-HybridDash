@@ -23,7 +23,7 @@ private:
 	 */
 	void handleCommandAnswer(const KLineMessage& message);
 
-	uint8_t getValueTestValue(const ECU_TEST ecuTest, const int passedValue);
+	int getValueTestValue(const ECU_TEST ecuTest, const int passedValue);
 
 	/*
 	 *	Command Functions
