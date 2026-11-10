@@ -2,6 +2,7 @@
 
 // Project includes
 #include "KLine/KLine.hpp"
+#include "KLine/Tests.hpp"
 
 // C++ includes
 #include <vector>
@@ -20,15 +21,18 @@ private:
 	/*
 	 *	Private Functions
 	 */
+	void handleCommandAnswer(const KLineMessage& message);
+
+	uint8_t getValueTestValue(const ECU_TEST ecuTest, const int passedValue);
 
 	/*
 	 *	Command Functions
 	 */
-	void handleCommandAnswer(const KLineMessage& message);
-
 	int listTests(int argc, char** p_argv);
 
 	int executeSwitchTest(int argc, char** p_argv);
+
+	int executeValueTest(int argc, char** p_argv);
 
 	/*
 	 *	Private Variables
