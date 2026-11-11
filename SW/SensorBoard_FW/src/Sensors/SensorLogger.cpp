@@ -33,7 +33,10 @@ SensorLogger::SensorLogger(Filesystem* p_fs, SensorValues* p_sensorValues)
 	fs_ = p_fs;
 	sensorValues_ = p_sensorValues;
 
-	nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvsHandle_);
+	if (nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvsHandle_) != ESP_OK) {
+		ESP_LOGW(TAG, "Failed to open NVS, this may lead to logs being overwritten!");
+	}
+
 
 	// DEBUGGING PURPOSE
 	// nvs_set_u32(nvsHandle_, NVS_FILE_INDEX, 0);
@@ -90,20 +93,26 @@ uint32_t SensorLogger::getFileIndex()
 
 void SensorLogger::increaseFileIndex()
 {
+	if (increaseFileIndexTimer_ != nullptr) {
+		return;
+	}
+
 	// Save after 4 Minutes, so a short engine start to move the car doesnt produce a whole file, which could clutter
 	// the sd card
-	auto timer = xTimerCreate("IncreaseSensorLoggerFileIndex", pdMS_TO_TICKS(60000 * 4), pdFALSE, this,
-							  [](TimerHandle_t p_timer)
-							  {
-								  auto sensorLogger = static_cast<SensorLogger*>(pvTimerGetTimerID(p_timer));
+	increaseFileIndexTimer_ = xTimerCreate("IncreaseSensorLoggerFileIndex", pdMS_TO_TICKS(60000 * 4), pdFALSE, this,
+										   [](TimerHandle_t p_timer)
+										   {
+											   auto sensorLogger =
+												   static_cast<SensorLogger*>(pvTimerGetTimerID(p_timer));
 
-								  const auto newIndex = sensorLogger->getFileIndex() + 1;
-								  nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex);
-								  nvs_commit(sensorLogger->nvsHandle_);
+											   const auto newIndex = sensorLogger->getFileIndex() + 1;
+											   nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex);
+											   nvs_commit(sensorLogger->nvsHandle_);
 
-								  ESP_LOGI(TAG, "Increased %s to %d", NVS_FILE_INDEX, newIndex);
-							  });
-	xTimerStart(timer, 0);
+											   ESP_LOGI(TAG, "Increased %s to %d", NVS_FILE_INDEX, newIndex);
+										   });
+
+	xTimerStart(increaseFileIndexTimer_, 0);
 }
 
 void SensorLogger::printHeader()
@@ -142,6 +151,12 @@ void SensorLogger::stop()
 {
 	if (taskHandle_ == nullptr) {
 		return;
+	}
+
+	if (increaseFileIndexTimer_ != nullptr) {
+		xTimerStop(increaseFileIndexTimer_, 0);
+		xTimerDelete(increaseFileIndexTimer_, 0);
+		increaseFileIndexTimer_ = nullptr;
 	}
 
 	xTaskNotifyGive(taskHandle_);

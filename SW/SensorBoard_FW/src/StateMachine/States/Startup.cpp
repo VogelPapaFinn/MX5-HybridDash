@@ -33,8 +33,6 @@ void Startup::enter()
 {
 	ESP_LOGI(TAG, "Entered Startup State");
 
-	initNvs();
-
 	// Activate CAN
 	can_->initialize();
 	can_->enable();
@@ -78,16 +76,6 @@ void Startup::quit() {}
 /*
  *   Private Function Implementations
  */
-bool Startup::initNvs()
-{
-	if (nvs_flash_init() != ESP_OK) {
-		ESP_LOGE(TAG, "Failed to initiate NVS Flash");
-		return false;
-	}
-
-	return true;
-}
-
 bool Startup::loadConfig() { return config_->open(CONFIG_NAME); }
 
 bool Startup::loadDefaultConfig()

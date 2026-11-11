@@ -35,6 +35,13 @@ constexpr adc_oneshot_unit_init_cfg_t ADC1_UNIT_CONFIG = {.unit_id = ADC_UNIT_1,
 /*
  *	Helper functions
  */
+void initNvs()
+{
+	if (nvs_flash_init() != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to initiate NVS Flash");
+	}
+}
+
 void startEspEventLoop()
 {
 	if (esp_event_loop_create_default() == ESP_OK) {
@@ -63,6 +70,8 @@ extern "C" void app_main(void)
 	// Print Log Headers
 	ESP_LOGI(TAG, "--- --- --- --- --- --- ---");
 	ESP_LOGI(TAG, "Startup");
+
+	initNvs();
 
 	startEspEventLoop();
 

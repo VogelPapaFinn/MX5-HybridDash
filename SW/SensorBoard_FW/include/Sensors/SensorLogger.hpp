@@ -44,10 +44,11 @@ private:
 	Filesystem* fs_ = nullptr;
 	SensorValues* sensorValues_ = nullptr;
 
-	nvs_handle_t nvsHandle_;
+	nvs_handle_t nvsHandle_ = 0;
 
 	std::string csvPath_;
 	FILE* csvFile_ = nullptr;
 
 	TaskHandle_t taskHandle_ = nullptr;
+	TimerHandle_t increaseFileIndexTimer_ = nullptr;
 };
