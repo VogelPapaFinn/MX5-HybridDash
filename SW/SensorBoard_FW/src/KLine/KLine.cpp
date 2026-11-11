@@ -45,7 +45,8 @@ constexpr uint32_t TX_BYTE_TIMEOUT_MS = 10;
  */
 KLine::KLine()
 {
-	if (!setupUart()) {
+	uartInitialized_ = setupUart();
+	if (!uartInitialized_) {
 		ESP_LOGE(TAG, "Failed to setup UART");
 		return;
 	}
@@ -68,7 +69,7 @@ KLine::~KLine()
 
 bool KLine::init()
 {
-	if (initialized_) {
+	if (initialized_ || !uartInitialized_) {
 		return false;
 	}
 
@@ -86,13 +87,36 @@ bool KLine::init()
 
 bool KLine::send(const KLineMessage& message, std::function<void(KLineMessage&)> rxCb)
 {
-	if (!initialized_) {
+	if (!initialized_ || !uartInitialized_) {
 		return false;
 	}
 
 	// ESP_LOGI(TAG, "Sending request: %s", message.toString().c_str());
 
-	auto request = new Request{message, std::move(rxCb)};
+	auto request = new Request{message, [cb = std::move(rxCb)](std::vector<KLineMessage>& messages)
+							   {
+								   if (!messages.empty()) {
+									   return cb(messages.front());
+								   }
+							   }};
+	if (xQueueSend(requestQueue_, &request, portMAX_DELAY) != pdTRUE) {
+		delete (request);
+		return false;
+	}
+
+	return true;
+}
+
+bool KLine::send(const KLineMessage& message, std::function<void(std::vector<KLineMessage>&)> rxCb,
+				 unsigned int awaitedAmountOfResponses)
+{
+	if (!initialized_ || !uartInitialized_) {
+		return false;
+	}
+
+	// ESP_LOGI(TAG, "Sending request: %s", message.toString().c_str());
+
+	auto request = new Request{message, std::move(rxCb), awaitedAmountOfResponses};
 	if (xQueueSend(requestQueue_, &request, portMAX_DELAY) != pdTRUE) {
 		delete (request);
 		return false;
@@ -227,10 +251,11 @@ void KLine::klineTask(void* p_param)
 			continue;
 		}
 
-		KLineMessage response = kline->process(*request);
+		std::vector<KLineMessage> responses = kline->process(*request);
 
-		if (response != KLineMessage() && request->callback) {
-			request->callback(response);
+		// Multi repsonse request
+		if (!responses.empty() && request->callback) {
+			request->callback(responses);
 		}
 
 		delete (request);
@@ -241,7 +266,7 @@ void KLine::klineTask(void* p_param)
 	}
 }
 
-KLineMessage KLine::process(Request& request)
+std::vector<KLineMessage> KLine::process(Request& request)
 {
 	const auto rawRequest = request.message.getRaw();
 
@@ -249,15 +274,24 @@ KLineMessage KLine::process(Request& request)
 
 	if (!transmit(rawRequest)) {
 		ESP_LOGW(TAG, "Failed to send %s", request.message.toString().c_str());
-		return KLineMessage();
+		return {};
 	}
 
 	if (!receiveEcho(rawRequest)) {
 		ESP_LOGW(TAG, "Echo mismatch for %s", request.message.toString().c_str());
-		return KLineMessage();
+		return {};
 	}
 
-	return receiveResponse();
+	std::vector<KLineMessage> responses;
+	for (unsigned int i = 0; i < request.awaitedAmountOfResponses; i++) {
+		auto response = receiveResponse();
+
+		if (response != KLineMessage()) {
+			responses.push_back(response);
+		}
+	}
+
+	return responses;
 }
 
 bool KLine::transmit(const std::vector<uint8_t>& raw)
@@ -266,7 +300,7 @@ bool KLine::transmit(const std::vector<uint8_t>& raw)
 		return false;
 	}
 
-	if (uart_wait_tx_done(UART_PORT, pdMS_TO_TICKS(TX_BYTE_TIMEOUT_MS)) != ESP_OK) {
+	if (uart_wait_tx_done(UART_PORT, pdMS_TO_TICKS(TX_BYTE_TIMEOUT_MS * raw.size())) != ESP_OK) {
 		return false;
 	}
 

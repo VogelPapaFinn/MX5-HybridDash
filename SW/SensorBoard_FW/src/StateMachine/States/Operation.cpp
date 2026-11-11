@@ -8,14 +8,17 @@
  */
 constexpr auto TAG = "Operation";
 
+constexpr auto SENSORS_TO_READ = {SENSOR::ECU_COOLANT_C, SENSOR::ECU_COOLANT_V, SENSOR::ECU_INJECTION_MS,
+								  SENSOR::ECU_RPM, SENSOR::ECU_SPEED};
+
 /*
  *	Public Function Implementations
  */
-Operation::Operation(HwSensorReader* p_hwSensorReader, SwSensorReader* p_swSensorReader, SensorLogger* p_sensorLogger,
+Operation::Operation(HwSensorReader* p_hwSensorReader, SensorLogger* p_sensorLogger,
 					 SensorBroadcaster* p_sensorBroadcast, KLine* p_kline, LogFileServer* p_logFileServer,
-					 SensorValues* p_sensorValues, SerialConsole* p_serialConsole)
+					 SensorValues* p_sensorValues, SerialConsole* p_serialConsole) :
+	swSensorReader_(p_kline, p_sensorValues)
 {
-	swSensorReader_ = p_swSensorReader;
 	hwSensorReader_ = p_hwSensorReader;
 	sensorLogger_ = p_sensorLogger;
 	sensorBroadcaster_ = p_sensorBroadcast;
@@ -23,6 +26,8 @@ Operation::Operation(HwSensorReader* p_hwSensorReader, SwSensorReader* p_swSenso
 	logFileServer_ = p_logFileServer;
 	sensorValues_ = p_sensorValues;
 	serialConsole_ = p_serialConsole;
+
+	swSensorReader_.setSensorsToRead(SENSORS_TO_READ);
 }
 
 void Operation::enter()
@@ -30,7 +35,7 @@ void Operation::enter()
 	ESP_LOGI(TAG, "Entering Operation state");
 	kline_->init();
 	hwSensorReader_->start();
-	swSensorReader_->start();
+	swSensorReader_.start();
 	sensorLogger_->start();
 	sensorBroadcaster_->start();
 	logFileServer_->start();
@@ -43,7 +48,7 @@ void Operation::quit()
 	ESP_LOGI(TAG, "Quitting Operation state");
 	stopRpmTimer();
 	hwSensorReader_->stop();
-	swSensorReader_->stop();
+	swSensorReader_.stop();
 	sensorLogger_->stop();
 	sensorBroadcaster_->stop();
 	logFileServer_->stop();

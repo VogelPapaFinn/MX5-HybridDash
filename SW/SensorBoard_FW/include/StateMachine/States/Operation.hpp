@@ -17,9 +17,9 @@
 class Operation : public State
 {
 public:
-	Operation(HwSensorReader* p_hwSensorReader, SwSensorReader* p_swSensorReader, SensorLogger* p_sensorLogger,
-			  SensorBroadcaster* p_sensorBroadcast, KLine* p_kline, LogFileServer* p_logFileServer,
-			  SensorValues* p_sensorValues, SerialConsole* p_serialConsole);
+	Operation(HwSensorReader* p_hwSensorReader, SensorLogger* p_sensorLogger, SensorBroadcaster* p_sensorBroadcast,
+			  KLine* p_kline, LogFileServer* p_logFileServer, SensorValues* p_sensorValues,
+			  SerialConsole* p_serialConsole);
 
 	void enter() override;
 
@@ -36,7 +36,6 @@ private:
 	/*
 	 *	Private Variables
 	 */
-	SwSensorReader* swSensorReader_ = nullptr;
 	HwSensorReader* hwSensorReader_ = nullptr;
 	SensorLogger* sensorLogger_ = nullptr;
 	SensorBroadcaster* sensorBroadcaster_ = nullptr;
@@ -44,6 +43,8 @@ private:
 	SensorValues* sensorValues_ = nullptr;
 	LogFileServer* logFileServer_ = nullptr;
 	SerialConsole* serialConsole_ = nullptr;
+
+	SwSensorReader swSensorReader_;
 
 	TimerHandle_t rpmTimer_ = nullptr;
 };

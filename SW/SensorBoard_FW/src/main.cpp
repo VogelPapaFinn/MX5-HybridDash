@@ -4,7 +4,6 @@
 #include "Filesystem.hpp"
 #include "KLine/KLine.hpp"
 #include "Sensors/HwSensorReader.hpp"
-#include "Sensors/SwSensorReader.hpp"
 #include "SerialConsole/SerialConsole.hpp"
 #include "StateMachine/StateEvents.hpp"
 #include "StateMachine/StateMachine.hpp"
@@ -96,12 +95,11 @@ extern "C" void app_main(void)
 	SensorBroadcaster sensorBroadcaster(&can, &sensorValues);
 	HwSensorReader hwSensorReader(adc1, &sensorValues,
 								  [&sensorBroadcaster]() { sensorBroadcaster.broadcastIndicators(); });
-	SwSensorReader swSensorReader(&kline, &sensorValues);
 
 	// States
 	Startup startupState(&fs, &config, &can, &displays);
-	Operation operationState(&hwSensorReader, &swSensorReader, &sensorLogger, &sensorBroadcaster, &kline,
-							 &logFileServer, &sensorValues, &serialConsole);
+	Operation operationState(&hwSensorReader, &sensorLogger, &sensorBroadcaster, &kline, &logFileServer, &sensorValues,
+							 &serialConsole);
 	UpdateDisplays updateDisplays(&fs, &config, &can, &wifiHost, &displays);
 	ConfigureDisplays configureDisplays(&can, &config, &displays);
 

@@ -27,11 +27,15 @@ public:
 
 	bool send(const KLineMessage& message, std::function<void(KLineMessage&)> rxCb);
 
+	bool send(const KLineMessage& message, std::function<void(std::vector<KLineMessage>&)> rxCb,
+			  unsigned int awaitedAmountOfResponses);
+
 private:
 	struct Request
 	{
 		KLineMessage message;
-		std::function<void(KLineMessage&)> callback;
+		std::function<void(std::vector<KLineMessage>&)> callback;
+		unsigned int awaitedAmountOfResponses = 1;
 	};
 
 	/*
@@ -46,7 +50,7 @@ private:
 
 	static void klineTask(void* p_param);
 
-	KLineMessage process(Request& request);
+	std::vector<KLineMessage> process(Request& request);
 
 	bool transmit(const std::vector<uint8_t>& raw);
 
@@ -58,6 +62,7 @@ private:
 	 *	Private Variables
 	 */
 	bool initialized_ = false;
+	bool uartInitialized_ = false;
 
 	TaskHandle_t taskHandle_ = nullptr;
 	QueueHandle_t requestQueue_ = nullptr;

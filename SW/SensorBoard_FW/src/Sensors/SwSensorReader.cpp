@@ -4,6 +4,9 @@
 #include "Sensors/SwSensor/BitfieldSensors.hpp"
 #include "Sensors/SwSensor/NumericalSensors.hpp"
 
+// C++ includes
+#include <algorithm>
+
 // espidf includes
 #include "esp_log.h"
 
@@ -14,9 +17,6 @@ constexpr auto TAG = "SwSensorReader";
 
 constexpr auto TIME_BETWEEN_EACH_SENSOR_READ_MS = 200;
 
-constexpr auto SENSORS_TO_READ = {SENSOR::ECU_COOLANT_C, SENSOR::ECU_COOLANT_V, SENSOR::ECU_INJECTION_MS,
-								  SENSOR::ECU_RPM, SENSOR::ECU_SPEED};
-
 /*
  *   Public Function Implementations
  */
@@ -24,6 +24,8 @@ SwSensorReader::SwSensorReader(KLine* p_kline, SensorValues* p_sensorValues)
 {
 	kline_ = p_kline;
 	sensorValues_ = p_sensorValues;
+
+	sensorsToReadMutex_ = xSemaphoreCreateMutex();
 }
 
 SwSensorReader::~SwSensorReader() { stop(); }
@@ -31,6 +33,63 @@ SwSensorReader::~SwSensorReader() { stop(); }
 void SwSensorReader::start() { startReadThread(); }
 
 void SwSensorReader::stop() { stopReadThread(); }
+
+void SwSensorReader::readOnce()
+{
+	start();
+	stop();
+}
+
+void SwSensorReader::setSensorsToRead(std::vector<SENSOR> sensors)
+{
+	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
+
+	sensorsToRead_ = std::move(sensors);
+
+	xSemaphoreGetMutexHolder(sensorsToReadMutex_);
+}
+
+void SwSensorReader::addSensorToRead(SENSOR sensor)
+{
+	// Ignore if already being read
+	if (std::find(sensorsToRead_.begin(), sensorsToRead_.end(), sensor) != sensorsToRead_.end()) {
+		return;
+	}
+
+	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
+
+	sensorsToRead_.push_back(sensor);
+
+	xSemaphoreGetMutexHolder(sensorsToReadMutex_);
+}
+
+void SwSensorReader::removeSensorFromRead(SENSOR sensor)
+{
+	// Ignore if not being read
+	const auto it = std::find(sensorsToRead_.begin(), sensorsToRead_.end(), sensor);
+	if (it == sensorsToRead_.end()) {
+		return;
+	}
+
+	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
+
+	sensorsToRead_.erase(it);
+
+	xSemaphoreGetMutexHolder(sensorsToReadMutex_);
+}
+
+void SwSensorReader::stopReadingAllSensors()
+{
+	if (sensorsToRead_.empty()) {
+		return;
+	}
+
+	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
+
+	sensorsToRead_.clear();
+
+	xSemaphoreGetMutexHolder(sensorsToReadMutex_);
+}
 
 /*
  *   Private Function Implementations
@@ -76,7 +135,9 @@ void SwSensorReader::readSensors(void* p_param)
 
 		bool stop = false;
 		while (true) {
-			for (auto& sensorType : SENSORS_TO_READ) {
+			xSemaphoreTake(swSensorReader->sensorsToReadMutex_, portMAX_DELAY);
+
+			for (auto& sensorType : swSensorReader->sensorsToRead_) {
 				// Stop if ordered to
 				if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(TIME_BETWEEN_EACH_SENSOR_READ_MS)) != 0) {
 					stop = true;
@@ -128,6 +189,8 @@ void SwSensorReader::readSensors(void* p_param)
 												 swSensorReader->sensorValues_->returnWriteAccess();
 											 });
 			}
+
+			xSemaphoreGive(swSensorReader->sensorsToReadMutex_);
 
 			if (stop) {
 				break;

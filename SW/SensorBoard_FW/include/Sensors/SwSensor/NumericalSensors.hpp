@@ -79,6 +79,8 @@ inline constexpr NumericalSensor SW_NUMERICAL_SENSORS[] = {
 	 [](const uint16_t raw) { return static_cast<double>(raw) * (60.0 / 256.0); }, UNIT_DEGREE},
 
 	{SENSOR::ECU_EGR_VALVE_POSITION, 0x1775, 1, [](const uint16_t raw) { return static_cast<double>(raw); }, "pos"},
+
+	{SENSOR::ECU_AMOUNT_FAULT_CODES, 0x0200, 1, [](const uint16_t raw) { return static_cast<double>(raw); }, ""},
 };
 
 /*

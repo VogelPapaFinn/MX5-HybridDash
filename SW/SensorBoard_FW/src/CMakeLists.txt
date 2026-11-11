@@ -12,6 +12,7 @@ set(FILES
 
         "SerialConsole/SerialConsole.cpp"
         "SerialConsole/Commands/ActuatorTests.cpp"
+        "SerialConsole/Commands/FaultCodes.cpp"
 
         # KLine
         "KLine/KLine.cpp"

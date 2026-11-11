@@ -46,7 +46,7 @@ private:
 	uint8_t sender_ = 0;
 	uint8_t target_ = 0;
 	uint8_t sid_ = 0;
-	std::array<uint8_t, 12> payload_ = {};
+	std::array<uint8_t, 11> payload_ = {};
 	uint8_t payloadSize_ = 0;
 	uint8_t checksum_ = 0;
 };

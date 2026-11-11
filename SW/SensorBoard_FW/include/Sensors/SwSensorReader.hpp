@@ -4,6 +4,9 @@
 #include "KLine/KLine.hpp"
 #include "SensorValues.hpp"
 
+// C++ includes
+#include <vector>
+
 // espidf includes
 #include "esp_adc/adc_oneshot.h"
 #include "freertos/FreeRTOS.h"
@@ -18,6 +21,16 @@ public:
 	void start();
 
 	void stop();
+
+	void readOnce();
+
+	void setSensorsToRead(std::vector<SENSOR> sensors);
+
+	void addSensorToRead(SENSOR sensor);
+
+	void removeSensorFromRead(SENSOR sensor);
+
+	void stopReadingAllSensors();
 
 private:
 	/*
@@ -38,4 +51,7 @@ private:
 	SensorValues* sensorValues_ = nullptr;
 
 	TaskHandle_t readSensorsTask_ = nullptr;
+
+	SemaphoreHandle_t sensorsToReadMutex_ = nullptr;
+	std::vector<SENSOR> sensorsToRead_;
 };

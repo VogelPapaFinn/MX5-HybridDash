@@ -33,10 +33,10 @@ KLineMessage::KLineMessage(const uint8_t sid, const std::vector<uint8_t>& payloa
 	target_ = ADDR_ECU;
 	sid_ = sid;
 	payloadSize_ = payload.size();
-	if (payloadSize_ > 12) {
-		payloadSize_ = 12;
+	if (payloadSize_ > 11) {
+		payloadSize_ = 11;
 	}
-	for (uint8_t i = 0; i < payload.size() && i < 12; i++) {
+	for (uint8_t i = 0; i < payload.size() && i < 11; i++) {
 		payload_[i] = payload.at(i);
 	}
 
