@@ -3,7 +3,7 @@
 // Project includes
 #include "Can.hpp"
 #include "Config.hpp"
-#include "Driver/Display.hpp"
+#include "Display.hpp"
 #include "StateMachine/State.hpp"
 
 // espidf includes

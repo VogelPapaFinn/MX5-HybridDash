@@ -4,7 +4,7 @@
 #include "Can.hpp"
 #include "CanReceiver.hpp"
 #include "Config.hpp"
-#include "Driver/Display.hpp"
+#include "Display.hpp"
 #include "StateMachine/State.hpp"
 #include "StateMachine/Utils/TimeoutTimer.hpp"
 #include "WifiHost.hpp"

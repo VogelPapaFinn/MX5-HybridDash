@@ -1,6 +1,6 @@
 // Project includes
 #include "Can.hpp"
-#include "Driver/Display.hpp"
+#include "Display.hpp"
 #include "Filesystem.hpp"
 #include "KLine/KLine.hpp"
 #include "Sensors/HwSensorReader.hpp"

@@ -6,9 +6,8 @@ set(FILES
         # Start of Application
         "main.cpp"
 
-        # Drivers
-        "Driver/Display.cpp"
-
+        # Miscelleanous
+        "Display.cpp"
         "LogFileServer.cpp"
 
         "SerialConsole/SerialConsole.cpp"
