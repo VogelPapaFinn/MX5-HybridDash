@@ -15,7 +15,7 @@ constexpr auto TAG = "FuelLevel";
 
 constexpr uint16_t R1 = 240;
 constexpr uint16_t BOOST_RESISTOR = 98;
-constexpr float EMA_ALPHA = 0.01f;
+constexpr float EMA_ALPHA = 0.005f;
 
 constexpr auto NVS_NAMESPACE = "FuelLevel";
 constexpr auto NVS_LAST_VALUE = "LastValue";
