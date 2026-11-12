@@ -20,12 +20,14 @@ public:
 		SD_CARD,
 		DATA_PARTITION,
 		CONFIG_PARTITION,
+		LOG_PARTITION,
 	};
 
 	/*
 	 *	Public Functions
 	 */
-	Filesystem(bool mountSdCard = true, bool mountDataPart = true, bool mountConfigPart = true);
+	Filesystem(bool mountSdCard = true, bool mountDataPart = true, bool mountLogPart = true,
+			   bool mountConfigPart = true);
 
 	bool doesFileExist(const std::string& path, Location location) const;
 
@@ -59,6 +61,10 @@ private:
 	sdmmc_host_t sdCardHost_ = SDMMC_HOST_DEFAULT();
 	sdmmc_slot_config_t sdCardSlotConfig_ = SDMMC_SLOT_CONFIG_DEFAULT();
 	esp_vfs_fat_sdmmc_mount_config_t sdCardMountConfig_{};
+
+	/* Log Partition Stuff */
+	bool logPartMounted_ = false;
+	esp_vfs_littlefs_conf_t logPartConfig_{};
 
 	/* Data Partition Stuff */
 	bool dataPartMounted_ = false;

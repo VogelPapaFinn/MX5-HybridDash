@@ -22,6 +22,9 @@ constexpr std::string DATA_PARTITION_LABEL = "data";
 constexpr std::string CONFIG_BASE_PATH = "/config";
 constexpr std::string CONFIG_PARTITION_LABEL = "config";
 
+constexpr std::string LOG_BASE_PATH = "/log";
+constexpr std::string LOG_PARTITION_LABEL = "log";
+
 constexpr gpio_num_t GPIO_CLK = GPIO_NUM_16;
 constexpr gpio_num_t GPIO_CMD = GPIO_NUM_17;
 constexpr gpio_num_t GPIO_D0 = GPIO_NUM_5;
@@ -33,7 +36,7 @@ constexpr uint8_t MAX_OPEN_FILES_SD_CARD = 5;
 /*
  *	Public Function Implementations
  */
-Filesystem::Filesystem(bool mountSdCard, bool mountDataPart, bool mountConfigPart)
+Filesystem::Filesystem(bool mountSdCard, bool mountDataPart, bool mountLogPart, bool mountConfigPart)
 {
 	bool warningOccured = false;
 	bool errorOccured = false;
@@ -64,6 +67,24 @@ Filesystem::Filesystem(bool mountSdCard, bool mountDataPart, bool mountConfigPar
 		else {
 			ESP_LOGW(TAG, "Couldn't mount SD Card");
 			warningOccured = true;
+		}
+	}
+
+	/*
+	 *	Log Partition
+	 */
+	if (mountLogPart) {
+		logPartConfig_.base_path = LOG_BASE_PATH.c_str();
+		logPartConfig_.partition_label = LOG_PARTITION_LABEL.c_str();
+		logPartConfig_.format_if_mount_failed = true;
+
+		logPartMounted_ = esp_vfs_littlefs_register(&logPartConfig_) == ESP_OK;
+		if (logPartMounted_) {
+			ESP_LOGI(TAG, "Mounted log partition");
+		}
+		else {
+			ESP_LOGE(TAG, "Couldn't mount log partition");
+			errorOccured = true;
 		}
 	}
 
@@ -369,6 +390,8 @@ bool Filesystem::isLocationMounted(const Location& location) const
 			return dataPartMounted_;
 		case CONFIG_PARTITION:
 			return configPartMounted_;
+		case LOG_PARTITION:
+			return logPartMounted_;
 		default:
 			return false;
 	}
@@ -383,6 +406,8 @@ std::string Filesystem::buildFullPath(const std::string& path, const Location& l
 			return DATA_BASE_PATH + "/" + path;
 		case CONFIG_PARTITION:
 			return CONFIG_BASE_PATH + "/" + path;
+		case LOG_PARTITION:
+			return LOG_BASE_PATH + "/" + path;
 		default:
 			return path;
 	}
