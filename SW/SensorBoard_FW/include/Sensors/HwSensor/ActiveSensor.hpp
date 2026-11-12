@@ -15,7 +15,7 @@ public:
 
 	virtual int get() = 0;
 
-	void setTaskToNotifyOnChange(TaskHandle_t p_task);
+	void setTaskToNotifyOnChange(TaskHandle_t p_task, uint8_t bitMask = 0b10);
 
 protected:
 	/*
@@ -31,4 +31,5 @@ protected:
 	// Plain function pointer on purpose: std::function and virtual calls would access the flash inside the ISR
 	void (*isrCb_)(ActiveSensor* p_sensor) = nullptr;
 	TaskHandle_t taskToNotify_ = nullptr;
+	uint8_t bitMask_ = 0b10;
 };

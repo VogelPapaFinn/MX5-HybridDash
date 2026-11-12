@@ -38,7 +38,11 @@ ActiveSensor::~ActiveSensor()
 	gpio_set_direction(gpio_, GPIO_MODE_DISABLE);
 }
 
-void ActiveSensor::setTaskToNotifyOnChange(TaskHandle_t p_task) { taskToNotify_ = p_task; }
+void ActiveSensor::setTaskToNotifyOnChange(TaskHandle_t p_task, uint8_t bitMask)
+{
+	taskToNotify_ = p_task;
+	bitMask_ = bitMask;
+}
 
 /*
  *	Private Function Implementations
@@ -56,7 +60,7 @@ IRAM_ATTR void ActiveSensor::gpioIsr(void* p_arg)
 
 	if (instance->taskToNotify_ != nullptr) {
 		BaseType_t higherTaskWoken = pdFALSE;
-		xTaskNotifyFromISR(instance->taskToNotify_, 0b01, eSetBits, &higherTaskWoken);
+		xTaskNotifyFromISR(instance->taskToNotify_, instance->bitMask_, eSetBits, &higherTaskWoken);
 		portYIELD_FROM_ISR(higherTaskWoken);
 	}
 }

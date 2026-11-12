@@ -28,8 +28,8 @@ private:
 	void startReadThread();
 	void stopReadThread();
 
-	void startIndicatorThreads();
-	void stopIndicatorThreads();
+	void startIndicatorThread();
+	void stopIndicatorThread();
 
 	void startWriteThread();
 	void stopWriteThread();
@@ -41,8 +41,7 @@ private:
 
 	static void writeSensorsTask(void* p_param);
 
-	static void leftIndicatorTask(void* p_param);
-	static void rightIndicatorTask(void* p_param);
+	static void indicatorTask(void* p_param);
 
 	/*
 	 *	Private Variables
@@ -50,8 +49,7 @@ private:
 	TaskHandle_t updateSensorReadTask_ = nullptr;
 	TaskHandle_t sensorWriteTask_ = nullptr;
 
-	TaskHandle_t leftIndicatorTask_ = nullptr;
-	TaskHandle_t rightIndicatorTask_ = nullptr;
+	TaskHandle_t indicatorTask_ = nullptr;
 	std::function<void()> indicatorChangedCb_ = nullptr;
 
 	std::unordered_map<SENSOR, int> newSensorValues_;
