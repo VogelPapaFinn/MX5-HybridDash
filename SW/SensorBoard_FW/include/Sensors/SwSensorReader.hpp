@@ -5,6 +5,7 @@
 #include "SensorValues.hpp"
 
 // C++ includes
+#include <atomic>
 #include <vector>
 
 // espidf includes
@@ -21,8 +22,6 @@ public:
 	void start();
 
 	void stop();
-
-	void readOnce();
 
 	void setSensorsToRead(std::vector<SENSOR> sensors);
 
@@ -52,6 +51,7 @@ private:
 
 	TaskHandle_t readSensorsTask_ = nullptr;
 
+	std::atomic<bool> sensorsReadTaskRunning_ = false;
 	SemaphoreHandle_t sensorsToReadMutex_ = nullptr;
 	std::vector<SENSOR> sensorsToRead_;
 };

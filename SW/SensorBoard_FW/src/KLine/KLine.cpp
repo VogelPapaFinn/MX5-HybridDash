@@ -355,6 +355,3 @@ KLineMessage KLine::receiveResponse()
 
 	return response;
 }
-
-// TODO:
-// - 5 Baud Init

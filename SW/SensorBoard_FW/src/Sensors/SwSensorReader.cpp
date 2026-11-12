@@ -34,61 +34,47 @@ void SwSensorReader::start() { startReadThread(); }
 
 void SwSensorReader::stop() { stopReadThread(); }
 
-void SwSensorReader::readOnce()
-{
-	start();
-	stop();
-}
-
 void SwSensorReader::setSensorsToRead(std::vector<SENSOR> sensors)
 {
 	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
 
 	sensorsToRead_ = std::move(sensors);
 
-	xSemaphoreGetMutexHolder(sensorsToReadMutex_);
+	xSemaphoreGive(sensorsToReadMutex_);
 }
 
 void SwSensorReader::addSensorToRead(SENSOR sensor)
 {
-	// Ignore if already being read
-	if (std::find(sensorsToRead_.begin(), sensorsToRead_.end(), sensor) != sensorsToRead_.end()) {
-		return;
-	}
-
 	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
 
-	sensorsToRead_.push_back(sensor);
+	// Ignore if already being read
+	if (std::find(sensorsToRead_.begin(), sensorsToRead_.end(), sensor) == sensorsToRead_.end()) {
+		sensorsToRead_.push_back(sensor);
+	}
 
-	xSemaphoreGetMutexHolder(sensorsToReadMutex_);
+	xSemaphoreGive(sensorsToReadMutex_);
 }
 
 void SwSensorReader::removeSensorFromRead(SENSOR sensor)
 {
-	// Ignore if not being read
-	const auto it = std::find(sensorsToRead_.begin(), sensorsToRead_.end(), sensor);
-	if (it == sensorsToRead_.end()) {
-		return;
-	}
-
 	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
 
-	sensorsToRead_.erase(it);
+	// Ignore if not being read
+	const auto it = std::find(sensorsToRead_.begin(), sensorsToRead_.end(), sensor);
+	if (it != sensorsToRead_.end()) {
+		sensorsToRead_.erase(it);
+	}
 
-	xSemaphoreGetMutexHolder(sensorsToReadMutex_);
+	xSemaphoreGive(sensorsToReadMutex_);
 }
 
 void SwSensorReader::stopReadingAllSensors()
 {
-	if (sensorsToRead_.empty()) {
-		return;
-	}
-
 	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
 
 	sensorsToRead_.clear();
 
-	xSemaphoreGetMutexHolder(sensorsToReadMutex_);
+	xSemaphoreGive(sensorsToReadMutex_);
 }
 
 /*
@@ -119,6 +105,11 @@ void SwSensorReader::stopReadThread()
 
 	xTaskNotifyGive(readSensorsTask_);
 	readSensorsTask_ = nullptr;
+
+	// Wait until the task has really finished
+	while (sensorsReadTaskRunning_) {
+		vTaskDelay(pdMS_TO_TICKS(50));
+	}
 }
 
 /*
@@ -130,14 +121,27 @@ void SwSensorReader::readSensors(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
+	auto swSensorReader = static_cast<SwSensorReader*>(p_param);
+
 	{
-		auto swSensorReader = static_cast<SwSensorReader*>(p_param);
+		swSensorReader->sensorsReadTaskRunning_ = true;
 
 		bool stop = false;
 		while (true) {
+			// Acquire copy of sensors to read
 			xSemaphoreTake(swSensorReader->sensorsToReadMutex_, portMAX_DELAY);
+			const auto sensorsToRead = swSensorReader->sensorsToRead_;
+			xSemaphoreGive(swSensorReader->sensorsToReadMutex_);
 
-			for (auto& sensorType : swSensorReader->sensorsToRead_) {
+			// Wait if vector is empty
+			if (sensorsToRead.empty()) {
+				if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(1000)) != 0) {
+					break;
+				}
+				continue;
+			}
+
+			for (auto& sensorType : sensorsToRead) {
 				// Stop if ordered to
 				if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(TIME_BETWEEN_EACH_SENSOR_READ_MS)) != 0) {
 					stop = true;
@@ -190,13 +194,12 @@ void SwSensorReader::readSensors(void* p_param)
 											 });
 			}
 
-			xSemaphoreGive(swSensorReader->sensorsToReadMutex_);
-
 			if (stop) {
 				break;
 			}
 		}
 	}
 
+	swSensorReader->sensorsReadTaskRunning_ = false;
 	vTaskDelete(nullptr);
 }
