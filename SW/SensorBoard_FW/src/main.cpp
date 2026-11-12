@@ -2,7 +2,9 @@
 #include "Can.hpp"
 #include "Display.hpp"
 #include "Filesystem.hpp"
+#include "FilesystemLocations.hpp"
 #include "KLine/KLine.hpp"
+#include "SdCard.hpp"
 #include "Sensors/HwSensorReader.hpp"
 #include "SerialConsole/SerialConsole.hpp"
 #include "StateMachine/StateEvents.hpp"
@@ -14,6 +16,7 @@
 
 // espidf includes
 #include <esp_adc/adc_oneshot.h>
+#include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 
 //! \brief Main application tag.
@@ -29,7 +32,23 @@ constexpr gpio_num_t GPIO_DISPLAY1 = GPIO_NUM_13;
 constexpr gpio_num_t GPIO_DISPLAY2 = GPIO_NUM_14;
 constexpr gpio_num_t GPIO_DISPLAY3 = GPIO_NUM_21;
 
+constexpr gpio_num_t SDCARD_GPIO_CLK = GPIO_NUM_16;
+constexpr gpio_num_t SDCARD_GPIO_CMD = GPIO_NUM_17;
+constexpr gpio_num_t SDCARD_GPIO_D0 = GPIO_NUM_5;
+constexpr gpio_num_t SDCARD_GPIO_D1 = GPIO_NUM_4;
+constexpr gpio_num_t SDCARD_GPIO_D2 = GPIO_NUM_8;
+constexpr gpio_num_t SDCARD_GPIO_D3 = GPIO_NUM_18;
+
 constexpr adc_oneshot_unit_init_cfg_t ADC1_UNIT_CONFIG = {.unit_id = ADC_UNIT_1, .ulp_mode = ADC_ULP_MODE_DISABLE};
+
+constexpr std::string SDCARD_BASE_PATH = "/sdcard";
+constexpr uint8_t SDCARD_MAX_OPEN_FILES = 5;
+constexpr std::string DATA_BASE_PATH = "/data";
+constexpr std::string DATA_PARTITION_LABEL = "data";
+constexpr std::string CONFIG_BASE_PATH = "/config";
+constexpr std::string CONFIG_PARTITION_LABEL = "config";
+constexpr std::string LOG_BASE_PATH = "/log";
+constexpr std::string LOG_PARTITION_LABEL = "log";
 
 /*
  *	Helper functions
@@ -75,10 +94,23 @@ extern "C" void app_main(void)
 	startEspEventLoop();
 
 	// Drivers
-	Filesystem fs;
+	Filesystem fs({
+		{.id = FsLocation::CONFIG_PARTITION,
+		 .basePath = CONFIG_BASE_PATH,
+		 .partitionLabel = CONFIG_PARTITION_LABEL,
+		 .formatIfMountFails = true},
+		{.id = FsLocation::DATA_PARTITION,
+		 .basePath = DATA_BASE_PATH,
+		 .partitionLabel = DATA_PARTITION_LABEL,
+		 .formatIfMountFails = true},
+		{.id = FsLocation::LOG_PARTITION,
+		 .basePath = LOG_BASE_PATH,
+		 .partitionLabel = LOG_PARTITION_LABEL,
+		 .formatIfMountFails = true},
+	});
 	KLine kline;
 	adc_oneshot_unit_handle_t adc1 = nullptr;
-	Config config(&fs);
+	Config config(&fs, FsLocation::CONFIG_PARTITION);
 	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
 	WifiHost wifiHost;
 	std::vector<Display> displays = {Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 1, false),

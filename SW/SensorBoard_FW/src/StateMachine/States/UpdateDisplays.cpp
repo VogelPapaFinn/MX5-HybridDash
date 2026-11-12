@@ -1,6 +1,7 @@
 #include "StateMachine/States/UpdateDisplays.hpp"
 
 // Project includes
+#include "FilesystemLocations.hpp"
 #include "StateMachine/StateEvents.hpp"
 
 // espidf includes
@@ -219,7 +220,7 @@ void UpdateDisplays::handleCanFrame(const Can::Frame_t& frame)
 				[this]()
 				{
 					ESP_LOGI(TAG, "All display executed the update. Rebooting.");
-					fs_->deleteFile("display_update.bin", Filesystem::DATA_PARTITION);
+					fs_->deleteFile("display_update.bin", FsLocation::DATA_PARTITION);
 					esp_restart();
 				});
 		} break;
@@ -405,7 +406,7 @@ esp_err_t UpdateDisplays::updateRequestHandler(httpd_req_t* p_req)
 esp_err_t UpdateDisplays::sendUpdateFile(httpd_req_t* p_req)
 {
 	// Open the display_update.bin file (every worker has its own FILE*)
-	FILE* updateFile = fs_->openFile("display_update.bin", "r", Filesystem::DATA_PARTITION);
+	FILE* updateFile = fs_->openFile("display_update.bin", "r", FsLocation::DATA_PARTITION);
 	if (updateFile == nullptr) {
 		httpd_resp_send_err(p_req, HTTPD_404_NOT_FOUND, "display_update.bin not found");
 		return ESP_FAIL;

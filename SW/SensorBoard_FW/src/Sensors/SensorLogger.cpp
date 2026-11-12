@@ -1,8 +1,12 @@
 #include "Sensors/SensorLogger.hpp"
 
 // Project includes
+#include "FilesystemLocations.hpp"
 #include "Sensors/SensorValues.hpp"
 #include "Sensors/Sensors.hpp"
+
+// espidf includes
+#include "esp_log.h"
 
 /*
  *	constexpr
@@ -99,13 +103,13 @@ void SensorLogger::stop()
  */
 void SensorLogger::moveAllLogsToSdCard()
 {
-	auto fileNames = fs_->getAllFileNamesInDirectory("", "*.csv", Filesystem::LOG_PARTITION);
+	auto fileNames = fs_->getAllFileNamesInDirectory("", "*.csv", FsLocation::LOG_PARTITION);
 
 	for (unsigned int i = 0; i < fileNames.size(); i++) {
-		FILE* src = fs_->openFile(fileNames[i], "r", Filesystem::LOG_PARTITION);
+		FILE* src = fs_->openFile(fileNames[i], "r", FsLocation::LOG_PARTITION);
 
-		fs_->createFile(fileNames[i], Filesystem::SD_CARD);
-		FILE* tar = fs_->openFile(fileNames[i], "w", Filesystem::SD_CARD);
+		fs_->createFile(fileNames[i], FsLocation::SD_CARD);
+		FILE* tar = fs_->openFile(fileNames[i], "w", FsLocation::SD_CARD);
 
 		if (src == nullptr || tar == nullptr) {
 			ESP_LOGW(TAG, "Failed to move file %s from internal log partition to SD Card!", fileNames[i].c_str());
@@ -142,7 +146,7 @@ void SensorLogger::moveAllLogsToSdCard()
 	}
 
 	for (const auto& fileName : fileNames) {
-		fs_->deleteFile(fileName, Filesystem::LOG_PARTITION);
+		fs_->deleteFile(fileName, FsLocation::LOG_PARTITION);
 	}
 }
 
@@ -158,10 +162,10 @@ bool SensorLogger::createAndOpenFile()
 	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(index));
 
 	// Create file
-	fs_->createFile(csvPath_, Filesystem::LOG_PARTITION);
+	fs_->createFile(csvPath_, FsLocation::LOG_PARTITION);
 
 	// Open the file
-	csvFile_ = fs_->openFile(csvPath_, "w", Filesystem::LOG_PARTITION);
+	csvFile_ = fs_->openFile(csvPath_, "w", FsLocation::LOG_PARTITION);
 	if (csvFile_ == nullptr) {
 		return false;
 	}

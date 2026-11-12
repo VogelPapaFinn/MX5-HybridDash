@@ -1,5 +1,8 @@
 #include "LogFileServer.hpp"
 
+// espidf includes
+#include "esp_log.h"
+
 /*
  *   constexpr
  */
@@ -95,14 +98,14 @@ bool LogFileServer::setMimeType(httpd_req_t* p_req, const std::string& filepath)
 	return ESP_FAIL;
 }
 
-Filesystem::Location LogFileServer::getFileLocation(const std::string& filepath)
+FsLocation LogFileServer::getFileLocation(const std::string& filepath)
 {
 	// .json
 	if (filepath.ends_with(".json")) {
-		return Filesystem::CONFIG_PARTITION;
+		return FsLocation::CONFIG_PARTITION;
 	}
 
-	return Filesystem::SD_CARD;
+	return FsLocation::SD_CARD;
 }
 
 bool LogFileServer::transmitFile(httpd_req_t* p_req, FILE* p_file)

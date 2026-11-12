@@ -9,15 +9,16 @@
 
 // espidf includes
 #include "ArduinoJson.hpp"
+#include "freertos/FreeRTOS.h"
 
 class Config
 {
 public:
 	Config() = default;
 
-	Config(Filesystem* p_fs);
+	Config(Filesystem* p_fs, uint8_t fsLocation);
 
-	Config(Filesystem* p_fs, const std::string& path);
+	Config(Filesystem* p_fs, uint8_t fsLocation, const std::string& path);
 
 	~Config();
 
@@ -54,6 +55,7 @@ private:
 	 */
 	Filesystem* fs_ = nullptr;
 
+	uint8_t fsLocation_ = 0;
 	std::string path_;
 
 	FILE* file_ = nullptr;

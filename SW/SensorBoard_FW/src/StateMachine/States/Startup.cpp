@@ -2,6 +2,7 @@
 
 // Project includes
 #include "DefaultConfig.hpp"
+#include "FilesystemLocations.hpp"
 #include "StateMachine/StateEvents.hpp"
 
 // espidf includes
@@ -89,12 +90,12 @@ bool Startup::loadConfig() { return config_->open(CONFIG_NAME); }
 bool Startup::loadDefaultConfig()
 {
 	// Create file if necessary
-	if (!fs_->doesFileExist(CONFIG_NAME, Filesystem::CONFIG_PARTITION)) {
-		fs_->createFile(CONFIG_NAME, Filesystem::CONFIG_PARTITION);
+	if (!fs_->doesFileExist(CONFIG_NAME, FsLocation::CONFIG_PARTITION)) {
+		fs_->createFile(CONFIG_NAME, FsLocation::CONFIG_PARTITION);
 	}
 
 	// Open file for writing
-	FILE* file = fs_->openFile(CONFIG_NAME, "w", Filesystem::CONFIG_PARTITION);
+	FILE* file = fs_->openFile(CONFIG_NAME, "w", FsLocation::CONFIG_PARTITION);
 
 	// Print default config to it
 	if (fprintf(file, "%s", DEFAULT_CONFIG) <= 0) {
@@ -126,16 +127,16 @@ bool Startup::isFirstStartup()
 	return false;
 }
 
-bool Startup::isUpdateAvailable() { return fs_->doesFileExist("display_update.bin", Filesystem::DATA_PARTITION); }
+bool Startup::isUpdateAvailable() { return fs_->doesFileExist("display_update.bin", FsLocation::DATA_PARTITION); }
 
 void Startup::deleteAllCsvFilesOnSdCard()
 {
 	ESP_LOGI(TAG, "Deleting all .csv files on the SD Card");
 
-	auto fileNames = fs_->getAllFileNamesInDirectory("", "*.csv", Filesystem::SD_CARD);
+	auto fileNames = fs_->getAllFileNamesInDirectory("", "*.csv", FsLocation::SD_CARD);
 
 	for (const auto& fileName : fileNames) {
-		fs_->deleteFile(fileName, Filesystem::SD_CARD);
+		fs_->deleteFile(fileName, FsLocation::SD_CARD);
 		ESP_LOGI(TAG, "Deleted %s", fileName.c_str());
 	}
 }

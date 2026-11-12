@@ -2,79 +2,77 @@
 
 // C++ includes
 #include <string>
+#include <unordered_map>
 #include <vector>
 
+
 // espidf includes
-#include "driver/sdmmc_host.h"
 #include "esp_littlefs.h"
-#include "esp_vfs_fat.h"
 
 
 class Filesystem
 {
 public:
 	/*
-	 *	Public Enums
+	 *	Public Enums/Structs
 	 */
-	enum Location
+	enum FILESYSTEM_TYPE
 	{
-		SD_CARD,
-		DATA_PARTITION,
-		CONFIG_PARTITION,
-		LOG_PARTITION,
+		LITTLE_FS,
+		FAT_FS
+	};
+
+	struct Location
+	{
+		uint8_t id = 0;
+		FILESYSTEM_TYPE fsType = LITTLE_FS;
+		std::string basePath = "";
+		std::string partitionLabel = "";
+		bool formatIfMountFails = false;
 	};
 
 	/*
 	 *	Public Functions
 	 */
-	Filesystem(bool mountSdCard = true, bool mountDataPart = true, bool mountLogPart = true,
-			   bool mountConfigPart = true);
+	Filesystem(std::vector<Location> locations);
+	Filesystem(const Filesystem&) = delete;
 
-	bool doesFileExist(const std::string& path, Location location) const;
+	bool doesFileExist(const std::string& path, uint8_t locationId) const;
 
-	bool createFile(const std::string& path, Location location);
+	bool createFile(const std::string& path, uint8_t locationId);
 
-	FILE* openFile(const std::string& path, const std::string& mode, Location location);
+	FILE* openFile(const std::string& path, const std::string& mode, uint8_t locationId);
 
-	bool deleteFile(const std::string& path, const Location location);
+	bool deleteFile(const std::string& path, uint8_t locationId);
 
-	bool doesDirectoryExist(const std::string& path, Location location) const;
+	bool doesDirectoryExist(const std::string& path, uint8_t locationId) const;
 
-	bool createDirectory(const std::string& path, Location location) const;
+	bool createDirectory(const std::string& path, uint8_t locationId) const;
 
-	bool deleteDirectory(const std::string& path, Location location) const;
+	bool deleteDirectory(const std::string& path, uint8_t locationId) const;
 
 	std::vector<std::string> getAllFileNamesInDirectory(const std::string& pathToDir, const std::string& pattern,
-														Location location) const;
-
-	void test();
+														uint8_t locationId) const;
 
 private:
 	/*
 	 *	Private Functions
 	 */
-	bool isLocationMounted(const Location& location) const;
+	bool mountAllLocations();
 
-	static std::string buildFullPath(const std::string& path, const Location& location);
+	bool isLocationMounted(uint8_t locationId) const;
 
-	/* SD Card Stuff */
-	bool sdCardInserted_ = false;
-	bool sdCardMounted_ = false;
+	std::string buildFullPath(const std::string& path, uint8_t locationId) const;
 
-	sdmmc_card_t* sdCardHandler_ = nullptr;
-	sdmmc_host_t sdCardHost_ = SDMMC_HOST_DEFAULT();
-	sdmmc_slot_config_t sdCardSlotConfig_ = SDMMC_SLOT_CONFIG_DEFAULT();
-	esp_vfs_fat_sdmmc_mount_config_t sdCardMountConfig_{};
+	/*
+	 *	Private Structs
+	 */
+	struct FilesystemInstance
+	{
+		bool mounted = false;
+		std::string basePath = "";
+	};
 
-	/* Log Partition Stuff */
-	bool logPartMounted_ = false;
-	esp_vfs_littlefs_conf_t logPartConfig_{};
-
-	/* Data Partition Stuff */
-	bool dataPartMounted_ = false;
-	esp_vfs_littlefs_conf_t dataPartConfig_{};
-
-	/* Config Partition Stuff */
-	bool configPartMounted_ = false;
-	esp_vfs_littlefs_conf_t configPartConfig_{};
+	std::vector<Location> locations_;
+	std::unordered_map<uint8_t, FilesystemInstance> locationInformation_;
 };

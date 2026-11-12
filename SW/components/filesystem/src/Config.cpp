@@ -3,6 +3,9 @@
 // C++ includes
 #include <vector>
 
+// espidf includes
+#include "esp_log.h"
+
 /*
  *	constexpr
  */
@@ -12,17 +15,19 @@ constexpr auto GET_MUTEX_TIMEOUT_MS = 100;
 /*
  *	Public Function Implementations
  */
-Config::Config(Filesystem* p_fs)
+Config::Config(Filesystem* p_fs, uint8_t fsLocation)
 {
 	fs_ = p_fs;
+	fsLocation_ = fsLocation;
 
 	// Create mutex for read/write access to the config
 	configMutex_ = xSemaphoreCreateMutex();
 }
 
-Config::Config(Filesystem* p_fs, const std::string& path)
+Config::Config(Filesystem* p_fs, uint8_t fsLocation, const std::string& path)
 {
 	fs_ = p_fs;
+	fsLocation_ = fsLocation;
 	path_ = path;
 
 	// Create mutex for read/write access to the config
@@ -56,13 +61,13 @@ bool Config::open(const std::string& path)
 bool Config::open()
 {
 	// Create file if necessary
-	if (!fs_->doesFileExist(path_, Filesystem::CONFIG_PARTITION)) {
+	if (!fs_->doesFileExist(path_, fsLocation_)) {
 		ESP_LOGW(TAG, "No existing config file found: %s", path_.c_str());
 		return false;
 	}
 
 	// Open file to read
-	file_ = fs_->openFile(path_, "r", Filesystem::CONFIG_PARTITION);
+	file_ = fs_->openFile(path_, "r", fsLocation_);
 	if (file_ == nullptr) {
 		ESP_LOGW(TAG, "Failed to open config file %s", path_.c_str());
 		return false;
@@ -137,12 +142,12 @@ bool Config::save()
 	ArduinoJson::serializeJsonPretty(json_, output);
 
 	// Create file if it does not exist
-	if (!fs_->doesFileExist(path_, Filesystem::CONFIG_PARTITION)) {
-		fs_->createFile(path_, Filesystem::CONFIG_PARTITION);
+	if (!fs_->doesFileExist(path_, fsLocation_)) {
+		fs_->createFile(path_, fsLocation_);
 	}
 
 	// Open the file in write mode
-	file_ = fs_->openFile(path_, "w", Filesystem::CONFIG_PARTITION);
+	file_ = fs_->openFile(path_, "w", fsLocation_);
 	if (file_ == nullptr) {
 		ESP_LOGW(TAG, "Failed to open config file %s", path_.c_str());
 		return false;
