@@ -2,6 +2,7 @@
 
 // C++ includes
 #include <string>
+#include <vector>
 
 // espidf includes
 #include "driver/sdmmc_host.h"
@@ -42,6 +43,9 @@ public:
 	bool createDirectory(const std::string& path, Location location) const;
 
 	bool deleteDirectory(const std::string& path, Location location) const;
+
+	std::vector<std::string> getAllFileNamesInDirectory(const std::string& pathToDir, const std::string& pattern,
+														Location location) const;
 
 	void test();
 

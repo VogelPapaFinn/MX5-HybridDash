@@ -1,12 +1,12 @@
 #include "../Filesystem.hpp"
 
 // C and C++ includes
+#include <dirent.h>
+#include <fnmatch.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
 // espidf includes
-#include <bits/chrono.h>
-
 #include "driver/gpio.h"
 
 /*
@@ -268,6 +268,47 @@ bool Filesystem::deleteDirectory(const std::string& path, Location location) con
 	}
 
 	return true;
+}
+
+std::vector<std::string> Filesystem::getAllFileNamesInDirectory(const std::string& pathToDir,
+																const std::string& pattern, Location location) const
+{
+	if (!isLocationMounted(location)) {
+		return {};
+	}
+
+	const std::string fullPath = buildFullPath(pathToDir, location);
+
+	DIR* dir = opendir(fullPath.c_str());
+	if (!dir) {
+		ESP_LOGW(TAG, "Couldn't open directory %s on location %d", fullPath.c_str(), location);
+		return {};
+	}
+
+	std::vector<std::string> output;
+
+	struct dirent* entry = nullptr;
+	do {
+		entry = readdir(dir);
+
+		if (entry == nullptr) {
+			break;
+		}
+
+		// Ignore everything besides files
+		if (entry->d_type != DT_REG) {
+			continue;
+		}
+
+		if (fnmatch(pattern.c_str(), entry->d_name, 0) == 0) {
+			output.push_back(std::string(entry->d_name));
+		}
+	}
+	while (entry != nullptr);
+
+	closedir(dir);
+
+	return output;
 }
 
 void Filesystem::test()

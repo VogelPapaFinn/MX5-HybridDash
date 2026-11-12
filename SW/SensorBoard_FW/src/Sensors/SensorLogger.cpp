@@ -25,6 +25,8 @@ constexpr auto SENSORS_TO_LOG = {SENSOR::FUEL_LEVEL_R,
 constexpr auto NVS_NAMESPACE = "SensorLogger";
 constexpr auto NVS_FILE_INDEX = "Index";
 
+constexpr auto SAVE_INTERVAL_S = 30;
+
 /*
  *	Public Function Implementations
  */
@@ -37,6 +39,7 @@ SensorLogger::SensorLogger(Filesystem* p_fs, SensorValues* p_sensorValues)
 		ESP_LOGW(TAG, "Failed to open NVS, this may lead to logs being overwritten!");
 	}
 
+	moveAllLogsToSdCard();
 
 	// DEBUGGING PURPOSE
 	// nvs_set_u32(nvsHandle_, NVS_FILE_INDEX, 0);
@@ -52,81 +55,6 @@ SensorLogger::~SensorLogger()
 	}
 
 	nvs_close(nvsHandle_);
-}
-
-/*
- *	Private Function Implementations
- */
-bool SensorLogger::createAndOpenFile()
-{
-	// Get index
-	const auto index = getFileIndex();
-	ESP_LOGI(TAG, "Using file index %d for the new .csv", index);
-	increaseFileIndex();
-
-	// Build file name
-	csvPath_ = "SensorData_x.csv";
-	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(index));
-
-	// Create file
-	fs_->createFile(csvPath_, Filesystem::SD_CARD);
-
-	// Open the file
-	csvFile_ = fs_->openFile(csvPath_, "w", Filesystem::SD_CARD);
-	if (csvFile_ == nullptr) {
-		return false;
-	}
-
-	printHeader();
-
-	return true;
-}
-
-uint32_t SensorLogger::getFileIndex()
-{
-	uint32_t value = 0;
-
-	nvs_get_u32(nvsHandle_, NVS_FILE_INDEX, &value);
-
-	return value;
-}
-
-void SensorLogger::increaseFileIndex()
-{
-	if (increaseFileIndexTimer_ != nullptr) {
-		return;
-	}
-
-	// Save after 4 Minutes, so a short engine start to move the car doesnt produce a whole file, which could clutter
-	// the sd card
-	increaseFileIndexTimer_ = xTimerCreate("IncreaseSensorLoggerFileIndex", pdMS_TO_TICKS(60000 * 4), pdFALSE, this,
-										   [](TimerHandle_t p_timer)
-										   {
-											   auto sensorLogger =
-												   static_cast<SensorLogger*>(pvTimerGetTimerID(p_timer));
-
-											   const auto newIndex = sensorLogger->getFileIndex() + 1;
-											   nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex);
-											   nvs_commit(sensorLogger->nvsHandle_);
-
-											   ESP_LOGI(TAG, "Increased %s to %d", NVS_FILE_INDEX, newIndex);
-										   });
-
-	xTimerStart(increaseFileIndexTimer_, 0);
-}
-
-void SensorLogger::printHeader()
-{
-	std::string row = "";
-	for (const auto& sensor : SENSORS_TO_LOG) {
-		row += g_SENSOR_NAME.at(sensor) + ",";
-	}
-	fprintf(csvFile_, "%s;\n", row.c_str());
-
-	ESP_LOGI(TAG, "Log Header: %s", row.c_str());
-
-	fflush(csvFile_);
-	fsync(fileno(csvFile_));
 }
 
 void SensorLogger::start()
@@ -161,7 +89,133 @@ void SensorLogger::stop()
 
 	xTaskNotifyGive(taskHandle_);
 	taskHandle_ = nullptr;
+
 	return;
+}
+
+
+/*
+ *	Private Function Implementations
+ */
+void SensorLogger::moveAllLogsToSdCard()
+{
+	auto fileNames = fs_->getAllFileNamesInDirectory("", "*.csv", Filesystem::LOG_PARTITION);
+
+	for (unsigned int i = 0; i < fileNames.size(); i++) {
+		FILE* src = fs_->openFile(fileNames[i], "r", Filesystem::LOG_PARTITION);
+
+		fs_->createFile(fileNames[i], Filesystem::SD_CARD);
+		FILE* tar = fs_->openFile(fileNames[i], "w", Filesystem::SD_CARD);
+
+		if (src == nullptr || tar == nullptr) {
+			ESP_LOGW(TAG, "Failed to move file %s from internal log partition to SD Card!", fileNames[i].c_str());
+
+			if (src != nullptr) {
+				fclose(src);
+			}
+			if (tar != nullptr) {
+				fclose(tar);
+			}
+
+			fileNames.erase(fileNames.begin() + i);
+			i--;
+
+			continue;
+		}
+
+		static char buf[4096];
+		size_t bytesRead;
+		while ((bytesRead = fread(buf, 1, sizeof(buf), src)) > 0) {
+			if (fwrite(buf, 1, bytesRead, tar) != bytesRead) {
+				ESP_LOGW(TAG, "Failed to copy contents of file %s from internal log partition to SD Card!",
+						 fileNames[i].c_str());
+
+				fileNames.erase(fileNames.begin() + i);
+				i--;
+
+				break;
+			}
+		}
+
+		fclose(src);
+		fclose(tar);
+	}
+
+	for (const auto& fileName : fileNames) {
+		fs_->deleteFile(fileName, Filesystem::LOG_PARTITION);
+	}
+}
+
+bool SensorLogger::createAndOpenFile()
+{
+	// Get index
+	const auto index = getFileIndex();
+	ESP_LOGI(TAG, "Using file index %d for the new .csv", index);
+	increaseFileIndex();
+
+	// Build file name
+	csvPath_ = "SensorData_x.csv";
+	csvPath_.replace(csvPath_.find('x'), 1, std::to_string(index));
+
+	// Create file
+	fs_->createFile(csvPath_, Filesystem::LOG_PARTITION);
+
+	// Open the file
+	csvFile_ = fs_->openFile(csvPath_, "w", Filesystem::LOG_PARTITION);
+	if (csvFile_ == nullptr) {
+		return false;
+	}
+
+	printHeader();
+
+	return true;
+}
+
+uint32_t SensorLogger::getFileIndex()
+{
+	uint32_t value = 0;
+
+	nvs_get_u32(nvsHandle_, NVS_FILE_INDEX, &value);
+
+	return value;
+}
+
+void SensorLogger::increaseFileIndex()
+{
+	if (increaseFileIndexTimer_ != nullptr) {
+		return;
+	}
+
+	// Save after 4 Minutes, so a short engine start to move the car doesnt produce a whole file, which could clutter
+	// the filesystem
+	increaseFileIndexTimer_ = xTimerCreate("IncreaseSensorLoggerFileIndex", pdMS_TO_TICKS(60000 * 4), pdFALSE, this,
+										   [](TimerHandle_t p_timer)
+										   {
+											   auto sensorLogger =
+												   static_cast<SensorLogger*>(pvTimerGetTimerID(p_timer));
+
+											   const auto newIndex = sensorLogger->getFileIndex() + 1;
+											   nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex);
+											   nvs_commit(sensorLogger->nvsHandle_);
+
+											   ESP_LOGI(TAG, "Increased %s to %d", NVS_FILE_INDEX, newIndex);
+										   });
+
+	xTimerStart(increaseFileIndexTimer_, 0);
+}
+
+void SensorLogger::printHeader()
+{
+	std::string row = "";
+	for (const auto& sensor : SENSORS_TO_LOG) {
+		row += g_SENSOR_NAME.at(sensor) + ",";
+	}
+	fprintf(csvFile_, "%s;\n", row.c_str());
+
+	ESP_LOGI(TAG, "Log Header: %s", row.c_str());
+
+	fflush(csvFile_);
+	fsync(fileno(csvFile_));
 }
 
 /*
@@ -199,14 +253,19 @@ void SensorLogger::logTask(void* p_param)
 
 			// ESP_LOGI(TAG, "Added line to log: %s", row.c_str());
 
-			// Only flush to the actual file every 10th time
-			if (counter < 10) {
+			// Only flush to the actual file every x Seconds
+			if (counter < SAVE_INTERVAL_S) {
 				continue;
 			}
 
 			fflush(sensorLogger->csvFile_);
 			fsync(fileno(sensorLogger->csvFile_));
 			counter = 0;
+		}
+
+		if (sensorLogger->csvFile_ != nullptr) {
+			fclose(sensorLogger->csvFile_);
+			sensorLogger->csvFile_ = nullptr;
 		}
 	}
 

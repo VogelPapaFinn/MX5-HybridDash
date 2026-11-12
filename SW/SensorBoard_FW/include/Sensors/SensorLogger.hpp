@@ -25,6 +25,8 @@ private:
 	/*
 	 *   Private Functions
 	 */
+	void moveAllLogsToSdCard();
+
 	bool createAndOpenFile();
 
 	uint32_t getFileIndex();
