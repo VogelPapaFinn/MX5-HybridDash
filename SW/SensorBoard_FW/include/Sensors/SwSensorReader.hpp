@@ -3,6 +3,7 @@
 // Project includes
 #include "KLine/KLine.hpp"
 #include "SensorValues.hpp"
+#include "Sensors/SwSensor/NumericalSensors.hpp"
 
 // C++ includes
 #include <atomic>
@@ -37,6 +38,8 @@ private:
 	 */
 	void startReadThread();
 	void stopReadThread();
+
+	void handleSensorResponse(const NumericalSensor sensor, KLineMessage& response);
 
 	/*
 	 *	Private Task Functions

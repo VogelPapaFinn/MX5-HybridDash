@@ -112,6 +112,45 @@ void SwSensorReader::stopReadThread()
 	}
 }
 
+void SwSensorReader::handleSensorResponse(const NumericalSensor sensor, KLineMessage& response)
+{
+	// ERROR
+	if (response.getSid() == 0x7F) {
+		return;
+	}
+
+	// Check PID
+	auto payload = response.getPayload();
+	if (payload.size() <= 2 || payload.at(0) != (sensor.pid >> 8) || payload.at(1) != (sensor.pid & 0xFF)) {
+		return;
+	}
+
+	// Remove the pid
+	payload.erase(payload.begin(), payload.begin() + 2);
+
+	// Check payload length
+	if (payload.size() != sensor.byteCount) {
+		return;
+	}
+
+	// Extract raw sensor value
+	uint16_t rawValue = 0;
+	uint8_t i = payload.size();
+	for (const auto& b : payload) {
+		rawValue += (b << ((i - 1) * 8));
+
+		i--;
+	}
+
+	// Get logical value
+	const double value = sensor.convertFunc(rawValue);
+
+	// Save value
+	auto sensorValues = sensorValues_->getWriteAccess();
+	(*sensorValues)[sensor.id] = value;
+	sensorValues_->returnWriteAccess();
+}
+
 /*
  *   Private Function Implementations
  */
@@ -152,46 +191,8 @@ void SwSensorReader::readSensors(void* p_param)
 				KLineMessage message(
 					0x22,
 					{static_cast<uint8_t>((sensor.pid >> 8) & 0xFF), static_cast<uint8_t>((sensor.pid >> 0) & 0xFF)});
-				swSensorReader->kline_->send(message,
-											 [swSensorReader, sensor](KLineMessage& response)
-											 {
-												 // ERROR
-												 if (response.getSid() == 0x7F) {
-													 return;
-												 }
-
-												 // Check PID
-												 auto payload = response.getPayload();
-												 if (payload.size() <= 2 || payload.at(0) != (sensor.pid >> 8) ||
-													 payload.at(1) != (sensor.pid & 0xFF)) {
-													 return;
-												 }
-
-												 // Remove the pid
-												 payload.erase(payload.begin(), payload.begin() + 2);
-
-												 // Check payload length
-												 if (payload.size() != sensor.byteCount) {
-													 return;
-												 }
-
-												 // Extract raw sensor value
-												 uint16_t rawValue = 0;
-												 uint8_t i = payload.size();
-												 for (const auto& b : payload) {
-													 rawValue += (b << ((i - 1) * 8));
-
-													 i--;
-												 }
-
-												 // Get logical value
-												 const double value = sensor.convertFunc(rawValue);
-
-												 // Save value
-												 auto sensorValues = swSensorReader->sensorValues_->getWriteAccess();
-												 (*sensorValues)[sensor.id] = value;
-												 swSensorReader->sensorValues_->returnWriteAccess();
-											 });
+				swSensorReader->kline_->send(message, [swSensorReader, sensor](KLineMessage& response)
+											 { swSensorReader->handleSensorResponse(sensor, response); });
 			}
 
 			if (stop) {
