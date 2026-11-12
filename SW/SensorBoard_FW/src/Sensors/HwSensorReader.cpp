@@ -34,7 +34,7 @@ HwSensorReader::HwSensorReader(adc_oneshot_unit_handle_t p_adc1, SensorValues* p
 	newSensorValuesMutex_ = xSemaphoreCreateMutex();
 
 	// Install ISR Service, needed for Speed, Rpm and Indicators
-	if (gpio_install_isr_service(0) != ESP_OK) {
+	if (gpio_install_isr_service(ESP_INTR_FLAG_IRAM) != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to install the ISR service");
 	}
 }

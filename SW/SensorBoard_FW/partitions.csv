@@ -1,8 +1,10 @@
-# Name,   Type, SubType, Offset,  Size
-nvs,      data, nvs,     ,        0x6000,
-otadata,  data, ota,     ,        0x2000,
-phy_init, data, phy,     ,        0x1000,
-ota_0,    app,  ota_0,   ,        0x6D0000,
-ota_1,    app,  ota_1,   ,        0x6D0000,
-data,     data, spiffs,  ,        2M,
-config,   data, spiffs,  ,        0x40000,
+# Name,   Type, SubType,  Offset,  Size
+nvs,      data, nvs,      ,        0x6000,
+otadata,  data, ota,      ,        0x2000,
+phy_init, data, phy,      ,        0x1000,
+ota_0,    app,  ota_0,    ,        3M,
+ota_1,    app,  ota_1,    ,        3M,
+data,     data, littlefs, ,        2M,
+config,   data, littlefs, ,        0x40000,
+coredump, data, coredump, ,        64K,
+log,      data, littlefs, ,        0x790000,

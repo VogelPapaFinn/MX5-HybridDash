@@ -10,9 +10,20 @@ dependencies:
     source:
       type: idf
     version: 5.5.0
+  joltwallet/littlefs:
+    component_hash: e1a0f4a6adf821759cb34703a91107bbdce5d7ff6f4728f40ab012bb87842974
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.23.1
 direct_dependencies:
 - bblanchon/ArduinoJson
 - idf
-manifest_hash: 932060abda8bbb8956cd1a707b415f72d0105f629cd2f127b9ab0fd339bce801
+- joltwallet/littlefs
+manifest_hash: d6443c9f747e86677e21de1c78f93008171c15d8614e2fac6c23565de9fd4b5d
 target: esp32s3
 version: 2.0.0

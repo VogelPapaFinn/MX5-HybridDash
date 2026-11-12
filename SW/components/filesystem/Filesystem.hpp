@@ -5,7 +5,7 @@
 
 // espidf includes
 #include "driver/sdmmc_host.h"
-#include "esp_spiffs.h"
+#include "esp_littlefs.h"
 #include "esp_vfs_fat.h"
 
 
@@ -62,9 +62,9 @@ private:
 
 	/* Data Partition Stuff */
 	bool dataPartMounted_ = false;
-	esp_vfs_spiffs_conf_t dataPartConfig_{};
+	esp_vfs_littlefs_conf_t dataPartConfig_{};
 
 	/* Config Partition Stuff */
 	bool configPartMounted_ = false;
-	esp_vfs_spiffs_conf_t configPartConfig_{};
+	esp_vfs_littlefs_conf_t configPartConfig_{};
 };

@@ -28,7 +28,7 @@ constexpr gpio_num_t GPIO_D0 = GPIO_NUM_5;
 constexpr gpio_num_t GPIO_D1 = GPIO_NUM_4;
 constexpr gpio_num_t GPIO_D2 = GPIO_NUM_8;
 constexpr gpio_num_t GPIO_D3 = GPIO_NUM_18;
-constexpr uint8_t MAX_OPEN_FILES = 5;
+constexpr uint8_t MAX_OPEN_FILES_SD_CARD = 5;
 
 /*
  *	Public Function Implementations
@@ -54,7 +54,7 @@ Filesystem::Filesystem(bool mountSdCard, bool mountDataPart, bool mountConfigPar
 		sdCardSlotConfig_.d3 = GPIO_D3;
 
 		sdCardMountConfig_.format_if_mount_failed = false;
-		sdCardMountConfig_.max_files = MAX_OPEN_FILES;
+		sdCardMountConfig_.max_files = MAX_OPEN_FILES_SD_CARD;
 
 		sdCardMounted_ = esp_vfs_fat_sdmmc_mount(SDCARD_BASE_PATH.c_str(), &sdCardHost_, &sdCardSlotConfig_,
 												 &sdCardMountConfig_, &sdCardHandler_) == ESP_OK;
@@ -73,10 +73,9 @@ Filesystem::Filesystem(bool mountSdCard, bool mountDataPart, bool mountConfigPar
 	if (mountDataPart) {
 		dataPartConfig_.base_path = DATA_BASE_PATH.c_str();
 		dataPartConfig_.partition_label = DATA_PARTITION_LABEL.c_str();
-		dataPartConfig_.max_files = MAX_OPEN_FILES;
 		dataPartConfig_.format_if_mount_failed = false;
 
-		dataPartMounted_ = esp_vfs_spiffs_register(&dataPartConfig_) == ESP_OK;
+		dataPartMounted_ = esp_vfs_littlefs_register(&dataPartConfig_) == ESP_OK;
 		if (dataPartMounted_) {
 			ESP_LOGI(TAG, "Mounted data partition");
 		}
@@ -92,10 +91,9 @@ Filesystem::Filesystem(bool mountSdCard, bool mountDataPart, bool mountConfigPar
 	if (mountConfigPart) {
 		configPartConfig_.base_path = CONFIG_BASE_PATH.c_str();
 		configPartConfig_.partition_label = CONFIG_PARTITION_LABEL.c_str();
-		configPartConfig_.max_files = MAX_OPEN_FILES;
 		configPartConfig_.format_if_mount_failed = true;
 
-		configPartMounted_ = esp_vfs_spiffs_register(&configPartConfig_) == ESP_OK;
+		configPartMounted_ = esp_vfs_littlefs_register(&configPartConfig_) == ESP_OK;
 		if (configPartMounted_) {
 			ESP_LOGI(TAG, "Mounted config partition");
 		}
@@ -201,34 +199,23 @@ bool Filesystem::deleteFile(const std::string& path, const Location location)
 
 bool Filesystem::doesDirectoryExist(const std::string& path, Location location) const
 {
-	if (location != SD_CARD) {
-		ESP_LOGW(TAG, "The spiffs file system does not support directories!");
-		return false;
-	}
-
-	if (!isLocationMounted(SD_CARD)) {
+	if (!isLocationMounted(location)) {
 		return false;
 	}
 
 	const std::string fullPath = buildFullPath(path, location);
 
 	struct stat stats;
-	stat(fullPath.c_str(), &stats);
-	return S_ISDIR(stats.st_mode);
+	return stat(fullPath.c_str(), &stats) == 0 && S_ISDIR(stats.st_mode);
 }
 
 bool Filesystem::createDirectory(const std::string& path, Location location) const
 {
-	if (location != SD_CARD) {
-		ESP_LOGW(TAG, "The spiffs file system does not support directories!");
+	if (!isLocationMounted(location)) {
 		return false;
 	}
 
-	if (!isLocationMounted(SD_CARD)) {
-		return false;
-	}
-
-	if (doesDirectoryExist(path, SD_CARD)) {
+	if (doesDirectoryExist(path, location)) {
 		return false;
 	}
 
@@ -244,16 +231,11 @@ bool Filesystem::createDirectory(const std::string& path, Location location) con
 
 bool Filesystem::deleteDirectory(const std::string& path, Location location) const
 {
-	if (location != SD_CARD) {
-		ESP_LOGW(TAG, "The spiffs file system does not support directories!");
+	if (!isLocationMounted(location)) {
 		return false;
 	}
 
-	if (!isLocationMounted(SD_CARD)) {
-		return false;
-	}
-
-	if (!doesDirectoryExist(path, SD_CARD)) {
+	if (!doesDirectoryExist(path, location)) {
 		return false;
 	}
 
