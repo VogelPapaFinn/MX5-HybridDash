@@ -12,6 +12,7 @@ enum class SENSOR
 	// Hardware Sensors
 	FUEL_LEVEL_R = 0,
 	FUEL_LEVEL_P,
+	FUEL_LEVEL_MV,
 	OIL_PRESSURE_R,
 	OIL_PRESSURE_B,
 	WATER_TEMP_R,
@@ -67,6 +68,7 @@ const std::unordered_map<SENSOR, std::string> g_SENSOR_NAME = {
 	// Hardware Sensors
 	{SENSOR::FUEL_LEVEL_R, "Fuel Level (Ohm)"},
 	{SENSOR::FUEL_LEVEL_P, "Fuel Level (%)"},
+	{SENSOR::FUEL_LEVEL_MV, "Fuel Level (mV)"},
 	{SENSOR::OIL_PRESSURE_R, "Oil Pressure (Ohm)"},
 	{SENSOR::OIL_PRESSURE_B, "Oil Pressure (Bool)"},
 	{SENSOR::WATER_TEMP_R, "Water Temp (Ohm)"},

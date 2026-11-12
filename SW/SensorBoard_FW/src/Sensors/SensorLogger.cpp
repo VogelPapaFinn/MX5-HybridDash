@@ -13,8 +13,8 @@
  */
 constexpr auto TAG = "SensorLogger";
 constexpr auto SENSORS_TO_LOG = {SENSOR::FUEL_LEVEL_R,
+								 SENSOR::FUEL_LEVEL_MV,
 								 SENSOR::FUEL_LEVEL_P,
-								 SENSOR::OIL_PRESSURE_R,
 								 SENSOR::OIL_PRESSURE_B,
 								 SENSOR::WATER_TEMP_R,
 								 SENSOR::WATER_TEMP_C,

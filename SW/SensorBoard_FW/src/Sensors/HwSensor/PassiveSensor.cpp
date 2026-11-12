@@ -8,14 +8,14 @@
  *	constexpr
  */
 constexpr auto TAG = "PassiveSensor";
-constexpr double VOLTAGE = 3.3;
+constexpr float VOLTAGE = 3.3f;
 constexpr unsigned int ADC_SAMPLE_SIZE = 10;
 
 /*
  *	Public Function Implementations
  */
 PassiveSensor::PassiveSensor(gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc,
-							 adc_unit_t unit)
+							 adc_atten_t atten, adc_unit_t unit)
 {
 	gpio_ = gpio;
 	channel_ = adcChannel;
@@ -23,6 +23,7 @@ PassiveSensor::PassiveSensor(gpio_num_t gpio, adc_channel_t adcChannel, adc_ones
 	unit_ = unit;
 
 	// Configure the channel
+	channelConfig_.atten = atten;
 	if (adc_oneshot_config_channel(adc_, channel_, &channelConfig_) != ESP_OK) {
 		ESP_LOGW(TAG, "Couldn't set adc config for channel %d", channel_);
 		return;
@@ -32,7 +33,7 @@ PassiveSensor::PassiveSensor(gpio_num_t gpio, adc_channel_t adcChannel, adc_ones
 	const adc_cali_curve_fitting_config_t calibrationConfig = {
 		.unit_id = unit_,
 		.chan = channel_,
-		.atten = ADC_ATTEN_DB_12,
+		.atten = atten,
 		.bitwidth = ADC_BITWIDTH_DEFAULT,
 	};
 	if (adc_cali_create_scheme_curve_fitting(&calibrationConfig, &calibrationHandle_) != ESP_OK) {
@@ -59,23 +60,25 @@ void PassiveSensor::read()
 	specificRead();
 }
 
-int PassiveSensor::getResistance() { return resistance_; }
+float PassiveSensor::getResistance() { return resistance_; }
+
+int PassiveSensor::getVoltageMv() { return voltage_; }
 
 /*
  *	Private Function Implementations
  */
-uint16_t PassiveSensor::calcVoltageDividerR2(const int voltageMv, const int r1)
+float PassiveSensor::calcVoltageDividerR2(const int voltageMv, const int r1)
 {
-	const double vOut = static_cast<double>(voltageMv) / 1000.0;
-	const double r = r1;
+	const float vOut = static_cast<float>(voltageMv) / 1000.0f;
+	const float r = static_cast<float>(r1);
 
 	// Prevents divison by 0
 	if (vOut >= VOLTAGE) {
-		return 0.0;
+		return 0.0f;
 	}
 
 	// R2 = R1 * (voltageMv / (preR1VoltageV - voltageMv))
-	return static_cast<uint16_t>(r * (vOut / (VOLTAGE - vOut)));
+	return r * (vOut / (VOLTAGE - vOut));
 }
 
 int PassiveSensor::readSample(const unsigned int sampleSize)

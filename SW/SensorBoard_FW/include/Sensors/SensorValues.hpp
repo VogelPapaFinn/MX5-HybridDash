@@ -17,9 +17,9 @@ class SensorValues
 public:
 	SensorValues();
 
-	std::unordered_map<SENSOR, double> getSnapshot();
+	std::unordered_map<SENSOR, float> getSnapshot();
 
-	std::unordered_map<SENSOR, double>* getWriteAccess();
+	std::unordered_map<SENSOR, float>* getWriteAccess();
 
 	void returnWriteAccess();
 
@@ -27,7 +27,7 @@ private:
 	/*
 	 *	Private Variables
 	 */
-	std::unordered_map<SENSOR, double> sensorValues_;
+	std::unordered_map<SENSOR, float> sensorValues_;
 
 	SemaphoreHandle_t valuesMutex_ = nullptr;
 };

@@ -8,13 +8,15 @@ class PassiveSensor
 {
 public:
 	PassiveSensor(gpio_num_t gpio, adc_channel_t adcChannel, adc_oneshot_unit_handle_t p_adc,
-				  adc_unit_t unit = ADC_UNIT_1);
+				  adc_atten_t atten = ADC_ATTEN_DB_12, adc_unit_t unit = ADC_UNIT_1);
 
 	void read();
 
 	virtual int get() = 0;
 
-	int getResistance();
+	float getResistance();
+
+	int getVoltageMv();
 
 protected:
 	/*
@@ -22,7 +24,7 @@ protected:
 	 */
 	virtual void specificRead() = 0;
 
-	static uint16_t calcVoltageDividerR2(int voltageMv, int r1);
+	static float calcVoltageDividerR2(int voltageMv, int r1);
 
 	int readSample(const unsigned int sampleSize);
 
@@ -35,7 +37,7 @@ protected:
 
 	int voltage_ = 0;
 
-	uint16_t resistance_ = 0;
+	float resistance_ = 0;
 
 	adc_oneshot_unit_handle_t adc_ = nullptr;
 

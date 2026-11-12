@@ -41,7 +41,7 @@ void WaterTemperature::specificRead() { resistance_ = calcVoltageDividerR2(volta
 /*
  *	Private Function Implementations
  */
-int WaterTemperature::calculateTemp(const uint16_t r)
+int WaterTemperature::calculateTemp(const float r)
 {
 	int temp = 0;
 
@@ -68,7 +68,7 @@ int WaterTemperature::calculateTemp(const uint16_t r)
 
 			// Calculate the value with linear interpolation
 			// y = y1 + (x - x1) * (y2 - y1) / (x2 - x1)
-			temp = temp1 + ((r - r1) * ((temp2 - temp1)) / (r2 - r1));
+			temp = static_cast<int>(temp1 + ((r - r1) * ((temp2 - temp1)) / (r2 - r1)));
 			return temp;
 		}
 	}

@@ -16,5 +16,5 @@ protected:
 	 */
 	void specificRead() override;
 
-	int calculateTemp(uint16_t r);
+	int calculateTemp(float r);
 };

@@ -22,7 +22,7 @@ SensorValues::SensorValues()
 	}
 }
 
-std::unordered_map<SENSOR, double> SensorValues::getSnapshot()
+std::unordered_map<SENSOR, float> SensorValues::getSnapshot()
 {
 	if (xSemaphoreTake(valuesMutex_, portMAX_DELAY) != pdTRUE) {
 		return {};
@@ -35,7 +35,7 @@ std::unordered_map<SENSOR, double> SensorValues::getSnapshot()
 	return copy;
 }
 
-std::unordered_map<SENSOR, double>* SensorValues::getWriteAccess()
+std::unordered_map<SENSOR, float>* SensorValues::getWriteAccess()
 {
 	if (xSemaphoreTake(valuesMutex_, portMAX_DELAY)) {
 		return &sensorValues_;

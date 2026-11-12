@@ -162,6 +162,7 @@ void HwSensorReader::updatePassiveSensorsTask(void* p_param)
 			// Save new values
 			(hwSensorReader->newSensorValues_)[SENSOR::FUEL_LEVEL_P] = fL.get();
 			(hwSensorReader->newSensorValues_)[SENSOR::FUEL_LEVEL_R] = fL.getResistance();
+			(hwSensorReader->newSensorValues_)[SENSOR::FUEL_LEVEL_MV] = fL.getVoltageMv();
 			(hwSensorReader->newSensorValues_)[SENSOR::OIL_PRESSURE_B] = oP.get();
 			(hwSensorReader->newSensorValues_)[SENSOR::OIL_PRESSURE_R] = oP.getResistance();
 			(hwSensorReader->newSensorValues_)[SENSOR::WATER_TEMP_C] = wT.get();

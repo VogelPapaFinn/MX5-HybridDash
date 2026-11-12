@@ -14,7 +14,7 @@
 constexpr auto TAG = "FuelLevel";
 
 constexpr uint16_t R1 = 240;
-constexpr uint16_t BOOST_RESISTOR = 98;
+constexpr float BOOST_RESISTOR = 98.0f;
 constexpr float EMA_ALPHA = 0.005f;
 
 constexpr auto NVS_NAMESPACE = "FuelLevel";
@@ -23,7 +23,7 @@ constexpr auto NVS_LAST_VALUE = "LastValue";
 /*
  *	Public Function Implementations
  */
-FuelLevel::FuelLevel(adc_oneshot_unit_handle_t p_adc) : PassiveSensor(GPIO_NUM_1, ADC_CHANNEL_0, p_adc)
+FuelLevel::FuelLevel(adc_oneshot_unit_handle_t p_adc) : PassiveSensor(GPIO_NUM_1, ADC_CHANNEL_0, p_adc, ADC_ATTEN_DB_6)
 {
 	nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvsHandle_);
 
@@ -56,9 +56,8 @@ void FuelLevel::specificRead()
 {
 	resistance_ = calcVoltageDividerR2(voltage_, R1) - BOOST_RESISTOR;
 
-	const float resistanceFloat = static_cast<float>(resistance_);
-	float levelInPercent = (-0.000102885f * resistanceFloat * resistanceFloat * resistanceFloat) +
-		(0.0246611f * resistanceFloat * resistanceFloat) + (-2.44333f * resistanceFloat) + 107.321f;
+	float levelInPercent = (-0.000102885f * resistance_ * resistance_ * resistance_) +
+		(0.0246611f * resistance_ * resistance_) + (-2.44333f * resistance_) + 107.321f;
 
 	// Too low
 	if (levelInPercent < 0.0f) {

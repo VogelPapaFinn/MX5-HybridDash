@@ -52,7 +52,7 @@ private:
 	TaskHandle_t indicatorTask_ = nullptr;
 	std::function<void()> indicatorChangedCb_ = nullptr;
 
-	std::unordered_map<SENSOR, int> newSensorValues_;
+	std::unordered_map<SENSOR, float> newSensorValues_;
 	SemaphoreHandle_t newSensorValuesMutex_ = nullptr;
 	adc_oneshot_unit_handle_t adc1_ = nullptr;
 	SensorValues* sensorValues_ = nullptr;
