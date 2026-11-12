@@ -1,7 +1,8 @@
 #include "StateMachine/States/Startup.hpp"
 
 // Project includes
-#include "DefaultConfig.hpp"
+#include "Config/ConfigEntries.hpp"
+#include "Config/DefaultConfig.hpp"
 #include "FilesystemLocations.hpp"
 #include "StateMachine/StateEvents.hpp"
 
@@ -58,9 +59,9 @@ void Startup::enter()
 
 	// Delete all .csv Files on the SD Card?
 	auto json = config_->getWriteAccess();
-	if ((*json)["DeleteAllCsvFilesOnSdCard"].as<bool>()) {
+	if ((*json)[CONFIG_DELETE_ALL_CSV_FILES].as<bool>()) {
 		deleteAllCsvFilesOnSdCard();
-		(*json)["DeleteAllCsvFilesOnSdCard"] = false;
+		(*json)[CONFIG_DELETE_ALL_CSV_FILES] = false;
 	}
 	config_->returnWriteAccess();
 
@@ -116,11 +117,11 @@ bool Startup::loadDefaultConfig()
 bool Startup::isFirstStartup()
 {
 	const auto json = config_->getReadAccess();
-	if (!json["FirstStartup"].is<bool>()) {
+	if (!json[CONFIG_FIRST_STARTUP].is<bool>()) {
 		return true;
 	}
 
-	if (json["FirstStartup"].as<bool>()) {
+	if (json[CONFIG_FIRST_STARTUP].as<bool>()) {
 		return true;
 	}
 

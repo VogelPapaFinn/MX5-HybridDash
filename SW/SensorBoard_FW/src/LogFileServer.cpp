@@ -1,5 +1,8 @@
 #include "LogFileServer.hpp"
 
+// Project includes
+#include "Config/ConfigEntries.hpp"
+
 // espidf includes
 #include "esp_log.h"
 
@@ -45,8 +48,8 @@ bool LogFileServer::startAp()
 	const auto json = config_->getReadAccess();
 
 	// Setup
-	wifi_->setSsid(json["WifiHost"]["ssid"]);
-	wifi_->setPassword(json["WifiHost"]["password"]);
+	wifi_->setSsid(json[CONFIG_WIFI_HOST][CONFIG_WIFI_SSID]);
+	wifi_->setPassword(json[CONFIG_WIFI_HOST][CONFIG_WIFI_PSSWD]);
 
 	return wifi_->start();
 }

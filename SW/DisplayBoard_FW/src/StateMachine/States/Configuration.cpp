@@ -1,5 +1,11 @@
 #include "StateMachine/States/Configuration.hpp"
 
+// Project includes
+#include "Config/ConfigEntries.hpp"
+
+// espidf includes
+#include "esp_log.h"
+
 /*
  *	constexpr
  */
@@ -141,9 +147,9 @@ void Configuration::ackRotation()
 void Configuration::saveConfiguration()
 {
 	auto json = config_->getWriteAccess();
-	(*json)["canID"] = canId_;
-	(*json)["screen"] = screen_;
-	(*json)["rotation"] = rotation_;
+	(*json)[CONFIG_CAN_ID] = canId_;
+	(*json)[CONFIG_SCREEN] = screen_;
+	(*json)[CONFIG_ROTATION] = rotation_;
 	config_->returnWriteAccess();
 
 	Can::Frame_t frame;

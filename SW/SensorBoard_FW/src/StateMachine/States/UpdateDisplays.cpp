@@ -1,6 +1,7 @@
 #include "StateMachine/States/UpdateDisplays.hpp"
 
 // Project includes
+#include "Config/ConfigEntries.hpp"
 #include "FilesystemLocations.hpp"
 #include "StateMachine/StateEvents.hpp"
 
@@ -264,8 +265,8 @@ void UpdateDisplays::startWifiAP()
 
 	const auto json = config_->getReadAccess();
 
-	wifi_->setSsid(json["WifiHost"]["ssid"]);
-	wifi_->setPassword(json["WifiHost"]["password"]);
+	wifi_->setSsid(json[CONFIG_WIFI_HOST][CONFIG_WIFI_SSID]);
+	wifi_->setPassword(json[CONFIG_WIFI_HOST][CONFIG_WIFI_PSSWD]);
 
 	wifi_->callOnSuccess([this] { this->enterNextState(); });
 

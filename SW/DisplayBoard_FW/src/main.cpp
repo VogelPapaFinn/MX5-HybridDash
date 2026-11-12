@@ -1,6 +1,7 @@
 // Project includes
 #include "Config.hpp"
 #include "Filesystem.hpp"
+#include "FilesystemLocations.hpp"
 #include "Handler/GuiHandler.hpp"
 #include "StateMachine/StateMachine.hpp"
 #include "StateMachine/States/Configuration.hpp"
@@ -11,6 +12,7 @@
 
 // espidf includes
 #include "esp_event.h"
+#include "esp_log.h"
 
 /*
  *	constexpr
@@ -19,6 +21,11 @@ constexpr auto TAG = "main";
 
 constexpr gpio_num_t GPIO_CAN_RX = GPIO_NUM_39;
 constexpr gpio_num_t GPIO_CAN_TX = GPIO_NUM_40;
+
+constexpr std::string CONFIG_BASE_PATH = "/config";
+constexpr std::string CONFIG_PARTITION_LABEL = "config";
+constexpr std::string LOG_BASE_PATH = "/log";
+constexpr std::string LOG_PARTITION_LABEL = "log";
 
 /*
  *	Helper functions
@@ -49,8 +56,17 @@ extern "C" void app_main(void)
 	startEspEventLoop();
 
 	// Drivers
-	Filesystem fs(false, false);
-	Config config(&fs);
+	Filesystem fs({
+		{.id = FsLocation::CONFIG_PARTITION,
+		 .basePath = CONFIG_BASE_PATH,
+		 .partitionLabel = CONFIG_PARTITION_LABEL,
+		 .formatIfMountFails = true},
+		{.id = FsLocation::LOG_PARTITION,
+		 .basePath = LOG_BASE_PATH,
+		 .partitionLabel = LOG_PARTITION_LABEL,
+		 .formatIfMountFails = true},
+	});
+	Config config(&fs, FsLocation::CONFIG_PARTITION);
 	Can can(GPIO_CAN_RX, GPIO_CAN_TX);
 	GuiHandler guiHandler;
 

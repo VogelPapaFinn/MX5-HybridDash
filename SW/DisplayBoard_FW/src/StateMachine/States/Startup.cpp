@@ -1,8 +1,13 @@
 #include "StateMachine/States/Startup.hpp"
 
 // Project includes
-#include "DefaultConfig.hpp"
+#include "Config/ConfigEntries.hpp"
+#include "Config/DefaultConfig.hpp"
+#include "FilesystemLocations.hpp"
 #include "StateMachine/StateEvents.hpp"
+
+// espidf includes
+#include "esp_log.h"
 
 /*
  *   constexpr
@@ -70,12 +75,12 @@ bool Startup::loadConfig() { return config_->open(CONFIG_NAME); }
 bool Startup::loadDefaultConfig()
 {
 	// Create file if necessary
-	if (!fs_->doesFileExist(CONFIG_NAME, Filesystem::CONFIG_PARTITION)) {
-		fs_->createFile(CONFIG_NAME, Filesystem::CONFIG_PARTITION);
+	if (!fs_->doesFileExist(CONFIG_NAME, FsLocation::CONFIG_PARTITION)) {
+		fs_->createFile(CONFIG_NAME, FsLocation::CONFIG_PARTITION);
 	}
 
 	// Open file for writing
-	FILE* file = fs_->openFile(CONFIG_NAME, "w", Filesystem::CONFIG_PARTITION);
+	FILE* file = fs_->openFile(CONFIG_NAME, "w", FsLocation::CONFIG_PARTITION);
 
 	// Print default config to it`
 	if (fprintf(file, "%s", DEFAULT_CONFIG) <= 0) {
@@ -97,8 +102,8 @@ void Startup::loadScreen()
 {
 	auto json = config_->getReadAccess();
 
-	if (json["screen"].is<int>() && json["screen"].as<int>() >= 0) {
-		guiHandler_->loadScreen(json["screen"].as<GuiHandler::SCREEN>());
+	if (json[CONFIG_SCREEN].is<int>() && json[CONFIG_SCREEN].as<int>() >= 0) {
+		guiHandler_->loadScreen(json[CONFIG_SCREEN].as<GuiHandler::SCREEN>());
 	}
 }
 
@@ -106,28 +111,28 @@ void Startup::setRotation()
 {
 	auto json = config_->getReadAccess();
 
-	if (json["rotation"].is<int>() && json["rotation"].as<int>()) {
-		guiHandler_->setRotation(json["rotation"].as<bool>());
+	if (json[CONFIG_ROTATION].is<int>() && json[CONFIG_ROTATION].as<int>()) {
+		guiHandler_->setRotation(json[CONFIG_ROTATION].as<bool>());
 	}
 }
 
 bool Startup::isConfigValid()
 {
 	const auto json = config_->getReadAccess();
-	if (!json["canID"].is<int>() || !json["screen"].is<int>() || !json["rotation"].is<int>()) {
+	if (!json[CONFIG_CAN_ID].is<int>() || !json[CONFIG_SCREEN].is<int>() || !json[CONFIG_ROTATION].is<int>()) {
 		return false;
 	}
 
-	if (json["canID"].as<int>() <= 0) {
+	if (json[CONFIG_CAN_ID].as<int>() <= 0) {
 		return false;
 	}
 
-	const auto& screen = json["screen"].as<int>();
+	const auto& screen = json[CONFIG_SCREEN].as<int>();
 	if (screen < 0 || screen > 2) {
 		return false;
 	}
 
-	const auto& rotation = json["rotation"].as<int>();
+	const auto& rotation = json[CONFIG_ROTATION].as<int>();
 	if (rotation != 0 && rotation != 1) {
 		return false;
 	}
@@ -138,10 +143,10 @@ bool Startup::isConfigValid()
 void Startup::forceCanId()
 {
 	const auto json = config_->getReadAccess();
-	if (!json["canID"]) {
+	if (!json[CONFIG_CAN_ID]) {
 		return;
 	}
 
 	// Force Can ID
-	can_->forceSenderId(json["canID"].as<int>());
+	can_->forceSenderId(json[CONFIG_CAN_ID].as<int>());
 }

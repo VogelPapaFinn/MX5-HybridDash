@@ -9,17 +9,12 @@
 #include "nvs_flash.h"
 
 
-
 /*
  *	constexpr
  */
 constexpr auto TAG = "WifiJoin";
 
 constexpr auto HOST_NAME = "MX5-HybridDash";
-
-constexpr auto JSON_JOIN_WIFI = "WifiJoin";
-constexpr auto JSON_SSID = "ssid";
-constexpr auto JSON_PASSWORD = "password";
 
 constexpr esp_sntp_config config = ESP_NETIF_SNTP_DEFAULT_CONFIG("pool.ntp.org");
 constexpr auto SNTP_TIMEOUT_MS = 10000;

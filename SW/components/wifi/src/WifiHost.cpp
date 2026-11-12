@@ -13,10 +13,6 @@
  */
 constexpr auto TAG = "WifiHost";
 
-constexpr auto JSON_HOST_WIFI = "WifiHost";
-constexpr auto JSON_SSID = "ssid";
-constexpr auto JSON_PASSWORD = "password";
-
 /*
  *	Public Function Implementations
  */

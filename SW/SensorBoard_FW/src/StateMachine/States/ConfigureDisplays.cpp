@@ -1,6 +1,7 @@
 #include "StateMachine/States/ConfigureDisplays.hpp"
 
 // Project includes
+#include "Config/ConfigEntries.hpp"
 #include "StateMachine/StateEvents.hpp"
 
 // espidf includes
@@ -47,7 +48,7 @@ void ConfigureDisplays::quit()
 
 	// Update config
 	auto json = config_->getWriteAccess();
-	(*json)["FirstStartup"] = false;
+	(*json)[CONFIG_FIRST_STARTUP] = false;
 	config_->returnWriteAccess();
 
 	// Turn all displays back on
