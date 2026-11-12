@@ -15,9 +15,9 @@ public:
 
 private:
 	/*
-	 *	Public Callback functions
+	 *	Private Callback Functions
 	 */
-	IRAM_ATTR void cb() override;
+	static void isrCallback(ActiveSensor* p_sensor);
 
 	/*
 	 *	Private Functions
@@ -29,8 +29,8 @@ private:
 	/*
 	 *	Private Variables
 	 */
-	volatile int64_t previousTriggerTime_ = 0;
-	volatile int64_t newestTriggerTime_ = 0;
+	int64_t previousTriggerTime_ = 0;
+	int64_t newestTriggerTime_ = 0;
 
 	uint8_t kmh_ = 0;
 };

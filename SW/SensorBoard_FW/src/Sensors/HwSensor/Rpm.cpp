@@ -17,7 +17,7 @@ constexpr uint16_t MAX_RPM = 8000;
 /*
  *	Public Function Implementations
  */
-Rpm::Rpm() : ActiveSensor(GPIO_NUM_9, GPIO_INTR_NEGEDGE) {}
+Rpm::Rpm() : ActiveSensor(GPIO_NUM_9, GPIO_INTR_NEGEDGE, isrCallback) {}
 
 int Rpm::get()
 {
@@ -33,14 +33,15 @@ int Rpm::get()
 	return getMedianElement(lastRpm_);
 }
 
-void Rpm::cb()
+IRAM_ATTR void Rpm::isrCallback(ActiveSensor* p_sensor)
 {
+	auto self = static_cast<Rpm*>(p_sensor);
 	const auto now = esp_timer_get_time();
 
 	// With a max of 8000rpm the min time between each trigger is above 2000us
-	if ((now - newestTriggerTime_) > 2000) {
-		previousTriggerTime_ = newestTriggerTime_;
-		newestTriggerTime_ = now;
+	if ((now - self->newestTriggerTime_) > 2000) {
+		self->previousTriggerTime_ = self->newestTriggerTime_;
+		self->newestTriggerTime_ = now;
 	}
 }
 

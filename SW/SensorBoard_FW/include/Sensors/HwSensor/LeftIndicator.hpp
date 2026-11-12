@@ -12,9 +12,9 @@ public:
 
 private:
 	/*
-	 *	Public Callback functions
+	 *	Private Callback Functions
 	 */
-	IRAM_ATTR void cb() override;
+	static void isrCallback(ActiveSensor* p_sensor);
 
 	/*
 	 *	Private Variables

@@ -11,8 +11,11 @@ constexpr auto TAG = "ActiveSensor";
 /*
  *	Public Function Implementations
  */
-ActiveSensor::ActiveSensor(const gpio_num_t gpio, const gpio_int_type_t& triggeringEdge)
+ActiveSensor::ActiveSensor(const gpio_num_t gpio, const gpio_int_type_t& triggeringEdge,
+						   void (*p_isrCallback)(ActiveSensor* p_sensor))
 {
+	isrCb_ = p_isrCallback;
+
 	// Setup the GPIO
 	gpio_ = gpio;
 	gpio_set_direction(gpio_, GPIO_MODE_INPUT);
@@ -47,7 +50,9 @@ IRAM_ATTR void ActiveSensor::gpioIsr(void* p_arg)
 	}
 
 	ActiveSensor* instance = static_cast<ActiveSensor*>(p_arg);
-	instance->cb();
+	if (instance->isrCb_ != nullptr) {
+		instance->isrCb_(instance);
+	}
 
 	if (instance->taskToNotify_ != nullptr) {
 		BaseType_t higherTaskWoken = pdFALSE;
@@ -55,5 +60,3 @@ IRAM_ATTR void ActiveSensor::gpioIsr(void* p_arg)
 		portYIELD_FROM_ISR(higherTaskWoken);
 	}
 }
-
-void ActiveSensor::cb() {}

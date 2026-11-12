@@ -20,7 +20,7 @@ constexpr float CAR_STANDING_TIMEOUT_S = 0.5f;
 /*
  *	Public Function Implementations
  */
-Speed::Speed() : ActiveSensor(GPIO_NUM_10, GPIO_INTR_POSEDGE) {}
+Speed::Speed() : ActiveSensor(GPIO_NUM_10, GPIO_INTR_POSEDGE, isrCallback) {}
 
 int Speed::get()
 {
@@ -31,14 +31,15 @@ int Speed::get()
 	return calculateKmh(newestTriggerTime_, previousTriggerTime_);
 }
 
-void Speed::cb()
+IRAM_ATTR void Speed::isrCallback(ActiveSensor* p_sensor)
 {
+	auto self = static_cast<Speed*>(p_sensor);
 	const int64_t now = esp_timer_get_time();
 
 	// Debouncing, allow a new trigger only after X us passed
-	if ((now - newestTriggerTime_) > DEBOUNCE_TIME_US) {
-		previousTriggerTime_ = newestTriggerTime_;
-		newestTriggerTime_ = now;
+	if ((now - self->newestTriggerTime_) > DEBOUNCE_TIME_US) {
+		self->previousTriggerTime_ = self->newestTriggerTime_;
+		self->newestTriggerTime_ = now;
 	}
 }
 
