@@ -39,19 +39,39 @@ bool Filesystem::mountAllLocations()
 	bool result = true;
 
 	for (auto& l : locations_) {
+		if (locationInformation_.contains(l.id)) {
+			ESP_LOGW(TAG, "There is already a location registered with ID %d. Skipping", l.id);
+			continue;
+		}
+
 		// FatFS
 		if (l.fsType == FAT_FS) {
+			// Skip if necessary
+			if (l.sdCard == nullptr) {
+				ESP_LOGE(TAG, "FAT location %d has no SdCard", l.id);
+				result = false;
+
+				continue;
+			}
+
+			// Mount
+			FilesystemInstance fsI{.mounted = l.sdCard->mount(l.basePath, l.maxOpenFiles, l.formatIfMountFails),
+								   .basePath = l.basePath};
+
+			if (fsI.mounted) {
+				ESP_LOGI(TAG, "Mounted SD Card at %s", l.basePath.c_str());
+			}
+			else {
+				ESP_LOGW(TAG, "Couldn't mount SD Card at %s", l.basePath.c_str());
+			}
+
+			locationInformation_[l.id] = fsI;
 
 			continue;
 		}
 
 		// LittleFS
 		if (l.fsType == LITTLE_FS) {
-			if (locationInformation_.contains(l.id)) {
-				ESP_LOGW(TAG, "There is already a location registered with ID %d. Skipping", l.id);
-				continue;
-			}
-
 			const esp_vfs_littlefs_conf_t config = {.base_path = l.basePath.c_str(),
 													.partition_label = l.partitionLabel.c_str(),
 													.format_if_mount_failed = l.formatIfMountFails};

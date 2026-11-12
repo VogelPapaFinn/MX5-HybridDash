@@ -94,7 +94,13 @@ extern "C" void app_main(void)
 	startEspEventLoop();
 
 	// Drivers
+	SdCard sdCard(SDCARD_GPIO_CLK, SDCARD_GPIO_CMD, SDCARD_GPIO_D0, SDCARD_GPIO_D1, SDCARD_GPIO_D2, SDCARD_GPIO_D3);
 	Filesystem fs({
+		{.id = FsLocation::SD_CARD,
+		 .fsType = Filesystem::FAT_FS,
+		 .basePath = SDCARD_BASE_PATH,
+		 .sdCard = &sdCard,
+		 .maxOpenFiles = SDCARD_MAX_OPEN_FILES},
 		{.id = FsLocation::CONFIG_PARTITION,
 		 .basePath = CONFIG_BASE_PATH,
 		 .partitionLabel = CONFIG_PARTITION_LABEL,

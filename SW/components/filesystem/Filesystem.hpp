@@ -1,5 +1,8 @@
 #pragma once
 
+// Project includes
+#include "SdCard.hpp"
+
 // C++ includes
 #include <string>
 #include <unordered_map>
@@ -29,6 +32,10 @@ public:
 		std::string basePath = "";
 		std::string partitionLabel = "";
 		bool formatIfMountFails = false;
+
+		// Only FAT_FS
+		SdCard* sdCard = nullptr;
+		uint8_t maxOpenFiles = 5;
 	};
 
 	/*
