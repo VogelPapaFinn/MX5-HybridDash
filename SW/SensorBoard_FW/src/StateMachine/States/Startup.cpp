@@ -55,6 +55,14 @@ void Startup::enter()
 	}
 	config_->print();
 
+	// Delete all .csv Files on the SD Card?
+	auto json = config_->getWriteAccess();
+	if ((*json)["DeleteAllCsvFilesOnSdCard"].as<bool>()) {
+		deleteAllCsvFilesOnSdCard();
+		(*json)["DeleteAllCsvFilesOnSdCard"] = false;
+	}
+	config_->returnWriteAccess();
+
 	// Enter the ConfigureDisplays state?
 	if (isFirstStartup()) {
 		esp_event_post(STATE_EVENT_BASE, STATE_EVENT_ID::FIRST_STARTUP, nullptr, 0, portMAX_DELAY);
@@ -119,3 +127,15 @@ bool Startup::isFirstStartup()
 }
 
 bool Startup::isUpdateAvailable() { return fs_->doesFileExist("display_update.bin", Filesystem::DATA_PARTITION); }
+
+void Startup::deleteAllCsvFilesOnSdCard()
+{
+	ESP_LOGI(TAG, "Deleting all .csv files on the SD Card");
+
+	auto fileNames = fs_->getAllFileNamesInDirectory("", "*.csv", Filesystem::SD_CARD);
+
+	for (const auto& fileName : fileNames) {
+		fs_->deleteFile(fileName, Filesystem::SD_CARD);
+		ESP_LOGI(TAG, "Deleted %s", fileName.c_str());
+	}
+}

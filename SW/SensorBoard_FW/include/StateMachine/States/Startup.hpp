@@ -30,6 +30,8 @@ private:
 
 	bool isUpdateAvailable();
 
+	void deleteAllCsvFilesOnSdCard();
+
 	/*
 	 *   Private Variables
 	 */
