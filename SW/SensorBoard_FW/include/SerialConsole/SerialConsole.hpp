@@ -3,6 +3,7 @@
 // Project includes
 #include "KLine/KLine.hpp"
 #include "SerialConsole/Commands/ActuatorTests.hpp"
+#include "SerialConsole/Commands/FaultCodes.hpp"
 
 // espidf includes
 #include "esp_console.h"
@@ -30,6 +31,7 @@ private:
 	KLine* kline_ = nullptr;
 
 	ActuatorTests actuatorTest_;
+	FaultCodes faultCodes_;
 
 	bool useable_ = false;
 

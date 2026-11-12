@@ -13,7 +13,7 @@ constexpr size_t MAX_CMDLINE_LENGTH = 256;
 /*
  *   Public Function Implementations
  */
-SerialConsole::SerialConsole(KLine* p_kline) : actuatorTest_(p_kline)
+SerialConsole::SerialConsole(KLine* p_kline) : actuatorTest_(p_kline), faultCodes_(p_kline)
 {
 	kline_ = p_kline;
 
@@ -50,4 +50,8 @@ void SerialConsole::prepareRepl()
 	useable_ = true;
 }
 
-void SerialConsole::registerCommands() { actuatorTest_.registerCommands(); }
+void SerialConsole::registerCommands()
+{
+	actuatorTest_.registerCommands();
+	faultCodes_.registerCommands();
+}

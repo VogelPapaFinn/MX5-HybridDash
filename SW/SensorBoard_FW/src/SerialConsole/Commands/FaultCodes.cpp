@@ -95,10 +95,8 @@ int FaultCodes::readFaultCodes(int argc, char** p_argv)
 	requestAmountOfFaultCodes(
 		[this](unsigned int amountOfFaultCodes)
 		{
-			printf("Amount of Fault Codes: %d", amountOfFaultCodes);
-
 			// Abort if there arent some
-			if (amountOfFaultCodes == 0) {
+			if (amountOfFaultCodes == 0 && false) {
 				return;
 			}
 
@@ -112,6 +110,10 @@ int FaultCodes::readFaultCodes(int argc, char** p_argv)
 				message,
 				[](std::vector<KLineMessage>& responses)
 				{
+					if (responses.empty()) {
+						printf("No response\n");
+					}
+
 					for (const auto& m : responses) {
 						if (m.getSid() != (0x13 + 0x40)) {
 							continue;
