@@ -260,9 +260,9 @@ void SensorLogger::logTask(void* p_param)
 			}
 			fprintf(sensorLogger->csvFile_, "%s;\n", row.c_str());
 
-			counter++;
+			// ESP_LOGI(TAG, "%s", row.c_str());
 
-			// ESP_LOGI(TAG, "Added line to log: %s", row.c_str());
+			counter++;
 
 			// Only flush to the actual file every x Seconds
 			if (counter < SAVE_INTERVAL_S) {
