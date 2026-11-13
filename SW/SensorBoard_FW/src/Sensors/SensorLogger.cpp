@@ -192,18 +192,25 @@ void SensorLogger::increaseFileIndex()
 
 	// Save after 4 Minutes, so a short engine start to move the car doesnt produce a whole file, which could clutter
 	// the filesystem
-	increaseFileIndexTimer_ = xTimerCreate("IncreaseSensorLoggerFileIndex", pdMS_TO_TICKS(60000 * 4), pdFALSE, this,
-										   [](TimerHandle_t p_timer)
-										   {
-											   auto sensorLogger =
-												   static_cast<SensorLogger*>(pvTimerGetTimerID(p_timer));
+	increaseFileIndexTimer_ =
+		xTimerCreate("IncreaseSensorLoggerFileIndex", pdMS_TO_TICKS(60000 * 4), pdFALSE, this,
+					 [](TimerHandle_t p_timer)
+					 {
+						 auto sensorLogger = static_cast<SensorLogger*>(pvTimerGetTimerID(p_timer));
 
-											   const auto newIndex = sensorLogger->getFileIndex() + 1;
-											   nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex);
-											   nvs_commit(sensorLogger->nvsHandle_);
+						 const auto newIndex = sensorLogger->getFileIndex() + 1;
 
-											   ESP_LOGI(TAG, "Increased %s to %d", NVS_FILE_INDEX, newIndex);
-										   });
+
+						 if (auto result = nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex) != ESP_OK) {
+							 ESP_LOGW(TAG, "nvs_set failed with %s", esp_err_to_name(result));
+						 }
+
+						 if (auto result = nvs_commit(sensorLogger->nvsHandle_) != ESP_OK) {
+							 ESP_LOGW(TAG, "nvs_commit failed with %s", esp_err_to_name(result));
+						 }
+
+						 ESP_LOGI(TAG, "Increased %s to %d", NVS_FILE_INDEX, newIndex);
+					 });
 
 	xTimerStart(increaseFileIndexTimer_, 0);
 }
