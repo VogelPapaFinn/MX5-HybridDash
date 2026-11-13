@@ -64,11 +64,12 @@ void FuelLevel::specificRead()
 		displayedLevelInPercent_ = std::lround(levelInPercent_);
 
 		if (nvsHandle_ != 0) {
-			if (auto result =
-					nvs_set_u8(nvsHandle_, NVS_LAST_VALUE, static_cast<uint8_t>(displayedLevelInPercent_)) != ESP_OK) {
+			auto result = nvs_set_u8(nvsHandle_, NVS_LAST_VALUE, static_cast<uint8_t>(displayedLevelInPercent_));
+			if (result != ESP_OK) {
 				ESP_LOGW(TAG, "nvs_set failed with %s", esp_err_to_name(result));
 			}
-			if (auto result = nvs_commit(nvsHandle_) != ESP_OK) {
+			result = nvs_commit(nvsHandle_);
+			if (result != ESP_OK) {
 				ESP_LOGW(TAG, "nvs_commit failed with %s", esp_err_to_name(result));
 			}
 		}

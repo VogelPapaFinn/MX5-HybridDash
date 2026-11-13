@@ -200,12 +200,13 @@ void SensorLogger::increaseFileIndex()
 
 						 const auto newIndex = sensorLogger->getFileIndex() + 1;
 
-
-						 if (auto result = nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex) != ESP_OK) {
+						 auto result = nvs_set_u32(sensorLogger->nvsHandle_, NVS_FILE_INDEX, newIndex);
+						 if (result != ESP_OK) {
 							 ESP_LOGW(TAG, "nvs_set failed with %s", esp_err_to_name(result));
 						 }
 
-						 if (auto result = nvs_commit(sensorLogger->nvsHandle_) != ESP_OK) {
+						 result = nvs_commit(sensorLogger->nvsHandle_);
+						 if (result != ESP_OK) {
 							 ESP_LOGW(TAG, "nvs_commit failed with %s", esp_err_to_name(result));
 						 }
 
