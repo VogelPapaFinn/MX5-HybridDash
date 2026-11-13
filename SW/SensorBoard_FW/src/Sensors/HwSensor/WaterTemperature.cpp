@@ -1,20 +1,11 @@
 #include "Sensors/HwSensor/WaterTemperature.hpp"
 
 // C++ includes
-#include <iterator>
+#include <cmath>
 
 // espidf includes
 #include "esp_event.h"
 #include "esp_log.h"
-
-/*
- *	Private typedefs
- */
-typedef struct
-{
-	uint8_t temp;
-	uint16_t r;
-} TempResistanceTuple_t;
 
 /*
  *	constexpr
@@ -22,12 +13,10 @@ typedef struct
 constexpr auto TAG = "WaterTemperature";
 
 constexpr uint16_t R1 = 240;
-constexpr TempResistanceTuple_t TEMP_RESISTANCE_TUPLES[] = {
-	{2, 1850}, {8, 1500}, {12, 1200}, {16, 1000}, {20, 800}, {25, 640}, {29, 520},
-	{32, 430}, {36, 300}, {39, 250},  {43, 200},  {48, 150}, {53, 120}, {56, 100},
-	{61, 80},  {64, 60},  {68, 45},	  {73, 30},	  {77, 20},	 {82, 10},	{84, 5},
-};
-constexpr uint8_t AMOUNT_TEMP_TUPLES = std::size(TEMP_RESISTANCE_TUPLES);
+
+constexpr float A = 0.001883863080f;
+constexpr float B = 0.0002251572018f;
+constexpr float C = -0.00000003117864586f;
 
 /*
  *	Public Function Implementations
@@ -43,35 +32,12 @@ void WaterTemperature::specificRead() { resistance_ = calcVoltageDividerR2(volta
  */
 int WaterTemperature::calculateTemp(const float r)
 {
-	int temp = 0;
-
-	// Below our range
-	if (r > TEMP_RESISTANCE_TUPLES[0].r) {
-		temp = TEMP_RESISTANCE_TUPLES[0].temp;
-		return temp;
+	if (r <= 10.0f) {
+		return 0.0f;
 	}
 
-	// Above our range
-	if (r < TEMP_RESISTANCE_TUPLES[AMOUNT_TEMP_TUPLES - 1].r) {
-		temp = TEMP_RESISTANCE_TUPLES[AMOUNT_TEMP_TUPLES - 1].temp + 1;
-		return temp;
-	}
-	// Iterate through all entries
-	for (int i = 0; i < AMOUNT_TEMP_TUPLES - 1; i++) {
-		const uint16_t r1 = TEMP_RESISTANCE_TUPLES[i].r;
-		const uint16_t r2 = TEMP_RESISTANCE_TUPLES[i + 1].r;
+	const float logR = std::log(r);
+	const float kelvin = 1 / (A + B * logR + C * std::pow(logR, 3));
 
-		// Check if the passed resistance is between this and the next entry
-		if (r <= r1 && r >= r2) {
-			const uint8_t temp1 = TEMP_RESISTANCE_TUPLES[i].temp;
-			const uint8_t temp2 = TEMP_RESISTANCE_TUPLES[i + 1].temp;
-
-			// Calculate the value with linear interpolation
-			// y = y1 + (x - x1) * (y2 - y1) / (x2 - x1)
-			temp = static_cast<int>(temp1 + ((r - r1) * ((temp2 - temp1)) / (r2 - r1)));
-			return temp;
-		}
-	}
-
-	return temp;
+	return std::lround(kelvin - 273.15f);
 }
