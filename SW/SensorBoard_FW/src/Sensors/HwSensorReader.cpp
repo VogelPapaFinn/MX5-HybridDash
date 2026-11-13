@@ -148,6 +148,15 @@ void HwSensorReader::updatePassiveSensorsTask(void* p_param)
 				break;
 			}
 
+			if (xSemaphoreTake(hwSensorReader->newSensorValuesMutex_, pdMS_TO_TICKS(SENSORS_WRITE_INTERVAL_MS / 2)) ==
+				pdTRUE) {
+
+				// If engine is running, notify the fuel level
+				fL.setEngineRunning((hwSensorReader->newSensorValues_)[SENSOR::RPM] > 0);
+
+				xSemaphoreGive(hwSensorReader->newSensorValuesMutex_);
+			}
+
 			// Read sensors
 			fL.read();
 			oP.read();
@@ -158,8 +167,6 @@ void HwSensorReader::updatePassiveSensorsTask(void* p_param)
 				pdFALSE) {
 				continue;
 			}
-			// If engine is running, notify the fuel level
-			fL.setEngineRunning((hwSensorReader->newSensorValues_)[SENSOR::RPM] > 0);
 
 			// Save new values
 			(hwSensorReader->newSensorValues_)[SENSOR::FUEL_LEVEL_P] = fL.get();

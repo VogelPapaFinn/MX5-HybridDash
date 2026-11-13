@@ -2,9 +2,7 @@
 
 // Project includes
 #include "PassiveSensor.hpp"
-
-// C++ includes
-#include <vector>
+#include "Sensors/Utils/MedianFilter.hpp"
 
 // espidf includes
 #include "nvs.h"
@@ -26,14 +24,22 @@ protected:
 	 */
 	void specificRead() override;
 
+	float filterResistance();
+
+	float calculatePercentage();
+
 	/*
 	 *	Private Variables
 	 */
 	// EMA = Exponential Moving Average (Smoothing)
-	float emaValue_ = 0.0f;
+	float levelInPercent_ = 0.0f;
+
+	// Hysterese Filter
+	uint8_t displayedLevelInPercent_ = 0;
+
+	MedianFilter<float, 15> medianFilter_;
 
 	bool engineRunning_ = false;
-
 	bool firstRead_ = true;
 
 	nvs_handle_t nvsHandle_ = 0;
