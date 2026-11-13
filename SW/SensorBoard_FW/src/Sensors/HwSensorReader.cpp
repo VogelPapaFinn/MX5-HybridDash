@@ -158,6 +158,8 @@ void HwSensorReader::updatePassiveSensorsTask(void* p_param)
 				pdFALSE) {
 				continue;
 			}
+			// If engine is running, notify the fuel level
+			fL.setEngineRunning((hwSensorReader->newSensorValues_)[SENSOR::RPM] > 0);
 
 			// Save new values
 			(hwSensorReader->newSensorValues_)[SENSOR::FUEL_LEVEL_P] = fL.get();

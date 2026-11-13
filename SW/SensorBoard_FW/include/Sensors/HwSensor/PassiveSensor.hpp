@@ -36,7 +36,6 @@ protected:
 	bool setup_ = false;
 
 	int voltage_ = 0;
-
 	float resistance_ = 0;
 
 	adc_oneshot_unit_handle_t adc_ = nullptr;

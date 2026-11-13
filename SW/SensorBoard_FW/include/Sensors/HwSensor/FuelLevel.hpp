@@ -18,6 +18,8 @@ public:
 
 	int get() override;
 
+	void setEngineRunning(bool running);
+
 protected:
 	/*
 	 *	Private Functions
@@ -29,6 +31,8 @@ protected:
 	 */
 	// EMA = Exponential Moving Average (Smoothing)
 	float emaValue_ = 0.0f;
+
+	bool engineRunning_ = false;
 
 	bool firstRead_ = true;
 

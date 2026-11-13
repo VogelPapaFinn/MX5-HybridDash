@@ -14,11 +14,13 @@
 constexpr auto TAG = "FuelLevel";
 
 constexpr uint16_t R1 = 240;
-constexpr float BOOST_RESISTOR = 98.0f;
+constexpr float BOOST_RESISTOR = 96.8f;
 constexpr float EMA_ALPHA = 0.005f;
 
 constexpr auto NVS_NAMESPACE = "FuelLevel";
 constexpr auto NVS_LAST_VALUE = "LastValue";
+
+constexpr uint8_t VOLTAGE_OFFSET_WHEN_ENGINE_RUNNING_MV = 27;
 
 /*
  *	Public Function Implementations
@@ -49,12 +51,16 @@ int FuelLevel::get()
 	return level;
 }
 
+void FuelLevel::setEngineRunning(bool running) { engineRunning_ = running; }
+
 /*
  *	Private Function Implementations
  */
 void FuelLevel::specificRead()
 {
-	resistance_ = calcVoltageDividerR2(voltage_, R1) - BOOST_RESISTOR;
+	resistance_ =
+		calcVoltageDividerR2(engineRunning_ ? voltage_ - VOLTAGE_OFFSET_WHEN_ENGINE_RUNNING_MV : voltage_, R1) -
+		BOOST_RESISTOR;
 
 	float levelInPercent = (-0.000102885f * resistance_ * resistance_ * resistance_) +
 		(0.0246611f * resistance_ * resistance_) + (-2.44333f * resistance_) + 107.321f;
