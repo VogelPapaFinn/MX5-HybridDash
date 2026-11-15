@@ -167,7 +167,7 @@ extern "C" void app_main(void)
 	std::vector<Display> displays = {Display(GPIO_DISPLAY2, CAN_MASTER_ID + 2, 1, false),
 									 Display(GPIO_DISPLAY1, CAN_MASTER_ID + 1, 0, true),
 									 Display(GPIO_DISPLAY3, CAN_MASTER_ID + 3, 2, false)};
-	LogFileServer logFileServer(&fs, &config, &wifiHost);
+	FileServer fileServer(&fs, &config, &wifiHost);
 	SerialConsole serialConsole(&kline);
 
 	initAdc1(&adc1);
@@ -181,7 +181,7 @@ extern "C" void app_main(void)
 
 	// States
 	Startup startupState(&fs, &config, &can, &displays);
-	Operation operationState(&hwSensorReader, &sensorLogger, &sensorBroadcaster, &kline, &logFileServer, &sensorValues,
+	Operation operationState(&hwSensorReader, &sensorLogger, &sensorBroadcaster, &kline, &fileServer, &sensorValues,
 							 &serialConsole);
 	UpdateDisplays updateDisplays(&fs, &config, &can, &wifiHost, &displays);
 	ConfigureDisplays configureDisplays(&can, &config, &displays);

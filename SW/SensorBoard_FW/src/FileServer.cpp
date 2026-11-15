@@ -1,4 +1,4 @@
-#include "LogFileServer.hpp"
+#include "FileServer.hpp"
 
 // Project includes
 #include "Config/ConfigEntries.hpp"
@@ -9,7 +9,7 @@
 /*
  *   constexpr
  */
-constexpr auto TAG = "LogFileServer";
+constexpr auto TAG = "FileServer";
 
 constexpr unsigned int FILE_TRANSMISSION_CHUNK_SIZE_B = 1024;
 constexpr unsigned int HTTPD_STACK_SIZE_B = 6144;
@@ -17,7 +17,7 @@ constexpr unsigned int HTTPD_STACK_SIZE_B = 6144;
 /*
  *   Public Function Implementations
  */
-LogFileServer::LogFileServer(Filesystem* p_fs, Config* p_config, WifiHost* p_wifiHost)
+FileServer::FileServer(Filesystem* p_fs, Config* p_config, WifiHost* p_wifiHost)
 {
 	fs_ = p_fs;
 	config_ = p_config;
@@ -28,9 +28,9 @@ LogFileServer::LogFileServer(Filesystem* p_fs, Config* p_config, WifiHost* p_wif
 	webserverConfig_.uri_match_fn = httpd_uri_match_wildcard;
 }
 
-bool LogFileServer::start() { return startAp() && startWebserver(); }
+bool FileServer::start() { return startAp() && startWebserver(); }
 
-void LogFileServer::stop()
+void FileServer::stop()
 {
 	stopWebserver();
 	stopAp();
@@ -39,7 +39,7 @@ void LogFileServer::stop()
 /*
  *   Private Function Implementations
  */
-bool LogFileServer::startAp()
+bool FileServer::startAp()
 {
 	if (wifi_ == nullptr) {
 		return false;
@@ -53,9 +53,9 @@ bool LogFileServer::startAp()
 
 	return wifi_->start();
 }
-void LogFileServer::stopAp() { wifi_->stop(); }
+void FileServer::stopAp() { wifi_->stop(); }
 
-bool LogFileServer::startWebserver()
+bool FileServer::startWebserver()
 {
 	if (webserver_ != nullptr) {
 		return false;
@@ -68,12 +68,12 @@ bool LogFileServer::startWebserver()
 	}
 
 	// Register URI
-	csvUri_ = {.uri = "/*", .method = HTTP_GET, .handler = csvDownloadHandler, .user_ctx = this, .is_websocket = false};
+	csvUri_ = {.uri = "/*", .method = HTTP_GET, .handler = downloadHandler, .user_ctx = this, .is_websocket = false};
 
 	return httpd_register_uri_handler(webserver_, &csvUri_) == ESP_OK;
 }
 
-void LogFileServer::stopWebserver()
+void FileServer::stopWebserver()
 {
 	if (webserver_ == nullptr) {
 		return;
@@ -84,7 +84,7 @@ void LogFileServer::stopWebserver()
 	webserver_ = nullptr;
 }
 
-bool LogFileServer::setMimeType(httpd_req_t* p_req, const std::string& filepath)
+bool FileServer::setMimeType(httpd_req_t* p_req, const std::string& filepath)
 {
 	// .csv
 	if (filepath.ends_with(".csv")) {
@@ -98,10 +98,16 @@ bool LogFileServer::setMimeType(httpd_req_t* p_req, const std::string& filepath)
 		return true;
 	}
 
-	return ESP_FAIL;
+	// .txt
+	if (filepath.ends_with(".txt")) {
+		httpd_resp_set_type(p_req, "text/txt");
+		return true;
+	}
+
+	return false;
 }
 
-FsLocation LogFileServer::getFileLocation(const std::string& filepath)
+FsLocation FileServer::getFileLocation(const std::string& filepath)
 {
 	// .json
 	if (filepath.ends_with(".json")) {
@@ -111,7 +117,7 @@ FsLocation LogFileServer::getFileLocation(const std::string& filepath)
 	return FsLocation::SD_CARD;
 }
 
-bool LogFileServer::transmitFile(httpd_req_t* p_req, FILE* p_file)
+bool FileServer::transmitFile(httpd_req_t* p_req, FILE* p_file)
 {
 	if (p_file == nullptr) {
 		return false;
@@ -140,13 +146,13 @@ bool LogFileServer::transmitFile(httpd_req_t* p_req, FILE* p_file)
 	return true;
 }
 
-esp_err_t LogFileServer::csvDownloadHandler(httpd_req_t* p_req)
+esp_err_t FileServer::downloadHandler(httpd_req_t* p_req)
 {
 	if (p_req == nullptr || p_req->user_ctx == nullptr) {
 		return ESP_FAIL;
 	}
 
-	auto server = static_cast<LogFileServer*>(p_req->user_ctx);
+	auto server = static_cast<FileServer*>(p_req->user_ctx);
 
 	// Extract filepath
 	std::string filepath = "";

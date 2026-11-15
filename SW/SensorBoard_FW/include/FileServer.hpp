@@ -9,10 +9,10 @@
 // espidf includes
 #include <esp_http_server.h>
 
-class LogFileServer
+class FileServer
 {
 public:
-	LogFileServer(Filesystem* p_fs, Config* p_config, WifiHost* p_wifiHost);
+	FileServer(Filesystem* p_fs, Config* p_config, WifiHost* p_wifiHost);
 
 	bool start();
 
@@ -32,7 +32,7 @@ private:
 	FsLocation getFileLocation(const std::string& filepath);
 	bool transmitFile(httpd_req_t* p_req, FILE* p_file);
 
-	static esp_err_t csvDownloadHandler(httpd_req_t* p_req);
+	static esp_err_t downloadHandler(httpd_req_t* p_req);
 
 	/*
 	 *   Private Variables

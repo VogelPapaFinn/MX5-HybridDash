@@ -15,7 +15,7 @@ constexpr auto SENSORS_TO_READ = {SENSOR::ECU_COOLANT_C, SENSOR::ECU_COOLANT_V, 
  *	Public Function Implementations
  */
 Operation::Operation(HwSensorReader* p_hwSensorReader, SensorLogger* p_sensorLogger,
-					 SensorBroadcaster* p_sensorBroadcast, KLine* p_kline, LogFileServer* p_logFileServer,
+					 SensorBroadcaster* p_sensorBroadcast, KLine* p_kline, FileServer* p_fileServer,
 					 SensorValues* p_sensorValues, SerialConsole* p_serialConsole) :
 	swSensorReader_(p_kline, p_sensorValues)
 {
@@ -23,7 +23,7 @@ Operation::Operation(HwSensorReader* p_hwSensorReader, SensorLogger* p_sensorLog
 	sensorLogger_ = p_sensorLogger;
 	sensorBroadcaster_ = p_sensorBroadcast;
 	kline_ = p_kline;
-	logFileServer_ = p_logFileServer;
+	fileServer_ = p_fileServer;
 	sensorValues_ = p_sensorValues;
 	serialConsole_ = p_serialConsole;
 
@@ -38,7 +38,7 @@ void Operation::enter()
 	swSensorReader_.start();
 	sensorLogger_->start();
 	sensorBroadcaster_->start();
-	logFileServer_->start();
+	fileServer_->start();
 	serialConsole_->start();
 	startRpmTimer();
 }
@@ -51,7 +51,7 @@ void Operation::quit()
 	swSensorReader_.stop();
 	sensorLogger_->stop();
 	sensorBroadcaster_->stop();
-	logFileServer_->stop();
+	fileServer_->stop();
 	serialConsole_->stop();
 }
 
@@ -79,15 +79,15 @@ void Operation::startRpmTimer()
 									 return;
 								 }
 
-								 // Stop LogFileServer and Timer
-								 state->logFileServer_->stop();
+								 // Stop FileServer and Timer
+								 state->fileServer_->stop();
 								 xTimerStop(p_timer, 0);
 								 xTimerDelete(p_timer, 0);
 								 state->rpmTimer_ = nullptr;
 							 });
 
 	if (rpmTimer_ == nullptr) {
-		ESP_LOGW(TAG, "Failed to start the timer that stops the LogFileServer");
+		ESP_LOGW(TAG, "Failed to start the timer that stops the FileServer");
 		return;
 	}
 

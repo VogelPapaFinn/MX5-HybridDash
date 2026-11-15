@@ -1,8 +1,8 @@
 #pragma once
 
 // Project includes
+#include "FileServer.hpp"
 #include "KLine/KLine.hpp"
-#include "LogFileServer.hpp"
 #include "Sensors/HwSensorReader.hpp"
 #include "Sensors/SensorBroadcaster.hpp"
 #include "Sensors/SensorLogger.hpp"
@@ -18,8 +18,7 @@ class Operation : public State
 {
 public:
 	Operation(HwSensorReader* p_hwSensorReader, SensorLogger* p_sensorLogger, SensorBroadcaster* p_sensorBroadcast,
-			  KLine* p_kline, LogFileServer* p_logFileServer, SensorValues* p_sensorValues,
-			  SerialConsole* p_serialConsole);
+			  KLine* p_kline, FileServer* p_fileServer, SensorValues* p_sensorValues, SerialConsole* p_serialConsole);
 
 	void enter() override;
 
@@ -41,7 +40,7 @@ private:
 	SensorBroadcaster* sensorBroadcaster_ = nullptr;
 	KLine* kline_ = nullptr;
 	SensorValues* sensorValues_ = nullptr;
-	LogFileServer* logFileServer_ = nullptr;
+	FileServer* fileServer_ = nullptr;
 	SerialConsole* serialConsole_ = nullptr;
 
 	SwSensorReader swSensorReader_;

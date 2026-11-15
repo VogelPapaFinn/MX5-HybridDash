@@ -8,8 +8,8 @@ set(FILES
 
         # Miscelleanous
         "Display.cpp"
-        "LogFileServer.cpp"
-
+        "FileServer.cpp"
+       
         "SerialConsole/SerialConsole.cpp"
         "SerialConsole/Commands/ActuatorTests.cpp"
         "SerialConsole/Commands/FaultCodes.cpp"
