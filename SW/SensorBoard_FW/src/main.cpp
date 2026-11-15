@@ -134,6 +134,8 @@ void logBootReason()
 {
 	const auto startupReason = esp_reset_reason();
 	switch (startupReason) {
+		case ESP_RST_USB:
+		case ESP_RST_SW:
 		case ESP_RST_POWERON:
 			break;
 
