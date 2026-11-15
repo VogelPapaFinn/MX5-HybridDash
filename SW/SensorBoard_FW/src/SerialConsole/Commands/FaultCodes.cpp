@@ -95,6 +95,8 @@ int FaultCodes::readFaultCodes(int argc, char** p_argv)
 	requestAmountOfFaultCodes(
 		[this](unsigned int amountOfFaultCodes)
 		{
+			printf("Amount of Fault Codes: %d", amountOfFaultCodes);
+
 			// Abort if there arent some
 			if (amountOfFaultCodes == 0 && false) {
 				return;
