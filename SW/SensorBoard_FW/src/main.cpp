@@ -76,6 +76,42 @@ void initLogger(Filesystem* p_fs)
 	if (p_fs == nullptr) {
 		return;
 	}
+
+	nvs_handle_t nvsHandle;
+	const auto result = nvs_open("Logger", NVS_READWRITE, &nvsHandle);
+
+	if (result != ESP_OK) {
+		ESP_LOGW(TAG, "Couldn't start Logger. NVS error: %s", esp_err_to_name(result));
+		return;
+	}
+
+	// Get the new index
+	uint16_t loggerIndex = 0;
+	nvs_get_u16(nvsHandle, "LoggerIndex", &loggerIndex);
+
+	// Create logging file
+	std::string path = "log_x.txt";
+	path.replace(path.find('x'), 1, std::to_string(loggerIndex));
+	if (!p_fs->createFile(path, FsLocation::SD_CARD)) {
+		ESP_LOGW(TAG, "Failed to create Logger file");
+		nvs_close(nvsHandle);
+		return;
+	}
+
+	// Open logging file
+	FILE* file = p_fs->openFile(path, "w", FsLocation::SD_CARD);
+	if (file == nullptr) {
+		ESP_LOGW(TAG, "Failed to open Logger file");
+		nvs_close(nvsHandle);
+		return;
+	}
+
+	Logger::init(file);
+
+	// Increase the index and close nvs
+	nvs_set_u16(nvsHandle, "LoggerIndex", loggerIndex + 1);
+	nvs_commit(nvsHandle);
+	nvs_close(nvsHandle);
 }
 
 void initAdc1(adc_oneshot_unit_handle_t* p_adc1)
