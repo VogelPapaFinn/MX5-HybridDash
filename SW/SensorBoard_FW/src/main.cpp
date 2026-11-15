@@ -15,8 +15,12 @@
 #include "StateMachine/States/Startup.hpp"
 #include "StateMachine/States/UpdateDisplays.hpp"
 
+// C++ includes
+#include <cinttypes>
+
 // espidf includes
 #include <esp_adc/adc_oneshot.h>
+#include <esp_core_dump.h>
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 
@@ -126,6 +130,48 @@ void initAdc1(adc_oneshot_unit_handle_t* p_adc1)
 	}
 }
 
+void logBootReason()
+{
+	const auto startupReason = esp_reset_reason();
+	switch (startupReason) {
+		case ESP_RST_POWERON:
+			break;
+
+		case ESP_RST_BROWNOUT: {
+			ESP_LOGE(TAG, "Brownout on the last Application run!");
+			return;
+		} break;
+
+		case ESP_RST_INT_WDT:
+		case ESP_RST_TASK_WDT:
+		case ESP_RST_PANIC: {
+			esp_core_dump_summary_t summary;
+			if (esp_core_dump_get_summary(&summary) != ESP_OK) {
+				ESP_LOGE(TAG, "Application crashed on the last run but the core dump is corrupted!");
+				return;
+			}
+
+			ESP_LOGE(TAG, "Application crashed on the last run!");
+
+			// Log basic information
+			ESP_LOGE(TAG,
+					 "Crashed Task: %s, Program Counter: 0x%08" PRIx32 ", Exception Cause: %d, vaddr: 0x%08" PRIx32,
+					 summary.exc_task, summary.exc_pc, summary.ex_info.exc_cause, summary.ex_info.exc_vaddr);
+
+			// Log Stacktrace
+			ESP_LOGE(TAG, "Backtrace Depth: %d", summary.exc_bt_info.depth);
+			for (uint8_t i = 0; i < summary.exc_bt_info.depth && i < 16; i++) {
+				ESP_LOGE(TAG, "0x%08" PRIx32, summary.exc_bt_info.bt[i]);
+			}
+			ESP_LOGE(TAG, "Backtrace Corrupted: %d", summary.exc_bt_info.corrupted);
+		} break;
+
+		default: {
+			ESP_LOGW(TAG, "Startup reason abnormal: %d. See 'esp_reset_reason_t' for details", startupReason);
+		} break;
+	}
+}
+
 /*
  *	main function
  */
@@ -164,6 +210,7 @@ extern "C" void app_main(void)
 		 .formatIfMountFails = true},
 	});
 	initLogger(&fs);
+	logBootReason();
 	KLine kline;
 	adc_oneshot_unit_handle_t adc1 = nullptr;
 	Config config(&fs, FsLocation::CONFIG_PARTITION);
