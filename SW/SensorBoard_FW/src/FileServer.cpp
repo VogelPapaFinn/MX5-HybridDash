@@ -94,13 +94,13 @@ bool FileServer::setMimeType(httpd_req_t* p_req, const std::string& filepath)
 
 	// .json
 	if (filepath.ends_with(".json")) {
-		httpd_resp_set_type(p_req, "text/json");
+		httpd_resp_set_type(p_req, "application/json");
 		return true;
 	}
 
 	// .txt
 	if (filepath.ends_with(".txt")) {
-		httpd_resp_set_type(p_req, "text/txt");
+		httpd_resp_set_type(p_req, "text/plain");
 		return true;
 	}
 
@@ -164,6 +164,7 @@ esp_err_t FileServer::downloadHandler(httpd_req_t* p_req)
 
 	if (!server->setMimeType(p_req, filepath)) {
 		ESP_LOGW(TAG, "Requested file '%s' is not a vaild file type!", filepath.c_str());
+		httpd_resp_send_err(p_req, HTTPD_400_BAD_REQUEST, "Requested file is not a vaild file type!");
 		return ESP_FAIL;
 	}
 

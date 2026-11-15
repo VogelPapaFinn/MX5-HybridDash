@@ -106,7 +106,12 @@ void initLogger(Filesystem* p_fs)
 		return;
 	}
 
-	Logger::init(file);
+	if (Logger::init(file)) {
+		ESP_LOGI(TAG, "Initialized Logger with file %s", path.c_str());
+	}
+	else {
+		ESP_LOGW(TAG, "Failed to initialize Logger with file %s", path.c_str());
+	}
 
 	// Increase the index and close nvs
 	nvs_set_u16(nvsHandle, "LoggerIndex", loggerIndex + 1);
