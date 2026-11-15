@@ -2,6 +2,7 @@ CompileFlags:
   Add:
     - -Wno-unknown-warning-option
     - -Wno-unknown-attributes
+    - -Wno-vla-cxx-extension
   Remove:
     # xtensa-gcc-spezifische Flags, die clang nicht kennt
     - -mlongcalls

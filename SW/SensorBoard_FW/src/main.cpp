@@ -4,6 +4,7 @@
 #include "Filesystem.hpp"
 #include "FilesystemLocations.hpp"
 #include "KLine/KLine.hpp"
+#include "Logger.hpp"
 #include "SdCard.hpp"
 #include "Sensors/HwSensorReader.hpp"
 #include "SerialConsole/SerialConsole.hpp"
@@ -70,6 +71,13 @@ void startEspEventLoop()
 	esp_restart();
 }
 
+void initLogger(Filesystem* p_fs)
+{
+	if (p_fs == nullptr) {
+		return;
+	}
+}
+
 void initAdc1(adc_oneshot_unit_handle_t* p_adc1)
 {
 	if (adc_oneshot_new_unit(&ADC1_UNIT_CONFIG, p_adc1) != ESP_OK) {
@@ -114,6 +122,7 @@ extern "C" void app_main(void)
 		 .partitionLabel = LOG_PARTITION_LABEL,
 		 .formatIfMountFails = true},
 	});
+	initLogger(&fs);
 	KLine kline;
 	adc_oneshot_unit_handle_t adc1 = nullptr;
 	Config config(&fs, FsLocation::CONFIG_PARTITION);
