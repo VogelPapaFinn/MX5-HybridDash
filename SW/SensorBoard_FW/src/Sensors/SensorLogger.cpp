@@ -12,19 +12,10 @@
  *	constexpr
  */
 constexpr auto TAG = "SensorLogger";
-constexpr auto SENSORS_TO_LOG = {SENSOR::FUEL_LEVEL_R,
-								 SENSOR::FUEL_LEVEL_MV,
-								 SENSOR::FUEL_LEVEL_P,
-								 SENSOR::OIL_PRESSURE_B,
-								 SENSOR::WATER_TEMP_R,
-								 SENSOR::WATER_TEMP_C,
-								 SENSOR::SPEED,
-								 SENSOR::RPM,
-								 SENSOR::ECU_COOLANT_C,
-								 SENSOR::ECU_COOLANT_V,
-								 SENSOR::ECU_INJECTION_MS,
-								 SENSOR::ECU_RPM,
-								 SENSOR::ECU_SPEED};
+constexpr auto SENSORS_TO_LOG = {
+	SENSOR::FUEL_LEVEL_R, SENSOR::FUEL_LEVEL_MV, SENSOR::FUEL_LEVEL_P,	SENSOR::WATER_TEMP_R,  SENSOR::WATER_TEMP_C,
+	SENSOR::SPEED,		  SENSOR::RPM,			 SENSOR::ECU_COOLANT_C, SENSOR::ECU_COOLANT_V, SENSOR::ECU_INJECTION_MS,
+	SENSOR::ECU_RPM,	  SENSOR::ECU_SPEED};
 
 constexpr auto NVS_NAMESPACE = "SensorLogger";
 constexpr auto NVS_FILE_INDEX = "Index";
