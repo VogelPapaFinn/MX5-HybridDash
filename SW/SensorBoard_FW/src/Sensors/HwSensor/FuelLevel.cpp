@@ -14,7 +14,7 @@ constexpr auto TAG = "FuelLevel";
 
 constexpr uint16_t R1 = 240;
 constexpr float BOOST_RESISTOR = 96.8f;
-constexpr float EMA_ALPHA = 0.01f;
+constexpr float EMA_ALPHA = 0.005f;
 
 constexpr auto NVS_NAMESPACE = "FuelLevel";
 constexpr auto NVS_LAST_VALUE = "LastValue";
@@ -65,9 +65,9 @@ void FuelLevel::specificRead()
 
 	// Hysterese
 	// decreased - Only allow decreasing
-	// increased - Except if the increase is >= 3%
+	// increased - Except if the increase is >= 2%
 	const bool decreased = static_cast<float>(displayedLevelInPercent_) - levelInPercent_ > 0.5f + HYSTERESE_THRESHOLD;
-	const bool increased = levelInPercent_ - static_cast<float>(displayedLevelInPercent_) >= 3.0f;
+	const bool increased = levelInPercent_ - static_cast<float>(displayedLevelInPercent_) >= 2.0f;
 	if (decreased || increased) {
 		displayedLevelInPercent_ = std::lround(levelInPercent_);
 
