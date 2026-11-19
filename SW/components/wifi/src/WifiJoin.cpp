@@ -6,7 +6,6 @@
 #include "esp_netif.h"
 #include "esp_netif_sntp.h"
 #include "esp_wifi.h"
-#include "nvs_flash.h"
 
 
 /*
@@ -114,11 +113,6 @@ bool WifiJoin::start()
 		return false;
 	}
 
-	if (nvs_flash_init() != ESP_OK) {
-		ESP_LOGE(TAG, "Failed to initiate NVS Flash");
-		return false;
-	}
-
 	if (esp_netif_init() != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to initiate ESP NETIF");
 		return false;
@@ -191,7 +185,6 @@ void WifiJoin::stop()
 	esp_netif_destroy_default_wifi(espNetif_);
 	esp_event_loop_delete_default();
 	esp_netif_deinit();
-	nvs_flash_deinit();
 }
 
 void WifiJoin::setMasterIp(const std::array<uint8_t, 4> ip) { masterIp_ = ip; }

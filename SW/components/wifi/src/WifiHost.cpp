@@ -5,7 +5,6 @@
 #include "esp_log.h"
 #include "esp_netif.h"
 #include "esp_wifi.h"
-#include "nvs_flash.h"
 
 
 /*
@@ -33,11 +32,6 @@ bool WifiHost::start()
 
 	if (ssid_.empty() || password_.empty()) {
 		ESP_LOGE(TAG, "Failed to start AP. SSID or Password are empty");
-		return false;
-	}
-
-	if (nvs_flash_init() != ESP_OK) {
-		ESP_LOGE(TAG, "Failed to initiate NVS Flash");
 		return false;
 	}
 
@@ -116,9 +110,6 @@ void WifiHost::stop()
 	espNetif_ = nullptr;
 
 	esp_wifi_deinit();
-
-	esp_netif_deinit();
-	nvs_flash_deinit();
 
 	connected_ = false;
 }

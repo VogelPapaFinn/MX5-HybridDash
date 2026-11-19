@@ -38,7 +38,11 @@ FuelLevel::FuelLevel(adc_oneshot_unit_handle_t p_adc) : PassiveSensor(GPIO_NUM_1
 	displayedLevelInPercent_ = lastValue;
 }
 
-FuelLevel::~FuelLevel() { nvs_close(nvsHandle_); }
+FuelLevel::~FuelLevel()
+{
+	nvs_close(nvsHandle_);
+	nvsHandle_ = 0;
+}
 
 int FuelLevel::get() { return displayedLevelInPercent_; }
 

@@ -50,6 +50,7 @@ SensorLogger::~SensorLogger()
 	}
 
 	nvs_close(nvsHandle_);
+	nvsHandle_ = 0;
 }
 
 void SensorLogger::start()
