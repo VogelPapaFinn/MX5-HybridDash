@@ -28,6 +28,8 @@ protected:
 
 	float calculatePercentage();
 
+	void saveToNvs();
+
 	/*
 	 *	Private Variables
 	 */

@@ -64,19 +64,14 @@ void FuelLevel::specificRead()
 	levelInPercent_ = (EMA_ALPHA * percentage) + ((1.0f - EMA_ALPHA) * levelInPercent_);
 
 	// Hysterese
-	if (std::abs(levelInPercent_ - static_cast<float>(displayedLevelInPercent_)) > 0.5f + HYSTERESE_THRESHOLD) {
+	// decreased - Only allow decreasing
+	// increased - Except if the increase is >= 3%
+	const bool decreased = static_cast<float>(displayedLevelInPercent_) - levelInPercent_ > 0.5f + HYSTERESE_THRESHOLD;
+	const bool increased = levelInPercent_ - static_cast<float>(displayedLevelInPercent_) >= 3.0f;
+	if (decreased || increased) {
 		displayedLevelInPercent_ = std::lround(levelInPercent_);
 
-		if (nvsHandle_ != 0) {
-			auto result = nvs_set_u8(nvsHandle_, NVS_LAST_VALUE, static_cast<uint8_t>(displayedLevelInPercent_));
-			if (result != ESP_OK) {
-				ESP_LOGW(TAG, "nvs_set failed with %s", esp_err_to_name(result));
-			}
-			result = nvs_commit(nvsHandle_);
-			if (result != ESP_OK) {
-				ESP_LOGW(TAG, "nvs_commit failed with %s", esp_err_to_name(result));
-			}
-		}
+		saveToNvs();
 	}
 
 	firstRead_ = false;
@@ -113,9 +108,31 @@ float FuelLevel::calculatePercentage()
 
 	// If its the first read and the read value is 15% higher (or more),
 	// override the ema value with it
-	if (firstRead_ && levelInPercent_ < percent * 0.85) {
+	if (firstRead_ && percent - levelInPercent_ > 15.0f) {
 		levelInPercent_ = percent;
+		displayedLevelInPercent_ = std::lround(levelInPercent_);
+		saveToNvs();
 	}
 
 	return percent;
+}
+
+void FuelLevel::saveToNvs()
+{
+	if (nvsHandle_ == 0) {
+		ESP_LOGE(TAG, "Cant save to NVS. Handle is 0");
+		return;
+	}
+
+	// Set value
+	const auto resultSet = nvs_set_u8(nvsHandle_, NVS_LAST_VALUE, static_cast<uint8_t>(displayedLevelInPercent_));
+	if (resultSet != ESP_OK) {
+		ESP_LOGW(TAG, "nvs_set failed with %s", esp_err_to_name(resultSet));
+	}
+
+	// Sync with flash
+	const auto resultCommit = nvs_commit(nvsHandle_);
+	if (resultCommit != ESP_OK) {
+		ESP_LOGW(TAG, "nvs_commit failed with %s", esp_err_to_name(resultCommit));
+	}
 }
