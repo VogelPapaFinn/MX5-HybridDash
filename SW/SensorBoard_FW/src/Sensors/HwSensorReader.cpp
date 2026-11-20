@@ -176,6 +176,7 @@ void HwSensorReader::updatePassiveSensorsTask(void* p_param)
 			(hwSensorReader->newSensorValues_)[SENSOR::OIL_PRESSURE_R] = oP.getResistance();
 			(hwSensorReader->newSensorValues_)[SENSOR::WATER_TEMP_C] = wT.get();
 			(hwSensorReader->newSensorValues_)[SENSOR::WATER_TEMP_R] = wT.getResistance();
+			(hwSensorReader->newSensorValues_)[SENSOR::WATER_TEMP_MV] = wT.getVoltageMv();
 
 			// Return mutex
 			xSemaphoreGive(hwSensorReader->newSensorValuesMutex_);
