@@ -39,7 +39,7 @@ protected:
 	// Hysterese Filter
 	uint8_t displayedLevelInPercent_ = 0;
 
-	MedianFilter<float, 15> medianFilter_;
+	MedianFilter<float, 31> medianFilter_;
 
 	bool engineRunning_ = false;
 	bool firstRead_ = true;

@@ -33,6 +33,14 @@ FuelLevel::FuelLevel(adc_oneshot_unit_handle_t p_adc) : PassiveSensor(GPIO_NUM_1
 	uint8_t lastValue = 0;
 	if (nvsHandle_ != 0) {
 		nvs_get_u8(nvsHandle_, NVS_LAST_VALUE, &lastValue);
+
+		// Convert the percent value back to a resistances
+		const double h = 82890.9956 - 4859.79492 * lastValue;
+		const double d = sqrt(h * h + 3597542856.31);
+		resistance_ = static_cast<float>(cbrt(h + d) + cbrt(h - d) + 79.8985923);
+
+		// Fill the median filter with that value
+		medianFilter_.fill(resistance_);
 	}
 	levelInPercent_ = static_cast<float>(lastValue);
 	displayedLevelInPercent_ = lastValue;
@@ -84,9 +92,6 @@ float FuelLevel::filterResistance()
 		BOOST_RESISTOR;
 
 	// Use the median filter
-	if (firstRead_) {
-		medianFilter_.fill(resistance_);
-	}
 	medianFilter_.add(resistance_);
 	return medianFilter_.get();
 }
