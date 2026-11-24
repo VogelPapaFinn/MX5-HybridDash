@@ -58,8 +58,8 @@ void SensorBroadcaster::broadcastIndicators()
 	frame.answer = false;
 
 	// Build payload
-	frame.data[0] = static_cast<uint8_t>(sensorData.at(SENSOR::LEFT_INDICATOR));
-	frame.data[1] = static_cast<uint8_t>(sensorData.at(SENSOR::RIGHT_INDICATOR));
+	frame.data[0] = static_cast<uint8_t>(sensorData.at(SENSOR::LEFT_INDICATOR).value);
+	frame.data[1] = static_cast<uint8_t>(sensorData.at(SENSOR::RIGHT_INDICATOR).value);
 
 	// Transmit frame
 	can_->queueFrame(frame);
@@ -74,36 +74,38 @@ void SensorBroadcaster::broadcastTask(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	{auto sensorBroadcaster = static_cast<SensorBroadcaster*>(p_param);
+	{
+		auto sensorBroadcaster = static_cast<SensorBroadcaster*>(p_param);
 
-	while (true) {
-		// Stop if ordered to
-		if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(BROADCAST_INTERVALL_MS)) != 0) {
-			break;
+		while (true) {
+			// Stop if ordered to
+			if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(BROADCAST_INTERVALL_MS)) != 0) {
+				break;
+			}
+
+			const auto sensorData = sensorBroadcaster->sensorValues_->getSnapshot();
+
+			// Build header
+			Can::Frame_t frame;
+			frame.sender = CAN_MASTER_ID;
+			frame.target = CAN_BROADCAST_ID;
+			frame.group = CanFrameGroups::GROUP::SENSOR;
+			frame.function = CanFrameGroups::FUNC::POLL_SENSOR_DATA;
+			frame.dataLengthCode = 6;
+			frame.answer = false;
+
+			// Build payload
+			frame.data[0] = static_cast<uint8_t>(sensorData.at(SENSOR::FUEL_LEVEL_P).value);
+			frame.data[1] = static_cast<uint8_t>(sensorData.at(SENSOR::OIL_PRESSURE_B).value);
+			frame.data[2] = static_cast<uint8_t>(sensorData.at(SENSOR::WATER_TEMP_C).value);
+			frame.data[3] = static_cast<uint8_t>((static_cast<uint16_t>(sensorData.at(SENSOR::RPM).value) >> 8) & 0xFF);
+			frame.data[4] = static_cast<uint8_t>(static_cast<uint16_t>(sensorData.at(SENSOR::RPM).value) & 0xFF);
+			frame.data[5] = static_cast<uint8_t>(sensorData.at(SENSOR::SPEED).value);
+
+			// Transmit frame
+			sensorBroadcaster->can_->queueFrame(frame);
 		}
-
-		const auto sensorData = sensorBroadcaster->sensorValues_->getSnapshot();
-
-		// Build header
-		Can::Frame_t frame;
-		frame.sender = CAN_MASTER_ID;
-		frame.target = CAN_BROADCAST_ID;
-		frame.group = CanFrameGroups::GROUP::SENSOR;
-		frame.function = CanFrameGroups::FUNC::POLL_SENSOR_DATA;
-		frame.dataLengthCode = 6;
-		frame.answer = false;
-
-		// Build payload
-		frame.data[0] = static_cast<uint8_t>(sensorData.at(SENSOR::FUEL_LEVEL_P));
-		frame.data[1] = static_cast<uint8_t>(sensorData.at(SENSOR::OIL_PRESSURE_B));
-		frame.data[2] = static_cast<uint8_t>(sensorData.at(SENSOR::WATER_TEMP_C));
-		frame.data[3] = static_cast<uint8_t>((static_cast<uint16_t>(sensorData.at(SENSOR::RPM)) >> 8) & 0xFF);
-		frame.data[4] = static_cast<uint8_t>(static_cast<uint16_t>(sensorData.at(SENSOR::RPM)) & 0xFF);
-		frame.data[5] = static_cast<uint8_t>(sensorData.at(SENSOR::SPEED));
-
-		// Transmit frame
-		sensorBroadcaster->can_->queueFrame(frame);
-	}}
+	}
 
 	vTaskDelete(nullptr);
 }

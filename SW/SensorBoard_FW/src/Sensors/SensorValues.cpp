@@ -18,11 +18,11 @@ SensorValues::SensorValues()
 
 	// Fill the map with dummy data
 	for (unsigned int i = 0; i < static_cast<unsigned int>(SENSOR::END); i++) {
-		sensorValues_[static_cast<SENSOR>(i)] = 0;
+		sensorValues_[static_cast<SENSOR>(i)] = Value{};
 	}
 }
 
-std::unordered_map<SENSOR, float> SensorValues::getSnapshot()
+std::unordered_map<SENSOR, SensorValues::Value> SensorValues::getSnapshot()
 {
 	if (xSemaphoreTake(valuesMutex_, portMAX_DELAY) != pdTRUE) {
 		return {};
@@ -35,7 +35,7 @@ std::unordered_map<SENSOR, float> SensorValues::getSnapshot()
 	return copy;
 }
 
-std::unordered_map<SENSOR, float>* SensorValues::getWriteAccess()
+std::unordered_map<SENSOR, SensorValues::Value>* SensorValues::getWriteAccess()
 {
 	if (xSemaphoreTake(valuesMutex_, portMAX_DELAY)) {
 		return &sensorValues_;

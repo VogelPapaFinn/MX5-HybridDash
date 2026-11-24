@@ -162,6 +162,10 @@ int ActuatorTests::executeSwitchTest(int argc, char** p_argv)
 	kline_->send(message,
 				 [this](KLineMessage& message)
 				 {
+					 if (message == KLineMessage{}) {
+						 return;
+					 }
+
 					 // printf("ECU answer: %s\n", message.toString().c_str());
 					 this->handleCommandAnswer(message);
 				 });
@@ -201,6 +205,10 @@ int ActuatorTests::executeValueTest(int argc, char** p_argv)
 	kline_->send(message,
 				 [this](KLineMessage& message)
 				 {
+					 if (message == KLineMessage{}) {
+						 return;
+					 }
+
 					 // printf("ECU answer: %s\n", message.toString().c_str());
 					 this->handleCommandAnswer(message);
 				 });

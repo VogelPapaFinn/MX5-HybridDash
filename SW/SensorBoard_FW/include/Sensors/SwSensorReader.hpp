@@ -7,6 +7,7 @@
 
 // C++ includes
 #include <atomic>
+#include <optional>
 #include <vector>
 
 // espidf includes
@@ -24,22 +25,39 @@ public:
 
 	void stop();
 
-	void setSensorsToRead(std::vector<SENSOR> sensors);
+	void addSensor(SENSOR sensor, int64_t intervalMs);
 
-	void addSensorToRead(SENSOR sensor);
+	void addSensors(const std::vector<SENSOR>& sensors, int64_t intervalMs);
 
-	void removeSensorFromRead(SENSOR sensor);
+	void removeSensor(SENSOR sensor, int64_t intervalMs);
 
-	void stopReadingAllSensors();
+	void removeAllSensors();
 
 private:
+	/*
+	 *	Private Structs
+	 */
+	struct Sensor
+	{
+		SENSOR type;
+		int64_t intervalMs = 0;
+		int64_t nextDueMcS = -1;
+	};
+
 	/*
 	 *	Private Functions
 	 */
 	void startReadThread();
 	void stopReadThread();
 
+	bool doesPidMatch(const KLineMessage& message, const uint16_t& pid);
+	int extractSensorValue(KLineMessage& message, uint16_t expectedByteCount);
 	void handleSensorResponse(const NumericalSensor sensor, KLineMessage& response);
+
+	std::optional<Sensor> scheduleNextSensor();
+	bool waitForStopNotification(TickType_t duration);
+	void updateDueTime(Sensor& sensor);
+	bool sendRequest(const Sensor& sensor);
 
 	/*
 	 *	Private Task Functions
@@ -55,6 +73,7 @@ private:
 	TaskHandle_t readSensorsTask_ = nullptr;
 
 	std::atomic<bool> sensorsReadTaskRunning_ = false;
+	std::atomic<int> waitingForResponse_ = 0;
 	SemaphoreHandle_t sensorsToReadMutex_ = nullptr;
-	std::vector<SENSOR> sensorsToRead_;
+	std::vector<Sensor> sensorsToRead_;
 };

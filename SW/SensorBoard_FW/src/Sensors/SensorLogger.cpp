@@ -249,7 +249,7 @@ void SensorLogger::logTask(void* p_param)
 			// Print data of all sensors
 			std::string row = "";
 			for (const auto& sensor : SENSORS_TO_LOG) {
-				row += std::to_string(sensorData.at(sensor)) + ",";
+				row += std::to_string(sensorData.at(sensor).value) + ",";
 			}
 			fprintf(sensorLogger->csvFile_, "%s;\n", row.c_str());
 

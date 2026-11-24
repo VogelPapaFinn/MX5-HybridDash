@@ -27,7 +27,7 @@ Operation::Operation(HwSensorReader* p_hwSensorReader, SensorLogger* p_sensorLog
 	sensorValues_ = p_sensorValues;
 	serialConsole_ = p_serialConsole;
 
-	swSensorReader_.setSensorsToRead(SENSORS_TO_READ);
+	swSensorReader_.addSensors(SENSORS_TO_READ, 500);
 }
 
 void Operation::enter()
@@ -75,7 +75,7 @@ void Operation::startRpmTimer()
 
 								 // Check if RPM > 0
 								 auto sensorValues = state->sensorValues_->getSnapshot();
-								 if (sensorValues[SENSOR::RPM] <= 0) {
+								 if (sensorValues[SENSOR::RPM].value <= 0) {
 									 return;
 								 }
 

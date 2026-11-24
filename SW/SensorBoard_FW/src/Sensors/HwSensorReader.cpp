@@ -1,5 +1,8 @@
 #include "Sensors/HwSensorReader.hpp"
 
+// C++ includes
+#include <utility>
+
 // Project includes
 #include "Sensors/HwSensor/FuelLevel.hpp"
 #include "Sensors/HwSensor/LeftIndicator.hpp"
@@ -11,9 +14,8 @@
 #include "Sensors/Sensors.hpp"
 
 // espidf includes
-#include <esp_log.h>
-
-#include <utility>
+#include "esp_log.h"
+#include "esp_timer.h"
 
 /*
  *  constexpr
@@ -223,7 +225,7 @@ void HwSensorReader::writeSensorsTask(void* p_param)
 			auto currData = hwSensorReader->sensorValues_->getWriteAccess();
 			if (currData != nullptr) {
 				for (auto& entry : hwSensorReader->newSensorValues_) {
-					(*currData)[entry.first] = entry.second;
+					(*currData)[entry.first] = {entry.second, esp_timer_get_time()};
 				}
 
 				hwSensorReader->sensorValues_->returnWriteAccess();
@@ -278,8 +280,10 @@ void HwSensorReader::indicatorTask(void* p_param)
 			// Update value in the SensorsValue object
 			auto currData = hwSensorReader->sensorValues_->getWriteAccess();
 			if (currData != nullptr) {
-				(*currData)[SENSOR::RIGHT_INDICATOR] = (hwSensorReader->newSensorValues_)[SENSOR::RIGHT_INDICATOR];
-				(*currData)[SENSOR::LEFT_INDICATOR] = (hwSensorReader->newSensorValues_)[SENSOR::LEFT_INDICATOR];
+				(*currData)[SENSOR::RIGHT_INDICATOR] = {(hwSensorReader->newSensorValues_)[SENSOR::RIGHT_INDICATOR],
+														esp_timer_get_time()};
+				(*currData)[SENSOR::LEFT_INDICATOR] = {(hwSensorReader->newSensorValues_)[SENSOR::LEFT_INDICATOR],
+													   esp_timer_get_time()};
 
 				hwSensorReader->sensorValues_->returnWriteAccess();
 			}

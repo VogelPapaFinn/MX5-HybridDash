@@ -60,6 +60,10 @@ void FaultCodes::requestAmountOfFaultCodes(std::function<void(unsigned int)> cb)
 	kline_->send(message,
 				 [cb, upperPidByte, lowerPidByte](KLineMessage& message)
 				 {
+					 if (message == KLineMessage{}) {
+						 return;
+					 }
+
 					 // ERROR
 					 if (message.getSid() == 0x7F) {
 						 return;

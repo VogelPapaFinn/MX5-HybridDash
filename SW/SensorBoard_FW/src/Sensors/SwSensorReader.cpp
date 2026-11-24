@@ -3,19 +3,22 @@
 // Project includes
 #include "Sensors/SwSensor/BitfieldSensors.hpp"
 #include "Sensors/SwSensor/NumericalSensors.hpp"
-
-// C++ includes
-#include <algorithm>
+#include "Sensors/Utils/MutexGrabber.hpp"
 
 // espidf includes
 #include "esp_log.h"
+#include "esp_timer.h"
 
 /*
  *   constexpr
  */
 constexpr auto TAG = "SwSensorReader";
 
-constexpr auto TIME_BETWEEN_EACH_SENSOR_READ_MS = 200;
+constexpr uint8_t STOP_TASK = 0b0001;
+constexpr uint8_t RECEIVED_KLINE_RESPONSE = 0b0010;
+constexpr uint8_t TASK_BITMASK = STOP_TASK | RECEIVED_KLINE_RESPONSE;
+
+constexpr unsigned int WAIT_FOR_KLINE_RESPONSE_MS = 200;
 
 /*
  *   Public Function Implementations
@@ -34,47 +37,48 @@ void SwSensorReader::start() { startReadThread(); }
 
 void SwSensorReader::stop() { stopReadThread(); }
 
-void SwSensorReader::setSensorsToRead(std::vector<SENSOR> sensors)
+void SwSensorReader::addSensor(SENSOR sensor, int64_t intervalMs)
 {
-	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
-
-	sensorsToRead_ = std::move(sensors);
-
-	xSemaphoreGive(sensorsToReadMutex_);
-}
-
-void SwSensorReader::addSensorToRead(SENSOR sensor)
-{
-	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
+	MutexGrabber mutexGrabber(sensorsToReadMutex_);
 
 	// Ignore if already being read
-	if (std::find(sensorsToRead_.begin(), sensorsToRead_.end(), sensor) == sensorsToRead_.end()) {
-		sensorsToRead_.push_back(sensor);
+	for (const auto& entry : sensorsToRead_) {
+		if (entry.type != sensor || entry.intervalMs != intervalMs) {
+			continue;
+		}
+
+		return;
 	}
 
-	xSemaphoreGive(sensorsToReadMutex_);
+	sensorsToRead_.push_back({sensor, intervalMs, esp_timer_get_time()});
 }
 
-void SwSensorReader::removeSensorFromRead(SENSOR sensor)
+void SwSensorReader::addSensors(const std::vector<SENSOR>& sensors, int64_t intervalMs)
 {
-	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
-
-	// Ignore if not being read
-	const auto it = std::find(sensorsToRead_.begin(), sensorsToRead_.end(), sensor);
-	if (it != sensorsToRead_.end()) {
-		sensorsToRead_.erase(it);
+	for (const auto& sensor : sensors) {
+		addSensor(sensor, intervalMs);
 	}
-
-	xSemaphoreGive(sensorsToReadMutex_);
 }
 
-void SwSensorReader::stopReadingAllSensors()
+void SwSensorReader::removeSensor(SENSOR sensor, int64_t intervalMs)
 {
-	xSemaphoreTake(sensorsToReadMutex_, portMAX_DELAY);
+	MutexGrabber mutexGrabber(sensorsToReadMutex_);
+
+	for (unsigned int i = 0; i < sensorsToRead_.size(); i++) {
+		if (sensorsToRead_.at(i).type != sensor || sensorsToRead_.at(i).intervalMs != intervalMs) {
+			continue;
+		}
+
+		sensorsToRead_.erase(sensorsToRead_.begin() + i);
+		break;
+	}
+}
+
+void SwSensorReader::removeAllSensors()
+{
+	MutexGrabber mutexGrabber(sensorsToReadMutex_);
 
 	sensorsToRead_.clear();
-
-	xSemaphoreGive(sensorsToReadMutex_);
 }
 
 /*
@@ -103,13 +107,58 @@ void SwSensorReader::stopReadThread()
 		return;
 	}
 
-	xTaskNotifyGive(readSensorsTask_);
-	readSensorsTask_ = nullptr;
+	xTaskNotify(readSensorsTask_, STOP_TASK, eSetBits);
 
 	// Wait until the task has really finished
 	while (sensorsReadTaskRunning_) {
 		vTaskDelay(pdMS_TO_TICKS(50));
 	}
+	readSensorsTask_ = nullptr;
+}
+
+
+bool SwSensorReader::doesPidMatch(const KLineMessage& message, const uint16_t& pid)
+{
+	auto payload = message.getPayload();
+
+	if (payload.size() <= 2) {
+		return false;
+	}
+
+	// Upper Byte
+	if (payload.at(0) != ((pid >> 8) & 0xFF)) {
+		return false;
+	}
+
+	// Lower Byte
+	if (payload.at(1) != (pid & 0xFF)) {
+		return false;
+	}
+
+	return true;
+}
+
+int SwSensorReader::extractSensorValue(KLineMessage& message, uint16_t expectedByteCount)
+{
+	auto payload = message.getPayload();
+
+	if (payload.size() != 2 + expectedByteCount) { // 2 is for the PID, which has two bytes
+		return -1;
+	}
+
+	// Erase PID
+	payload.erase(payload.begin(), payload.begin() + 2);
+
+	// Extract sensor value
+	int output = 0;
+	uint8_t i = payload.size();
+	for (const auto& b : payload) {
+		output += (b << ((i - 1) * 8));
+
+		i--;
+	}
+
+	return output;
 }
 
 void SwSensorReader::handleSensorResponse(const NumericalSensor sensor, KLineMessage& response)
@@ -120,35 +169,98 @@ void SwSensorReader::handleSensorResponse(const NumericalSensor sensor, KLineMes
 	}
 
 	// Check PID
-	auto payload = response.getPayload();
-	if (payload.size() <= 2 || payload.at(0) != (sensor.pid >> 8) || payload.at(1) != (sensor.pid & 0xFF)) {
+	if (!doesPidMatch(response, sensor.pid)) {
 		return;
 	}
 
-	// Remove the pid
-	payload.erase(payload.begin(), payload.begin() + 2);
-
-	// Check payload length
-	if (payload.size() != sensor.byteCount) {
+	// Get Raw Sensor Value
+	const int rawValue = extractSensorValue(response, sensor.byteCount);
+	if (rawValue == -1) {
 		return;
-	}
-
-	// Extract raw sensor value
-	uint16_t rawValue = 0;
-	uint8_t i = payload.size();
-	for (const auto& b : payload) {
-		rawValue += (b << ((i - 1) * 8));
-
-		i--;
 	}
 
 	// Get logical value
-	const double value = sensor.convertFunc(rawValue);
+	const float value = static_cast<float>(sensor.convertFunc(rawValue));
 
 	// Save value
 	auto sensorValues = sensorValues_->getWriteAccess();
-	(*sensorValues)[sensor.id] = value;
+	(*sensorValues)[sensor.id] = {value, esp_timer_get_time()};
 	sensorValues_->returnWriteAccess();
+}
+
+std::optional<SwSensorReader::Sensor> SwSensorReader::scheduleNextSensor()
+{
+	MutexGrabber mutexGrabber(sensorsToReadMutex_);
+
+	// Return nothing if there are no sensors
+	if (sensorsToRead_.empty()) {
+		return {};
+	}
+
+	// Check which sensor is next
+	unsigned int next = 0;
+	for (unsigned int i = 0; i < sensorsToRead_.size(); i++) {
+		// Compare the due time. Take the sensor with the lower one
+		if (sensorsToRead_.at(i).nextDueMcS >= sensorsToRead_.at(next).nextDueMcS) {
+			continue;
+		}
+
+		next = i;
+	}
+
+	return sensorsToRead_[next];
+}
+
+bool SwSensorReader::waitForStopNotification(TickType_t duration)
+{
+	uint32_t bits = 0;
+	xTaskNotifyWait(0, TASK_BITMASK, &bits, duration);
+	return bits & STOP_TASK;
+}
+
+void SwSensorReader::updateDueTime(SwSensorReader::Sensor& sensor)
+{
+	MutexGrabber mutexGrabber(sensorsToReadMutex_);
+
+	// Iterate through all sensors
+	for (auto& s : sensorsToRead_) {
+		// Check if type and interval match
+		if (s.type != sensor.type || s.intervalMs != sensor.intervalMs) {
+			continue;
+		}
+
+		// Update due time if the case
+		s.nextDueMcS = esp_timer_get_time() + (s.intervalMs * 1000);
+		return;
+	}
+}
+
+bool SwSensorReader::sendRequest(const SwSensorReader::Sensor& sensor)
+{
+	// Get the ECU Sensor instance
+	const auto ecuSensor = getNumericalSensor(sensor.type);
+
+	// Build KLine Message
+	KLineMessage message(
+		0x22, {static_cast<uint8_t>((ecuSensor.pid >> 8) & 0xFF), static_cast<uint8_t>((ecuSensor.pid >> 0) & 0xFF)});
+
+	waitingForResponse_++;
+	const bool result = kline_->send(message,
+									 [this, ecuSensor](KLineMessage& response)
+									 {
+										 handleSensorResponse(ecuSensor, response);
+
+										 // Notify the task before decrementing, so the task can't finish in between
+										 xTaskNotify(readSensorsTask_, RECEIVED_KLINE_RESPONSE, eSetBits);
+										 waitingForResponse_--;
+									 });
+
+	// We dont need to wait for a response if the send failed
+	if (!result) {
+		waitingForResponse_--;
+	}
+
+	return result;
 }
 
 /*
@@ -160,47 +272,65 @@ void SwSensorReader::readSensors(void* p_param)
 		vTaskDelete(nullptr);
 	}
 
-	auto swSensorReader = static_cast<SwSensorReader*>(p_param);
+	auto reader = static_cast<SwSensorReader*>(p_param);
 
 	{
-		swSensorReader->sensorsReadTaskRunning_ = true;
+		reader->sensorsReadTaskRunning_ = true;
 
-		bool stop = false;
+		uint32_t bits = 0;
 		while (true) {
-			// Acquire copy of sensors to read
-			xSemaphoreTake(swSensorReader->sensorsToReadMutex_, portMAX_DELAY);
-			const auto sensorsToRead = swSensorReader->sensorsToRead_;
-			xSemaphoreGive(swSensorReader->sensorsToReadMutex_);
+			// Schedule next sensor
+			auto nextSensor = reader->scheduleNextSensor();
 
-			// Wait if vector is empty
-			if (sensorsToRead.empty()) {
-				if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(1000)) != 0) {
+			// Skip if the vector is empty (= nextSensor has no value)
+			if (!nextSensor.has_value()) {
+				// Wait for short duration and check if task should stop
+				if (reader->waitForStopNotification(pdMS_TO_TICKS(1000))) {
 					break;
 				}
 				continue;
 			}
 
-			for (auto& sensorType : sensorsToRead) {
-				// Stop if ordered to
-				if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(TIME_BETWEEN_EACH_SENSOR_READ_MS)) != 0) {
-					stop = true;
+			// Wait if the due time is in the future
+			const int64_t nextDueMcs = nextSensor.value().nextDueMcS - esp_timer_get_time();
+			if (nextDueMcs > 0) {
+				// Wait for stop notification
+				if (reader->waitForStopNotification(pdMS_TO_TICKS(nextDueMcs / 1000))) {
 					break;
 				}
-
-				const auto sensor = getNumericalSensor(sensorType);
-				KLineMessage message(
-					0x22,
-					{static_cast<uint8_t>((sensor.pid >> 8) & 0xFF), static_cast<uint8_t>((sensor.pid >> 0) & 0xFF)});
-				swSensorReader->kline_->send(message, [swSensorReader, sensor](KLineMessage& response)
-											 { swSensorReader->handleSensorResponse(sensor, response); });
 			}
 
-			if (stop) {
+			// Update due time
+			reader->updateDueTime(nextSensor.value());
+
+			// Skip waiting if the request couldn't be queued
+			if (!reader->sendRequest(nextSensor.value())) {
+				continue;
+			}
+
+			// Wait for the response
+			xTaskNotifyWait(RECEIVED_KLINE_RESPONSE, RECEIVED_KLINE_RESPONSE, &bits,
+							pdMS_TO_TICKS(WAIT_FOR_KLINE_RESPONSE_MS));
+			if (bits & STOP_TASK) {
+				break;
+			}
+		}
+
+		// Wait until all pending KLine callbacks are done, as they access this task
+		unsigned int failCounter = 0;
+		while (reader->waitingForResponse_ > 0) {
+
+			xTaskNotifyWait(0, TASK_BITMASK, nullptr, pdMS_TO_TICKS(WAIT_FOR_KLINE_RESPONSE_MS));
+
+			if (++failCounter >= 10) {
+				ESP_LOGW(TAG, "Didn't receive an answer to at least 1 request.");
+				reader->waitingForResponse_ = 0;
 				break;
 			}
 		}
 	}
 
-	swSensorReader->sensorsReadTaskRunning_ = false;
+	// Cleanup
+	reader->sensorsReadTaskRunning_ = false;
 	vTaskDelete(nullptr);
 }

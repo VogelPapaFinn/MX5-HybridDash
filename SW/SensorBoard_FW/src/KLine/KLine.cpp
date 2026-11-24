@@ -51,7 +51,7 @@ KLine::KLine()
 		return;
 	}
 
-	requestQueue_ = xQueueCreate(10, sizeof(Request*));
+	requestQueue_ = xQueueCreate(40, sizeof(Request*));
 }
 
 KLine::~KLine()
@@ -98,7 +98,11 @@ bool KLine::send(const KLineMessage& message, std::function<void(KLineMessage&)>
 								   if (!messages.empty()) {
 									   return cb(messages.front());
 								   }
+
+								   KLineMessage emptyMsg;
+								   return cb(emptyMsg);
 							   }};
+
 	if (xQueueSend(requestQueue_, &request, portMAX_DELAY) != pdTRUE) {
 		delete (request);
 		return false;
@@ -253,8 +257,8 @@ void KLine::klineTask(void* p_param)
 
 		std::vector<KLineMessage> responses = kline->process(*request);
 
-		// Multi repsonse request
-		if (!responses.empty() && request->callback) {
+		// Call Callback
+		if (request->callback) {
 			request->callback(responses);
 		}
 
